@@ -289,6 +289,8 @@ docs/tr/        step-by-step Turkish operator guides
 - [Video shot list](docs/VIDEO_SHOT_LIST.md)
 - [Official criteria map](docs/JUDGING_MAP.md)
 - [Pre-submission checklist](docs/PRE_SUBMISSION_CHECKLIST.md)
+- [Devpost media kit](docs/media/README.md)
+- [Copy-ready DataHub feedback](docs/DEVPOST_FEEDBACK.md)
 - [Build-period disclosure](docs/BUILD_PERIOD_DISCLOSURE.md)
 - [DataHub skill contribution package](docs/DATAHUB_SKILL_CONTRIBUTION.md)
 - [Reusable DataHub schema-change certification skill](skills/datahub-schema-change-certification/SKILL.md)
@@ -302,7 +304,7 @@ ContextSeal does not claim:
 - complete lineage when DataHub has not ingested it;
 - production/customer use or measured incident reduction;
 - formal security certification;
-- an accepted or merged upstream DataHub Skills contribution; the current public contribution is [PR #35](https://github.com/datahub-project/datahub-skills/pull/35), status `OPEN / DRAFT / NOT_MERGED`.
+- an accepted or merged upstream DataHub Skills contribution; the current public contribution is [PR #35](https://github.com/datahub-project/datahub-skills/pull/35), status `OPEN / READY_FOR_REVIEW / NOT_MERGED`.
 
 The live normalizer currently certifies asset-level paths and validates source/destination fields against complete paginated target-schema evidence. Column-level path expansion is future work.
 

@@ -4,6 +4,14 @@
   "description": "Graph-backed certification for high-risk data changes",
   "type": "module",
   "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zyganali-glitch/ContextSeal.git"
+  },
+  "homepage": "https://zyganali-glitch.github.io/ContextSeal/",
+  "bugs": {
+    "url": "https://github.com/zyganali-glitch/ContextSeal/issues"
+  },
   "engines": {
     "node": ">=20"
   },

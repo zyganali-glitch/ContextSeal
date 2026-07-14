@@ -66,6 +66,7 @@ Kullanılacak sabit bilgiler:
 - **Tagline:** `Every data change ships with proof, not confidence.`
 - **Primary category:** `Agents That Do Real Work`
 - Form izin veriyorsa **secondary fit:** `Metadata-Aware Code Generation & Development`
+- **Built With:** `DataHub`, `DataHub MCP Server`, `Node.js`, `JavaScript`, `Python`, `Docker`, `GitHub Actions`, `dbt`
 
 Kategori isimleri formda farklı görünürse [resmî overview](https://datahub.devpost.com/) sayfasındaki güncel ifadeyi esas al.
 
@@ -142,9 +143,18 @@ Repository belgesindeki placeholder operatör hatırlatıcısı olarak kalabilir
 - Lisansı `Apache-2.0` olarak seç veya belirt.
 - [BUILD_PERIOD_DISCLOSURE.md](../BUILD_PERIOD_DISCLOSURE.md) ile uyumlu biçimde AI geliştirme yardımı kullanıldığını ve önceden var olan kişisel projeden kod kopyalanmadığını açıkla.
 - DataHub Skills katkısı yalnız gerçek public issue/PR URL'si varsa bonus olarak sunulabilir.
-- Public katkı artık [DataHub Skills PR #35](https://github.com/datahub-project/datahub-skills/pull/35) adresindedir; durumu `OPEN / DRAFT / NOT_MERGED` olarak yaz ve inceleme, kabul veya merge iddia etme.
+- Public katkı artık [DataHub Skills PR #35](https://github.com/datahub-project/datahub-skills/pull/35) adresindedir; durumu `OPEN / READY_FOR_REVIEW / NOT_MERGED` olarak yaz ve inceleme, kabul veya merge iddia etme.
 
 ## 9. Görsel ve logo alanları
+
+Görsel hazırlaman gerekmiyor. [`docs/media`](../media/README.md) altında Devpost'a hazır, `1500 × 1000` piksel, `3:2` oranlı ve 5 MB altında dört temiz PNG bulunuyor:
+
+1. `contextseal-thumbnail.png` — proje thumbnail/kapak;
+2. `contextseal-analysis.png` — analiz ve blast-radius;
+3. `contextseal-artifacts.png` — risk açıklaması ve üretilmiş bundle;
+4. `contextseal-passport.png` — insan onayı, kanıt ledger'ı ve passport.
+
+Dosyaları bu sırayla yükle ve [media kitindeki hazır İngilizce caption'ları](../media/README.md) kullan.
 
 Kullanacağın ekran görüntülerinde:
 
@@ -156,7 +166,11 @@ Kullanacağın ekran görüntülerinde:
 
 Telifli müzik, logo veya izinsiz üçüncü taraf görsel kullanma.
 
-## 10. Preview ve gönderim
+## 10. Most Valuable Feedback alanı
+
+Bu opsiyonel alan görünürse [`DEVPOST_FEEDBACK.md`](../DEVPOST_FEEDBACK.md) içindeki hazır, gerçek deneyime dayalı İngilizce metni kullan. Uzunluk sınırı varsa aynı belgedeki kısa sürümü yapıştır. Metin; gerçekten yaşanan schema pagination, query-zero, exact-path, local auth ve mutation-readiness deneyimlerinden türetilmiştir.
+
+## 11. Preview ve gönderim
 
 Devpost preview ekranında sırayla kontrol et:
 

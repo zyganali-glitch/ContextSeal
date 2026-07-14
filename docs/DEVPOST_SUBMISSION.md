@@ -118,7 +118,7 @@ The direct request may be `BLOCKED` while the generated non-destructive alternat
 - Fail-closed live API and mutation controls
 - A professional dashboard where `PASS`, `WARN`, `FAIL`, `NOT_RUN`, `STALE`, and `FIXTURE` never blur together
 - Reproducible offline fixture and committed synthetic-local DataHub proof
-- A generic executable schema-change certification skill submitted as public upstream [DataHub Skills PR #35](https://github.com/datahub-project/datahub-skills/pull/35), currently `OPEN / DRAFT / NOT_MERGED`
+- A generic executable schema-change certification skill submitted as public upstream [DataHub Skills PR #35](https://github.com/datahub-project/datahub-skills/pull/35), currently `OPEN / READY_FOR_REVIEW / NOT_MERGED`
 
 ## What we learned
 
@@ -143,13 +143,22 @@ ContextSeal is a hackathon prototype. It does not execute warehouse SQL, merge o
 
 Only synthetic retail metadata owned by this repository. ContextSeal reads metadata, never source data rows. No customer or production data is included.
 
+## Built with
+
+Use these exact Devpost technology tags where the form permits:
+
+`DataHub`, `DataHub MCP Server`, `Node.js`, `JavaScript`, `Python`, `Docker`, `GitHub Actions`, `dbt`
+
+The copy-ready optional Most Valuable Feedback response is kept separately in [DEVPOST_FEEDBACK.md](DEVPOST_FEEDBACK.md) so it is not confused with the project description.
+
 ## Submission links
 
 - **Public repository:** https://github.com/zyganali-glitch/ContextSeal
 - **No-install walkthrough:** https://zyganali-glitch.github.io/ContextSeal/
 - **Demo video:** `TODO_PUBLIC_VIDEO_URL`
 - **Sample outputs:** https://github.com/zyganali-glitch/ContextSeal/tree/main/examples/outputs
-- **DataHub skill contribution:** https://github.com/datahub-project/datahub-skills/pull/35 — `OPEN / DRAFT / NOT_MERGED`
+- **DataHub skill contribution:** https://github.com/datahub-project/datahub-skills/pull/35 — `OPEN / READY_FOR_REVIEW / NOT_MERGED`
+- **Devpost media kit:** https://github.com/zyganali-glitch/ContextSeal/tree/main/docs/media
 
 ## Final placeholder rule
 

@@ -1,144 +1,61 @@
-# Benim yapmam gerekenler
+# Bana kalan iki iş
 
-Bu belge proje sahibinin son güne kadar yapacağı işleri sırayla anlatır. Kod yazman veya teknik karar vermen gerekmiyor. Bir adım beklenen sonucu vermiyorsa sonraki adıma geçme; gizli bilgi görünmeyecek şekilde ekran görüntüsü al ve yardım iste.
+Kod, test, Docker, DataHub kanıtı, public repository, GitHub Pages, açık kaynak katkısı, İngilizce başvuru metni, görseller, caption'lar, teknoloji etiketleri, geri bildirim metni ve kontrol belgeleri hazırdır. Teknik kurulum veya yeniden kanıt üretme işi yapman gerekmiyor.
 
-## Kısa yol haritası
+Sana yalnızca fiziksel olarak senin hesabın/kimliğin ve sesinle yapılabilecek iki iş kalıyor:
 
-1. Devpost yarışmasına katıl ve taslak proje aç.
-2. Temiz yerel fixture yolunu doğrula.
-3. Kaydedilmiş canlı DataHub kanıtını kontrol et.
-4. Gerekirse canlı kanıtı güvenli sırayla yeniden üret.
-5. Videoyu kesin İngilizce metne göre çek.
-6. Nihai İngilizce Devpost metnini forma aktar.
-7. Bütün bağlantıları gizli pencerede kontrol et.
-8. Son kontrol listesini tamamlayıp başvuruyu gönder.
+1. demo videoyu çekip public yüklemek;
+2. hazır paketi Devpost formuna aktarıp göndermek.
 
-## 1. Yarışmaya katıl
+DataHub Skills [PR #35](https://github.com/datahub-project/datahub-skills/pull/35) `OPEN / READY_FOR_REVIEW / NOT_MERGED` durumunda ve maintainer incelemesini bekliyor. Bu senin tamamlaman gereken bir iş değil; review veya merge gerçekleşmeden kabul edilmiş gibi anlatma.
 
-1. [DataHub Devpost sayfasını](https://datahub.devpost.com/) aç.
-2. **Join hackathon** düğmesine bas.
-3. Gerekirse Devpost hesabı oluştur ve e-posta adresini doğrula.
-4. Yarışma sayfasına dönüp katılımın etkin olduğunu doğrula.
-5. Proje taslağını açabilirsin; henüz **Submit** düğmesine basma.
+## 1. Demo videoyu çek ve yükle
 
-Resmî son tarih: **10 Ağustos 2026, 17:00 EDT**. İstanbul saatiyle **11 Ağustos 2026, 00:00**. Kaynak: [resmî yarışma kuralları](https://datahub.devpost.com/rules).
+1. [Türkçe çekim rehberini](DEMO_VIDEO_CEKIM_REHBERI.md) aç.
+2. İngilizce anlatımı [kesin demo metninden](../DEMO_SCRIPT.md) oku.
+3. Ekran sırasını [shot listeden](../VIDEO_SHOT_LIST.md) uygula.
+4. Videoyu `2:50–2:58` hedefiyle, kesinlikle `3:00` altında tut.
+5. `1920×1080`, 30 fps kullan; tarayıcı profili, kişisel sekme, bildirim, `.env`, terminal ve token gösterme.
+6. Fixture bölümünde sınır rozetini görünür tut. Beş fixture downstream varlığı, en derin dört hop ve iki sentetik query örneği de.
+7. Canlı kanıt bölümünde yalnız kaydedilmiş disposable-local DataHub kanıtını göster: 10 MCP okuması, 6 downstream varlık/6 exact path, query sonucu 0, `70 / BLOCKED`, 3 mutation receipt `PASS` ve ayrı durable read-back `PASS`.
+8. En yeni kanıt dokümanını DataHub'da ararken `csp_315210a4fc40f86cd302` değerini kullan; related-document sırasına güvenme.
+9. Generated SQL'in çalıştırılmadığını, production/customer veri veya sonuç iddiası olmadığını söyle.
+10. İngilizce altyazıyı elle düzelt; telifli müzik veya üçüncü taraf görüntü ekleme.
+11. YouTube, Vimeo veya Youku'ya **Public** yükle ve signed-out/gizli pencerede baştan sona oynat.
 
-Güvenli çalışma hedefi:
+Video bağlantısını bir yere kaydet. Devpost formunda `TODO_PUBLIC_VIDEO_URL` yerine bu public izleme URL'sini kullan.
 
-- 8 Ağustos: kod ve kanıt dondurma;
-- 9 Ağustos: video, metin ve bütün bağlantıların kontrolü;
-- 10 Ağustos: yalnız yedek gün, yeni büyük özellik yok.
+## 2. Devpost formunu doldur ve gönder
 
-## 2. Public repository ve Pages kontrolü
+[Adım adım Devpost rehberini](DEVPOST_BASVURU_REHBERI.md) aç. Hazır değerler:
 
-Gizli Chrome penceresinde şu iki adresi aç:
+- **Project name:** `ContextSeal`
+- **Tagline:** `Every data change ships with proof, not confidence.`
+- **Primary category:** `Agents That Do Real Work`
+- **Secondary fit (varsa):** `Metadata-Aware Code Generation & Development`
+- **Built With:** `DataHub`, `DataHub MCP Server`, `Node.js`, `JavaScript`, `Python`, `Docker`, `GitHub Actions`, `dbt`
+- **Repository:** https://github.com/zyganali-glitch/ContextSeal
+- **Try it / walkthrough:** https://zyganali-glitch.github.io/ContextSeal/
+- **Sample outputs:** https://github.com/zyganali-glitch/ContextSeal/tree/main/examples/outputs
+- **Open-source contribution:** https://github.com/datahub-project/datahub-skills/pull/35 — `OPEN / READY_FOR_REVIEW / NOT_MERGED`
 
-- [ContextSeal repository](https://github.com/zyganali-glitch/ContextSeal)
-- [Kurulumsuz fixture gösterimi](https://zyganali-glitch.github.io/ContextSeal/)
+Formda yapılacaklar:
 
-Şunları doğrula:
+1. Devpost hesabınla yarışmaya katıl ve proje formunu aç.
+2. İsim, ekip, ülke/ikamet, uygunluk ve şart kabulü gibi yalnız senin beyan edebileceğin alanları doldur.
+3. İngilizce proje içeriğini [hazır final metinden](../DEVPOST_SUBMISSION.md) aktar.
+4. Public video URL'sini ekle; form preview'ında embed'in çalıştığını doğrula.
+5. [`docs/media`](../media/README.md) içindeki hazır thumbnail ve üç galeri PNG'sini, aynı belgedeki hazır İngilizce caption'larla yükle.
+6. Opsiyonel Most Valuable Feedback alanı çıkarsa [hazır gerçek geri bildirim metnini](../DEVPOST_FEEDBACK.md) yapıştır.
+7. Preview'da repository, walkthrough, outputs, video ve PR bağlantılarına tıkla.
+8. `TODO_PUBLIC_VIDEO_URL` ifadesinin forma taşınmadığını kontrol et.
+9. Video süresi, fixture/live sayıları ve kanıt durumlarının README ile aynı olduğunu son kez kontrol et.
+10. **Submit** düğmesine bas ve oluşan public Devpost proje URL'sini kaydet.
 
-- repository adının yanında **Public** yazıyor;
-- lisans Apache-2.0 olarak görünüyor;
-- Pages sayfası açılıyor;
-- Pages sayfası kendisini canlı backend değil, kaydedilmiş `FIXTURE` gösterimi olarak tanımlıyor.
+## Gönderimden sonra
 
-## 3. Yerel fixture yolunu doğrula
+- Repository, walkthrough ve videoyu değerlendirme dönemi bitene kadar public/kısıtsız tut. Resmî dönem 31 Ağustos 2026 17:00 EDT'de (İstanbul'da 1 Eylül 2026 00:00) biter.
+- Devpost veya video metnini değiştirirsen iddia sınırlarını koru.
+- Public video ve Devpost proje URL'lerini bu sohbete gönder; repository'deki video placeholder'ını gerçek URL ile güncelleyip son signed-out denetimini ben yaparım. Bu, yeni bir hazırlık işi değil, gönderim sonrası kapanış doğrulamasıdır.
 
-1. Dosya Gezgini'nde `ContextSeal` klasörünü aç.
-2. Adres çubuğuna `powershell` yazıp `Enter` tuşuna bas. Böylece terminal doğru klasörde açılır; kullanıcı adına özel bir yol yazman gerekmez.
-3. Sırayla çalıştır:
-
-   ```powershell
-   npm install
-   npm run validate
-   npm start
-   ```
-
-4. Terminali açık bırak.
-5. [http://127.0.0.1:4173](http://127.0.0.1:4173) adresini aç.
-6. Arayüzde fixture/connected rozetini gör.
-7. Şu tıklama yolunu tamamla:
-
-   - **Run local certification**
-   - risk `80`, karar `BLOCKED`
-   - beş fixture aşağı yönlü varlığı, en derin dört adım
-   - dört üretilmiş dosya
-   - **Approve safe plan**
-   - `csp_...` pasaportu
-   - **Prepare protected operations**
-   - üç işlemin `NOT_RUN` olması
-
-8. Terminalde sunucuyu `Ctrl+C` ile durdur.
-
-Fixture yolu canlı DataHub veya gerçek sorgu iddiası değildir. İki query örneği ve fixture'daki `ML_MODEL` düğümü sentetiktir. Canlı yerel seed'deki MLflow scoring varlığı ise native `DataJob` metadata'sıdır; iki yüzeyi birleştirme ve inference çalıştığını iddia etme.
-
-## 4. Canlı DataHub kanıtını kontrol et
-
-Önce [canlı kurulum rehberini](CANLI_DATAHUB_KURULUMU.md) oku. Kaydedilmiş kanıtın doğru gerçekleri şunlardır:
-
-- kullan-at yerel DataHub Core;
-- yalnız ContextSeal'e ait sentetik metadata, kaynak satırı yok;
-- 10 MCP okuması ve tek sayfada tam üç alanlı hedef şeması;
-- hedefin altında altı varlık ve altı exact path: iki `Dataset`, iki `DataJob`, iki `Dashboard`;
-- canlı query sonucu sıfır;
-- MLflow scoring kaydı `DataJob` türündedir, `MLModel` değildir;
-- doğrudan istek `70 / BLOCKED`;
-- onaylanan güvenli kapsam için üç sınırlı metadata mutation receipt'i `PASS`;
-- structured properties, açıklama bağı ve exact returned-document pasaport/manifest/hedef literal bağlarının ayrı read-back doğrulaması `PASS`.
-
-Kanıtı yeniden üretirken güvenlik sırası değişmez:
-
-1. operator token'ı üret ve `.env` içinde yerel tut;
-2. exact target allowlist'ini ayarla;
-3. mutation ayarı `false` iken read-only analiz yap;
-4. yalnız doğrulanan hedef için mutation ayarını `true` yap;
-5. taze analiz oluştur, tam kapsamı onayla ve write-back'e yalnız bir kez bas;
-6. sunucuyu durdurup mutation ayarını hemen tekrar `false` yap;
-7. capture, export, evidence ve tam validation komutlarını çalıştır.
-
-Tarayıcıya girilen operator token yalnız o sekmenin belleğinde kalır. `.env`, token ekranı veya terminaldeki gizli değer hiçbir ekran görüntüsüne/video kaydına girmemelidir.
-
-## 5. Demo videosunu hazırla
-
-[Demo videosu çekim rehberini](DEMO_VIDEO_CEKIM_REHBERI.md) uygula. Ana kurallar:
-
-- süre 3:00 altında, hedef 2:50–2:58;
-- 1920×1080, 30 fps;
-- İngilizce kesin metin [DEMO_SCRIPT.md](../DEMO_SCRIPT.md) ile aynı;
-- görüntü sırası [VIDEO_SHOT_LIST.md](../VIDEO_SHOT_LIST.md) ile aynı;
-- fixture rozeti kesilmez;
-- generated SQL çalıştırılmış gibi anlatılmaz;
-- canlı kanıt “disposable local DataHub, synthetic metadata” diye etiketlenir;
-- müzik, kişisel sekme, bildirim, `.env` veya token görünmez.
-
-Videoyu YouTube, Vimeo veya Youku'ya **Public** yükle. Bağlantıyı gizli pencerede baştan sona oynat.
-
-## 6. Devpost formunu doldur
-
-[Devpost başvuru rehberini](DEVPOST_BASVURU_REHBERI.md) kullan. Forma yapıştırılacak içerik [İngilizce nihai metindir](../DEVPOST_SUBMISSION.md); Türkçe rehberi forma yapıştırma.
-
-Video bağlantısı oluşunca Devpost formundaki `TODO_PUBLIC_VIDEO_URL` yerini gerçek public bağlantıyla değiştir. Repository içindeki operatör hatırlatıcısını yanlışlıkla “gönderilmiş video” diye sunma.
-
-## 7. Son kontrol
-
-[Pre-submission checklist](../PRE_SUBMISSION_CHECKLIST.md) belgesindeki her kutuyu gerçek kanıtla tamamla. Özellikle:
-
-- `npm run validate` geçiyor ve Git diff oluşturmuyor;
-- GitHub Actions submitted commit üzerinde yeşil;
-- repository ve video signed-out pencerede açılıyor;
-- video 3:00 altında;
-- Devpost metni, README, video, dashboard ve kanıt dosyaları aynı sayıları/iddiaları kullanıyor;
-- mutation ayarı `false`;
-- `.env` untracked;
-- token, özel tenant veya müşteri verisi yok;
-- upstream DataHub Skills katkısı gerçek public [PR #35](https://github.com/datahub-project/datahub-skills/pull/35) ile gösteriliyor ve `OPEN / DRAFT / NOT_MERGED` sınırı korunuyor.
-
-## Asla yapma
-
-- Token'ı sohbete, issue'ya, GitHub'a, Devpost'a veya ekran görüntüsüne yapıştırma.
-- Operator token ile DataHub credential'ını aynı değer yapma.
-- Başarısız ya da kısmi write-back'i tekrar deneme; önce durumu incele.
-- `NOT_RUN` işlemi `PASS`, fixture sorgusunu canlı sorgu veya DataJob'ı MLModel diye anlatma.
-- Üretim, müşteri kullanımı, güvenlik sertifikası veya ölçülmüş incident azalması iddiası uydurma.
-- Son kontrol bitmeden **Submit** düğmesine basma.
+Resmî son gönderim: **10 Ağustos 2026 17:00 EDT** — İstanbul'da **11 Ağustos 2026 00:00**. Kaynak: [resmî yarışma kuralları](https://datahub.devpost.com/rules).

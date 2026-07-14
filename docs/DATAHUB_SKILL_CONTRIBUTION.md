@@ -2,7 +2,7 @@
 
 ## Current status
 
-`OPEN / DRAFT / NOT_MERGED` — the contribution is public as [datahub-project/datahub-skills#35](https://github.com/datahub-project/datahub-skills/pull/35). Review, acceptance, and merge are not claimed.
+`OPEN / READY_FOR_REVIEW / NOT_MERGED` — the contribution is public as [datahub-project/datahub-skills#35](https://github.com/datahub-project/datahub-skills/pull/35). Review, acceptance, and merge are not claimed.
 
 Source directory: [`skills/datahub-schema-change-certification/`](../skills/datahub-schema-change-certification/)
 
@@ -170,7 +170,7 @@ Recorded on 2026-07-15 against the upstream baseline named above:
 - `PASS` — GitHub's Conventional Commit title check passed on PR #35;
 - `NOT_RUN` — the upstream-hosted `Lint` workflow awaits first-time-fork approval from a maintainer; local execution of the same pre-commit suite passed.
 
-The public pull request exists and is inspectable. It remains a draft and has not been reviewed, accepted, or merged.
+The public pull request exists, is inspectable, and is ready for review. It has not been reviewed, accepted, or merged. Its hosted `Lint` job remains `NOT_RUN` until a DataHub maintainer approves first-time-fork workflow execution; the same complete pre-commit suite passed locally on the submitted commit.
 
 ## Upstream preparation checklist
 
@@ -187,9 +187,9 @@ The public pull request exists and is inspectable. It remains a draft and has no
 - [x] Link the ContextSeal repository and state the synthetic evidence boundary.
 - [x] Add the public pull-request URL to ContextSeal only after the PR exists.
 - [ ] Receive upstream maintainer workflow approval and review.
-- [ ] Mark the pull request ready for review after explicit operator confirmation.
+- [x] Mark the pull request ready for review after explicit operator confirmation.
 - [ ] Merge; do not claim acceptance before GitHub records it.
 
 ## Claim boundary
 
-A real public upstream contribution now exists at [PR #35](https://github.com/datahub-project/datahub-skills/pull/35). It may be presented as an open-source contribution with the exact status `OPEN / DRAFT / NOT_MERGED`; never imply review, acceptance, or merge until GitHub records it.
+A real public upstream contribution now exists at [PR #35](https://github.com/datahub-project/datahub-skills/pull/35). It may be presented as an open-source contribution with the exact status `OPEN / READY_FOR_REVIEW / NOT_MERGED`; never imply review, acceptance, or merge until GitHub records it.
