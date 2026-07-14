@@ -62,9 +62,9 @@ The prototype covers rename, drop, and type change. It deliberately stops before
 
 ## 6. Open-source contribution bonus
 
-The repository contains a generic, executable DataHub schema-change certification skill and a prepared upstream contribution package. Its status is `NOT_SUBMITTED` until a real public pull request exists.
+The repository contains a generic, executable DataHub schema-change certification skill submitted as public upstream [DataHub Skills PR #35](https://github.com/datahub-project/datahub-skills/pull/35). Its exact status is `OPEN / DRAFT / NOT_MERGED`; review, acceptance, and merge are not claimed.
 
-See [DataHub skill contribution](DATAHUB_SKILL_CONTRIBUTION.md). Do not award or claim the bonus based only on the local package.
+See [DataHub skill contribution](DATAHUB_SKILL_CONTRIBUTION.md) for the submitted diff, validation, and claim boundary.
 
 ## Tie-break posture
 

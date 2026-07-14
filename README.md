@@ -302,7 +302,7 @@ ContextSeal does not claim:
 - complete lineage when DataHub has not ingested it;
 - production/customer use or measured incident reduction;
 - formal security certification;
-- a submitted upstream DataHub Skills PR until a public PR URL exists.
+- an accepted or merged upstream DataHub Skills contribution; the current public contribution is [PR #35](https://github.com/datahub-project/datahub-skills/pull/35), status `OPEN / DRAFT / NOT_MERGED`.
 
 The live normalizer currently certifies asset-level paths and validates source/destination fields against complete paginated target-schema evidence. Column-level path expansion is future work.
 

@@ -118,7 +118,7 @@ The direct request may be `BLOCKED` while the generated non-destructive alternat
 - Fail-closed live API and mutation controls
 - A professional dashboard where `PASS`, `WARN`, `FAIL`, `NOT_RUN`, `STALE`, and `FIXTURE` never blur together
 - Reproducible offline fixture and committed synthetic-local DataHub proof
-- A generic executable schema-change certification skill prepared for upstream review
+- A generic executable schema-change certification skill submitted as public upstream [DataHub Skills PR #35](https://github.com/datahub-project/datahub-skills/pull/35), currently `OPEN / DRAFT / NOT_MERGED`
 
 ## What we learned
 
@@ -128,7 +128,7 @@ We also learned that `NOT_RUN` is a feature. A prepared payload, generated SQL f
 
 ## What's next
 
-- Contribute the generic schema-change certification skill to the DataHub Skills repository after maintainer review
+- Address maintainer feedback on the public DataHub Skills contribution and pursue review/merge without claiming acceptance early
 - Extend exact normalization to column-level lineage and more entity-specific governance signals
 - Bind approvals to externally authenticated reviewer identities
 - Deliver approved artifacts into a GitHub pull request behind a separate explicit gate
@@ -149,7 +149,7 @@ Only synthetic retail metadata owned by this repository. ContextSeal reads metad
 - **No-install walkthrough:** https://zyganali-glitch.github.io/ContextSeal/
 - **Demo video:** `TODO_PUBLIC_VIDEO_URL`
 - **Sample outputs:** https://github.com/zyganali-glitch/ContextSeal/tree/main/examples/outputs
-- **DataHub skill contribution:** prepared locally; status `NOT_SUBMITTED` until a real public PR exists
+- **DataHub skill contribution:** https://github.com/datahub-project/datahub-skills/pull/35 — `OPEN / DRAFT / NOT_MERGED`
 
 ## Final placeholder rule
 

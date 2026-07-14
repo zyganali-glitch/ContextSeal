@@ -1,9 +1,9 @@
 ---
 name: datahub-schema-change-certification
 description: |
-  Certify a proposed DataHub dataset field rename, drop, or type change before implementation. Use when the user explicitly asks for schema-change certification, a safe expand-migrate-contract package, a scope-bound human decision, or a durable decision passport written back to DataHub. This skill combines exact target and field validation, bounded downstream path analysis, deterministic risk and artifact validation, approval-bound hashing, and verified metadata write-back. Route plain lineage or exploratory impact questions to datahub-lineage, and route ordinary metadata edits to datahub-enrich.
+  Certify a proposed DataHub dataset field rename, drop, or type change before implementation. Use when the user explicitly asks for schema-change certification, a safe expand-migrate-contract package, a scope-bound human decision, or a durable decision passport written back to DataHub. This skill requires the official DataHub MCP server and combines exact target and field validation, bounded downstream path analysis, deterministic risk and artifact validation, approval-bound hashing, and verified metadata write-back. Route plain lineage or exploratory impact questions to datahub-lineage, and route ordinary metadata edits to datahub-enrich.
 user-invocable: true
-allowed-tools: Bash(python3 scripts/certify_change.py *)
+allowed-tools: Bash(python3 *certify_change.py *), Bash(python *certify_change.py *)
 ---
 
 # DataHub Schema-Change Certification
@@ -14,14 +14,14 @@ Do not certify confidence. Certify a reproducible scope.
 
 ## Multi-agent compatibility
 
-The evidence contract, MCP workflow, JSON interfaces, and standard-library helper are portable across agents that support DataHub MCP. The `allowed-tools` field is a Claude Code-specific least-privilege allowance for the bundled deterministic helper; other agents may ignore it and retain their own tool approval controls. If an agent cannot invoke MCP tools or Python, keep the affected work `NOT_RUN` and route setup instead of simulating a result.
+The evidence contract, MCP workflow, JSON interfaces, and standard-library helper are portable across agents that expose the official DataHub MCP server. This skill has no DataHub CLI fallback: if MCP is unavailable or the session is CLI-only, keep the affected work `NOT_RUN` and route setup instead of simulating a result. The `allowed-tools` field is a Claude Code-specific least-privilege allowance for the bundled deterministic helper; other agents may ignore it and retain their own tool approval controls.
 
 ## Requirements
 
 - Use the official DataHub MCP tools exposed by the host. Inspect their current input schemas before every live run.
-- Run `scripts/certify_change.py` with Python 3.11+ for policy, artifact, scope, and passport decisions. The helper uses only the Python standard library and never calls DataHub or executes SQL.
+- Run `scripts/certify_change.py` with Python 3.11+ for policy, artifact, scope, and passport decisions. Resolve the script from the installed skill directory rather than assuming the process working directory; Claude Code exposes that directory as `${CLAUDE_SKILL_DIR}`. The examples use `python3`; use `python` on Windows when it resolves to Python 3.11+. The helper uses only the Python standard library and never calls DataHub or executes SQL.
 - Treat write tools as disabled unless they are present in the captured MCP tool inventory. In the official MCP server, mutation tools require `TOOLS_IS_MUTATION_ENABLED=true`; `save_document` also depends on its document-tool setting.
-- Use `references/policy-v1.json` as the authoritative policy. Never silently substitute model judgment for a failed or unavailable helper.
+- Treat `references/policy-v1.json` as the bundled, versioned reference policy rather than a universal DataHub standard. An operator may select a reviewed custom policy with `--policy` before a run; once selected, that exact policy and hash are authoritative for the run. Never silently substitute model judgment for a failed or unavailable helper.
 
 ## Routing boundary
 
@@ -118,6 +118,7 @@ An empty or truncated business payload is not target evidence. Mark incomplete s
 ## Phase 4: discover bounded downstream impact
 
 1. Call `get_lineage` with `upstream=false`, the policy hop bound, an explicit result limit, and pagination.
+   If the selected policy requests more than three hops, show the bound and obtain explicit user confirmation before traversal.
 2. Record `returned`, `hasMore`, offsets, filters, and every discovered downstream URN.
 3. Call `get_lineage_paths_between` for every discovered target.
 4. Validate that each path begins at the requested source and ends at the named target.
@@ -150,7 +151,7 @@ python3 scripts/certify_change.py evaluate-risk \
 
 For an exact live boundary, the helper requires the private raw-evidence file, recomputes its canonical SHA-256, verifies MCP call/tool provenance, and derives query retrieval and normalized query records from the raw pages. Fixture, unavailable, or unknown-boundary analysis may omit this file but never becomes mutation eligible.
 
-Use the returned score, verdict, finding codes, and `riskHash` unchanged. A model may explain findings; it may not add, remove, reweight, or relabel them.
+Use the returned score, verdict, finding codes, and `riskHash` unchanged. The bundled weights are a reference default, not an official universal DataHub risk standard. A model may explain findings; it may not add, remove, reweight, or relabel them within the selected policy.
 
 The result includes `evaluatedAt` and the policy hash. Scope construction recomputes the complete risk result from the approved request, context, impact, policy, and evaluation clock; a merely self-consistent forged hash is rejected.
 

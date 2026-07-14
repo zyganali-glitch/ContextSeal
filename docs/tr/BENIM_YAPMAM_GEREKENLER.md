@@ -132,7 +132,7 @@ Video bağlantısı oluşunca Devpost formundaki `TODO_PUBLIC_VIDEO_URL` yerini 
 - mutation ayarı `false`;
 - `.env` untracked;
 - token, özel tenant veya müşteri verisi yok;
-- upstream DataHub Skills PR'si yalnız gerçek public PR URL'si varsa iddia ediliyor.
+- upstream DataHub Skills katkısı gerçek public [PR #35](https://github.com/datahub-project/datahub-skills/pull/35) ile gösteriliyor ve `OPEN / DRAFT / NOT_MERGED` sınırı korunuyor.
 
 ## Asla yapma
 
