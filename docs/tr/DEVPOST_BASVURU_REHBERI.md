@@ -1,278 +1,181 @@
-# Devpost Başvuru Rehberi — Tıklanacak Her Adımla
+# Devpost başvuru rehberi — adım adım
 
-Bu rehber İngilizce bilmeyen ve daha önce Devpost başvurusu yapmamış bir kullanıcı için hazırlanmıştır. İngilizce metinleri değiştirmeden kopyalayıp belirtilen alanlara yapıştırabilirsin.
+Bu belge Devpost formunu güvenli biçimde doldurmak içindir. Başvurunun dili İngilizce olmalıdır. Forma yapıştırılacak nihai içerik [DEVPOST_SUBMISSION.md](../DEVPOST_SUBMISSION.md) dosyasındadır; bu Türkçe açıklamayı forma kopyalama.
 
-**Önemli:** Bu rehberde “gönder” denilen son bölüme ulaşana kadar başvuruyu yarışmaya gönderme. Önce taslak olarak kaydet.
+## Resmî tarih ve temel şartlar
 
-## Başlamadan önce hazır olması gerekenler
+Resmî son gönderim: **10 Ağustos 2026, 17:00 EDT**. İstanbul karşılığı: **11 Ağustos 2026, 00:00**. Kaynak: [Build with DataHub resmî kuralları](https://datahub.devpost.com/rules).
 
-Aşağıdakilerin tamamı hazır değilse başvuru formunu doldurabilirsin ama gönderme:
+Göndermeden hemen önce kuralları tekrar aç; Devpost arayüzü veya alan adları değişmiş olabilir. Başvuru paketinde en az şu public yüzeyler hazır olmalıdır:
 
-- [ ] GitHub deposu herkese açık.
-- [ ] GitHub ana sayfasında Apache-2.0 lisansı görünüyor.
-- [ ] README dosyası düzgün açılıyor.
-- [ ] Tüm testler geçiyor.
-- [ ] Canlı gösterim bağlantısı hazır.
-- [ ] YouTube videosu herkese açık ve üç dakikadan kısa.
-- [ ] Video bağlantısı gizli pencerede açılıyor.
-- [ ] Proje ekran görüntüsü hazır.
-- [ ] Canlı DataHub kanıt durumu `docs/EVIDENCE_MANIFEST.md` ile aynı.
-- [ ] Başvuruda kullanacağımız son metin Codex tarafından kontrol edildi.
+- Apache-2.0 lisanslı public GitHub repository;
+- çalışan proje veya kolay incelenebilir demo yolu;
+- üç dakikadan kısa public demo videosu;
+- DataHub'ın projedeki temel rolünü açıklayan İngilizce proje metni.
 
-## 1. Devpost’a giriş
+Repository, hosted walkthrough ve video, resmî değerlendirme dönemi **31 Ağustos 2026 17:00 EDT** tarihinde bitene kadar public ve kısıtsız kalmalıdır.
 
-1. Chrome’u aç.
-2. Adres çubuğuna şunu yaz:
+Güvenli iç takvim:
 
-   ```text
-   https://datahub.devpost.com/
-   ```
+- 8 Ağustos: kod/kanıt dondurma;
+- 9 Ağustos: video, metin ve public bağlantı kontrolü;
+- 10 Ağustos: yalnız yedek gün.
 
-3. Sağ üstte **Log in** görürsen bas ve giriş yap.
-4. Yarışmaya daha önce katılmadıysan **Join hackathon** düğmesine bas.
-5. Giriş yaptıktan sonra yarışma sayfasına geri dön.
+## 1. Formdan önce hazırlanacak bağlantılar
 
-## 2. Yeni proje taslağı oluştur
+Gizli pencerede açıp doğrula:
 
-Devpost ekranındaki yazılar küçük farklılık gösterebilir.
+- Repository: [https://github.com/zyganali-glitch/ContextSeal](https://github.com/zyganali-glitch/ContextSeal)
+- Kurulumsuz fixture gösterimi: [https://zyganali-glitch.github.io/ContextSeal/](https://zyganali-glitch.github.io/ContextSeal/)
+- Public demo video URL'si
+- Sample outputs: [https://github.com/zyganali-glitch/ContextSeal/tree/main/examples/outputs](https://github.com/zyganali-glitch/ContextSeal/tree/main/examples/outputs)
 
-1. Üst menüde **My projects** seçeneğine bas.
-2. **Start a project**, **Create project** veya **Add a new project** yazan düğmeyi bul.
-3. Bu düğmeye bas.
-4. Yarışma seçmen istenirse **Build with DataHub: The Agent Hackathon** seç.
-5. Proje adını soran alana şunu yaz:
+Video URL'si YouTube Studio düzenleme bağlantısı değil, signed-out kullanıcıların açabildiği public izleme bağlantısı olmalıdır.
 
-   ```text
-   ContextSeal
-   ```
+## 2. Repository son kontrolü
 
-6. Taslak oluşturma düğmesine bas.
+Proje klasöründe açılan PowerShell'de:
 
-## 3. Proje adı ve kısa açıklama
-
-### Project name alanı
-
-```text
-ContextSeal
+```powershell
+npm run validate
+git status --short
 ```
 
-### Tagline veya Elevator pitch alanı
+Beklenen:
 
-```text
-Every data change ships with proof, not confidence.
-```
+- validation'ın tüm adımları `PASS`;
+- komut sonrasında yeni Git diff oluşmaması;
+- gönderilecek branch üzerinde kişisel dosya, `.env`, token veya müşteri verisi bulunmaması;
+- GitHub Actions'ın tam gönderilecek commit üzerinde yeşil olması.
 
-Bu cümlenin Türkçe anlamı: “Her veri değişikliği güvenle değil, kanıtla yayınlanır.”
+[Pre-submission checklist](../PRE_SUBMISSION_CHECKLIST.md) tamamlanmadan forma son halini verme.
 
-## 4. Yarışma kategorisi
+## 3. Devpost projesini aç
 
-“Which challenge category are you submitting to?” sorusunda şu seçeneği seç:
+1. [Yarışma sayfasını](https://datahub.devpost.com/) aç.
+2. Devpost hesabına giriş yap.
+3. **Join hackathon** tamamlanmadıysa önce katıl.
+4. **Create a project**, **Start submission** veya benzer düğmeye bas.
+5. Taslak kaydetme seçeneğini kullan; bütün kontroller bitmeden **Submit** yapma.
 
-```text
-Agents That Do Real Work
-```
+## 4. Temel alanları doldur
 
-Birden fazla seçenek seçilebiliyorsa ayrıca şunu seç:
+Kullanılacak sabit bilgiler:
 
-```text
-Metadata-Aware Code Generation & Development
-```
+- **Project name:** `ContextSeal`
+- **Tagline:** `Every data change ships with proof, not confidence.`
+- **Primary category:** `Agents That Do Real Work`
+- Form izin veriyorsa **secondary fit:** `Metadata-Aware Code Generation & Development`
 
-Yalnız bir seçenek seçilebiliyorsa **Agents That Do Real Work** kalsın.
+Kategori isimleri formda farklı görünürse [resmî overview](https://datahub.devpost.com/) sayfasındaki güncel ifadeyi esas al.
 
-## 5. Kullanılan DataHub teknolojileri
+## 5. İngilizce proje metnini aktar
 
-“Which DataHub technologies did you use?” bölümünde gerçek son kanıta göre seç.
+[DEVPOST_SUBMISSION.md](../DEVPOST_SUBMISSION.md) dosyasını aç. Bölümleri Devpost'taki karşılık gelen alanlara kopyala:
 
-Seçilecekler:
+- Inspiration
+- What it does
+- Why this is an agent
+- What real work it performs
+- How we built it
+- How it uses DataHub
+- What makes it original
+- Challenges we ran into
+- Accomplishments
+- What we learned
+- What's next
+- Honest limitations
+- Data used
 
-- DataHub OSS / Core Platform
-- DataHub MCP Server
-- DataHub Skills
+Metni kısaltmak gerekirse önce tekrarları azalt; kanıt sınırlarını veya limitations bölümünü silme.
 
-Agent Context Kit yalnız canlı uygulamada gerçekten kullanılmışsa seç. Sadece belgeyi okuduğumuz için seçme.
+Metindeki temel gerçekler değişmemelidir:
 
-Analytics Agent kullanmadığımız için seçme.
+- fixture: beş aşağı yönlü varlık, en derin dört adım, iki sentetik query örneği;
+- canlı yerel kanıt: 10 MCP okuması, tek sayfada tam üç alanlı hedef şeması, altı exact path ve altı aşağı yönlü native varlık — iki Dataset, iki DataJob, iki Dashboard;
+- canlı query sonucu sıfır;
+- doğrudan istek `70 / BLOCKED`, onaylanan güvenli kapsam ise üç `PASS` mutation receipt'i ve ayrı durable read-back `PASS` üretmiştir;
+- MLflow scoring kaydı DataJob'dır, MLModel değildir;
+- üç sınırlı DataHub metadata mutation'ı;
+- mutation receipt ve durable read-back ayrı iddialardır;
+- full document-body eşitliği değil, exact returned-document literal bağları doğrulanır;
+- warehouse SQL çalıştırılmaz, code merge/deploy yapılmaz;
+- production/customer use veya security certification iddia edilmez.
 
-## 6. Proje hikâyesi
+## 6. DataHub kullanımını görünür yap
 
-Devpost genellikle hikâyeyi ayrı başlıklara böler. Aşağıdaki İngilizce metinleri karşılık gelen alanlara yapıştır.
+Devpost metninde ve gerekiyorsa teknoloji alanında kullanılan araçlar açıkça yer almalıdır.
 
-### Inspiration
+Okuma ve path araçları:
 
-```text
-AI coding agents can generate valid SQL and dbt code while missing the organizational context that makes a change safe. A repository does not reveal that one field feeds a dashboard three hops away, powers a model, carries a PII term, or is owned by another team. DataHub already knows those relationships. We built ContextSeal to turn that knowledge into a pre-merge certification boundary.
-```
+- `get_entities`
+- `list_schema_fields`
+- `get_lineage`
+- her keşfedilen hedef için `get_lineage_paths_between`
+- `get_dataset_queries`
 
-### What it does
+Onaylı mutation araçları:
 
-```text
-ContextSeal accepts a proposed column rename, drop, or type change. It reads DataHub entity context, lineage, ownership, governance signals, quality evidence, incidents, and observed queries. A deterministic policy engine reconstructs downstream paths and explains every risk finding. Instead of producing a destructive operation, ContextSeal generates an expand–migrate–contract dbt model, schema tests, rollback, and owner briefing.
+- `add_structured_properties`
+- append modunda `update_description`
+- `save_document`
 
-A human reviewer approves or rejects only that bounded safe scope. ContextSeal then creates a SHA-256 change passport covering the request, DataHub context, risk, generated artifacts, evidence states, approval, and expiration. In live mode it writes certification properties, decision context, and the passport document back to DataHub so the next engineer or agent inherits the decision.
-```
+Doğrulama araçları:
 
-### How we built it
+- `get_entities`
+- `grep_documents`
 
-```text
-ContextSeal has a deterministic Node.js core, a dual-transport DataHub MCP client for the official local stdio server and DataHub Cloud streamable HTTP, bounded multi-hop lineage traversal, a versioned policy engine, a dbt artifact generator, a human approval contract, and a SHA-256 passport manifest. The dashboard has no frontend runtime dependencies. DataHub is used for entity, lineage, ownership, governance, quality, incident, and query context, then enriched through structured properties, descriptions, and saved passport documents. Docker and GitHub Actions provide reproducible validation.
-```
+DataHub yalnız bir logo veya yan entegrasyon değildir; context authority ve kalıcı karar hafızasıdır. ContextSeal'ın ajan döngüsü DataHub olmadan canlı modda tamamlanmaz.
 
-### Challenges we ran into
+## 7. Video alanını doldur
 
-```text
-The hardest design problem was separating a risky original request from a safe generated alternative. A direct rename can correctly receive a BLOCKED verdict while the staged migration remains eligible for scoped human approval. We also had to keep fixture, live, stale, and unexecuted evidence visibly distinct. During live verification, MCP transported a tool-level validation failure using isError; treating protocol delivery as business success would have created false evidence. We changed the client to fail closed on that signal and added a regression test before accepting any PASS.
-```
+1. [Çekim rehberine](DEMO_VIDEO_CEKIM_REHBERI.md) göre üretilmiş videonun public URL'sini kopyala.
+2. Gizli pencerede video süresini ve oynatmayı tekrar kontrol et.
+3. URL'yi Devpost video alanına yapıştır.
+4. Devpost preview içinde videonun embed edildiğini doğrula.
+5. Submitted form içinde `TODO_PUBLIC_VIDEO_URL` kalmadığını kontrol et.
 
-### Accomplishments that we're proud of
+Repository belgesindeki placeholder operatör hatırlatıcısı olarak kalabilir; fakat Devpost formunda kesinlikle gerçek video URL'si bulunmalıdır.
 
-```text
-We built explainable impact paths instead of a flat asset count, deterministic findings that model text cannot overwrite, a non-destructive migration package, a human approval bound to exact evidence hashes, fail-closed DataHub mutations, and a reusable DataHub change-certification skill. A disposable local DataHub proof retrieved five downstream assets through live MCP, then wrote and read back four certification properties, an appended passport description, and a standalone decision document.
-```
+## 8. Açık kaynak ve build-period açıklaması
 
-### What we learned
+- Lisansı `Apache-2.0` olarak seç veya belirt.
+- [BUILD_PERIOD_DISCLOSURE.md](../BUILD_PERIOD_DISCLOSURE.md) ile uyumlu biçimde AI geliştirme yardımı kullanıldığını ve önceden var olan kişisel projeden kod kopyalanmadığını açıkla.
+- DataHub Skills katkısı yalnız gerçek public issue/PR URL'si varsa bonus olarak sunulabilir.
+- Şu an public PR yoksa durum `NOT_SUBMITTED` olarak kalır; hazırlanmış yerel paket submitted contribution değildir.
 
-```text
-Context is most valuable when it changes an action, not when it only improves an answer. DataHub makes it possible to move agent safety from prompt instructions into a repeatable workflow grounded in organizational facts. Honest NOT_RUN and FIXTURE states make an agent more credible, not less impressive.
-```
+## 9. Görsel ve logo alanları
 
-### What's next
+Kullanacağın ekran görüntülerinde:
 
-```text
-Next we will contribute the verified change-certification skill to the DataHub Skills registry, add signed reviewer identities, deliver approved artifacts into GitHub pull requests, add warehouse-specific sandbox executors, and extend certification from column changes to dbt models and pipeline schedules.
-```
+- ContextSeal ürün adı ve kanıt durumları okunur olsun;
+- fixture veya live boundary rozeti kesilmesin;
+- `.env`, terminal, token, browser profile, bildirim ve kişisel sekme görünmesin;
+- sentetik DataHub görüntüsü “synthetic metadata” diye etiketlensin;
+- eski pasaport ID'si veya güncel kanıtla çelişen sayı elle yazılmasın.
 
-## 7. Built with alanı
+Telifli müzik, logo veya izinsiz üçüncü taraf görsel kullanma.
 
-Etiket eklenen alanda aşağıdaki isimleri tek tek yaz. Her birinden sonra `Enter` tuşuna bas:
+## 10. Preview ve gönderim
 
-```text
-DataHub
-DataHub MCP Server
-Node.js
-Docker
-dbt
-GitHub Actions
-Model Context Protocol
-```
+Devpost preview ekranında sırayla kontrol et:
 
-Sistemde çıkmayan etiketi zorla eklemeye çalışma.
+1. Proje adı ve tagline doğru.
+2. Kategori doğru.
+3. Repository, Pages, outputs ve video linkleri tıklanıyor.
+4. Video 3:00 altında ve public.
+5. README, video ve Devpost aynı fixture/live sayılarını kullanıyor.
+6. `PASS`, `WARN`, `FAIL`, `NOT_RUN`, `STALE`, `FIXTURE` anlamları karışmamış.
+7. Generated SQL executed diye anlatılmamış.
+8. Production, customer adoption veya security certification iddiası yok.
+9. Video placeholder'ı formda yok.
+10. Kişisel veya gizli bilgi yok.
 
-## 8. GitHub bağlantısı
+Mümkünse preview'i signed-out/gizli pencerede bir kez daha aç. Her şey doğrulandıktan sonra **Submit** düğmesine bas ve oluşan public Devpost proje URL'sini özel notlarına kaydet.
 
-“Code repository”, “Repository URL” veya benzeri alana şunu yapıştır:
+## Başvuru sonrası
 
-```text
-https://github.com/zyganali-glitch/ContextSeal
-```
-
-Bağlantıya form içinden tıklayıp yeni sekmede açıldığını doğrula.
-
-## 9. Canlı gösterim bağlantısı
-
-“Try it out”, “Project URL” veya “Demo URL” alanına şu adresi yapıştır:
-
-```text
-https://zyganali-glitch.github.io/ContextSeal/
-```
-
-Geçici yerel adresi asla yazma:
-
-```text
-http://127.0.0.1:4173
-```
-
-Bu adres yalnız senin bilgisayarında çalışır; Devpost alanında yukarıdaki `github.io` adresi bulunmalıdır.
-
-## 10. Video bağlantısı
-
-“Demo video” alanına YouTube’daki herkese açık video bağlantısını yapıştır.
-
-Örnek biçim:
-
-```text
-https://www.youtube.com/watch?v=...
-```
-
-Kontrol etmek için:
-
-1. Bağlantıyı kopyala.
-2. Chrome’un sağ üstündeki üç noktaya bas.
-3. **Yeni gizli pencere** seçeneğine bas.
-4. Bağlantıyı gizli pencerede aç.
-5. Giriş yapmadan video oynuyorsa bağlantı uygundur.
-6. Video üç dakikadan kısa olmalıdır.
-
-## 11. Kapak görseli ve ekran görüntüleri
-
-Ana görsel olarak şu görüntüyü kullan:
-
-- ContextSeal ekranında risk puanı, lineage zinciri ve `BLOCKED` durumu birlikte görünmeli.
-- Tarayıcı sekmeleri, yerel dosya yolu veya kişisel bilgiler görünmemeli.
-- Görüntü bulanık olmamalı.
-
-İkinci görsel:
-
-- Onaydan sonra oluşan Change Passport.
-
-Üçüncü görsel:
-
-- DataHub içinde yazılmış ContextSeal alanları veya pasaport belgesi.
-
-Canlı yerel DataHub kanıtı tamamlandı. Üçüncü görselde bunun sentetik verili yerel DataHub olduğunu açıklama metninde belirt.
-
-## 12. Lisans kontrolü
-
-1. GitHub deposunu aç.
-2. Dosya listesinin sağ tarafında **Apache-2.0 license** veya benzeri ifade göründüğünü doğrula.
-3. Görünmüyorsa `LICENSE` dosyasını aç ve doğru yüklendiğini kontrol et.
-4. Devpost başvurusunu lisans görünmeden gönderme.
-
-## 13. İsteğe bağlı örnek çıktılar
-
-Devpost örnek çıktı bağlantısı kabul ediyorsa şu GitHub klasörünü kullan:
-
-```text
-https://github.com/zyganali-glitch/ContextSeal/tree/main/examples/outputs
-```
-
-Bu bağlantıyı yalnız klasör uzak repoda gerçekten görünüyorsa ekle.
-
-## 14. Geri bildirim ödülü
-
-Formda “Most Valuable Feedback” veya geri bildirim bölümü varsa katılmayı seçebilirsin. Geri bildirim gerçek olmalı.
-
-Örnek başlıklar:
-
-- MCP mutation araçlarının örnek parametrelerinin daha görünür olması,
-- yerel Quickstart ile MCP sunucusu arasındaki bağlantının daha açık anlatılması,
-- fixture ve canlı örnekler için ayrı uçtan uca rehber ihtiyacı.
-
-Yaşamadığın bir sorunu yazma.
-
-## 15. Son kontrol — henüz gönderme
-
-Formu kaydet. **Submit** düğmesine basmadan önce şunları yap:
-
-1. Başvurunun ön izlemesini aç.
-2. Tüm bağlantılara tek tek bas.
-3. GitHub bağlantısını gizli pencerede aç.
-4. Canlı gösterimi gizli pencerede aç.
-5. YouTube videosunu gizli pencerede oynat.
-6. İngilizce metinlerde doldurulmamış bağlantı yer tutucusu kalmadığını ara.
-7. Video ve başvuru iddialarını `docs/EVIDENCE_MANIFEST.md` ile karşılaştır.
-8. Ekran görüntülerinde token veya kişisel bilgi olmadığını kontrol et.
-9. Codex’e başvuru ön izlemesinin ekran görüntülerini gönder.
-
-## 16. Son gönderim
-
-Codex son kontrolü onayladıktan sonra:
-
-1. Devpost taslağını aç.
-2. En alttaki onay kutularını oku.
-3. Kuralları kabul etmen istenirse kutuyu işaretle.
-4. **Submit project** veya **Submit** düğmesine bir kez bas.
-5. Başarılı gönderim sayfasının ekran görüntüsünü al.
-6. Proje bağlantısını kopyala ve güvenli bir yere kaydet.
-
-Başvuruyu mümkünse 8 veya 9 Ağustos’ta gönder; son dakikayı bekleme.
+- Public repository ve videoyu erişilebilir tut.
+- Mutation ayarını `false` bırak.
+- Token'ları video veya destek mesajı için tekrar paylaşma.
+- Devpost düzenlemesi yaparsan metin, video, README ve kanıt tutarlılığını yeniden kontrol et.

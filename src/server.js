@@ -1,14 +1,21 @@
 import http from "node:http";
 import path from "node:path";
+import { createHash, timingSafeEqual } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { loadEnvFile } from "./env.js";
 import { analyzeChange, decideRun } from "./core/workflow.js";
-import { ContractError } from "./core/contracts.js";
+import { ContractError, validateChangeRequest } from "./core/contracts.js";
+import { PassportVerificationError } from "./core/passport.js";
 import { createDataHubMcpClient } from "./datahub/mcp-client.js";
-import { buildWritebackOperations, executeWriteback, WritebackError } from "./datahub/writeback.js";
+import {
+  buildWritebackOperations,
+  collectWritebackReadback,
+  executeWriteback,
+  WritebackError
+} from "./datahub/writeback.js";
 import { collectLiveEvidence } from "./datahub/live-context.js";
-import { RunStore } from "./store.js";
+import { RunStore, RunStoreConflictError } from "./store.js";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const publicRoot = path.join(root, "public");
@@ -17,32 +24,122 @@ await loadEnvFile(root);
 const policy = JSON.parse(await readFile(path.join(root, "config", "policy.json"), "utf8"));
 const fixtureRequest = JSON.parse(await readFile(path.join(root, "examples", "retail-change-request.json"), "utf8"));
 const fixtureContext = JSON.parse(await readFile(path.join(root, "examples", "retail-context-graph.json"), "utf8"));
-const store = new RunStore(path.join(root, ".contextseal"));
+const stateRoot = process.env.CONTEXTSEAL_STATE_DIR
+  ? path.resolve(process.env.CONTEXTSEAL_STATE_DIR)
+  : path.join(root, ".contextseal");
+const store = new RunStore(stateRoot);
 await store.initialize();
 
 const mode = process.env.CONTEXTSEAL_MODE || "fixture";
 const port = Number(process.env.PORT || 4173);
-const host = process.env.HOST || "127.0.0.1";
+const host = process.env.CONTEXTSEAL_HOST || "127.0.0.1";
+const MAX_REQUEST_BODY_BYTES = 1_000_000;
+const REQUEST_URL_BASE = "http://contextseal.local";
+
+const SECURITY_HEADERS = Object.freeze({
+  "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'",
+  "cross-origin-opener-policy": "same-origin",
+  "cross-origin-resource-policy": "same-origin",
+  "permissions-policy": "camera=(), microphone=(), geolocation=()",
+  "referrer-policy": "no-referrer",
+  "x-content-type-options": "nosniff",
+  "x-frame-options": "DENY"
+});
+
+class HttpRequestError extends Error {
+  constructor(message, status = 400) {
+    super(message);
+    this.name = "HttpRequestError";
+    this.status = status;
+  }
+}
+
+function liveSecurityConfiguration() {
+  if (mode !== "datahub") return { operatorToken: null, allowedTargets: new Set() };
+  const operatorToken = process.env.CONTEXTSEAL_OPERATOR_TOKEN?.trim();
+  if (!operatorToken) {
+    throw new Error("DataHub mode requires CONTEXTSEAL_OPERATOR_TOKEN; live API did not start.");
+  }
+  const dataHubToken = process.env.DATAHUB_GMS_TOKEN?.trim();
+  if (dataHubToken && dataHubToken === operatorToken) {
+    throw new Error("CONTEXTSEAL_OPERATOR_TOKEN must not reuse DATAHUB_GMS_TOKEN.");
+  }
+  let parsed;
+  try { parsed = JSON.parse(process.env.CONTEXTSEAL_ALLOWED_TARGET_URNS || ""); }
+  catch { throw new Error("DataHub mode requires CONTEXTSEAL_ALLOWED_TARGET_URNS as a valid JSON array."); }
+  if (!Array.isArray(parsed) || parsed.length === 0
+      || parsed.some((item) => typeof item !== "string" || !item.startsWith("urn:li:") || !item.trim())
+      || new Set(parsed).size !== parsed.length) {
+    throw new Error("CONTEXTSEAL_ALLOWED_TARGET_URNS must be a non-empty unique JSON array of DataHub URNs.");
+  }
+  return { operatorToken, allowedTargets: new Set(parsed) };
+}
+
+const liveSecurity = liveSecurityConfiguration();
+
+function tokenDigest(value) {
+  return createHash("sha256").update(value).digest();
+}
+
+function authorizedOperator(request) {
+  if (mode !== "datahub") return true;
+  const match = String(request.headers.authorization || "").match(/^Bearer\s+([^\s]+)$/i);
+  if (!match) return false;
+  return timingSafeEqual(tokenDigest(match[1]), tokenDigest(liveSecurity.operatorToken));
+}
+
+function jsonContentType(request) {
+  const contentType = String(request.headers["content-type"] || "").split(";", 1)[0].trim().toLowerCase();
+  return contentType === "application/json" || /^application\/[a-z0-9.+-]+\+json$/.test(contentType);
+}
+
+function assertAllowedTarget(targetUrn) {
+  if (mode === "datahub" && !liveSecurity.allowedTargets.has(targetUrn)) {
+    throw new ContractError("Requested target is outside CONTEXTSEAL_ALLOWED_TARGET_URNS.");
+  }
+}
+
+function assertPolicyAllows(changeType) {
+  if (!Array.isArray(policy.supportedChanges) || !policy.supportedChanges.includes(changeType)) {
+    throw new ContractError(`Active policy does not support change type: ${changeType || "missing"}.`);
+  }
+}
 
 function json(response, status, body) {
   response.writeHead(status, { "content-type": "application/json; charset=utf-8", "cache-control": "no-store" });
   response.end(JSON.stringify(body));
 }
 
-async function body(request) {
-  let data = "";
-  for await (const chunk of request) {
-    data += chunk;
-    if (data.length > 1_000_000) throw new Error("Request body exceeds 1 MB.");
-  }
-  return data ? JSON.parse(data) : {};
+function applySecurityHeaders(response) {
+  for (const [name, value] of Object.entries(SECURITY_HEADERS)) response.setHeader(name, value);
 }
 
-async function serveStatic(request, response) {
-  const url = new URL(request.url, `http://${request.headers.host}`);
+async function body(request) {
+  const chunks = [];
+  let bytes = 0;
+  for await (const chunk of request) {
+    const buffer = Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk);
+    bytes += buffer.byteLength;
+    if (bytes > MAX_REQUEST_BODY_BYTES) {
+      throw new HttpRequestError("Request body exceeds 1 MB.", 413);
+    }
+    chunks.push(buffer);
+  }
+  if (!chunks.length) return {};
+  try {
+    return JSON.parse(Buffer.concat(chunks, bytes).toString("utf8"));
+  } catch {
+    // JSON.parse diagnostics can quote attacker-controlled input, including a
+    // pasted credential. Never reflect the native SyntaxError message.
+    throw new HttpRequestError("Malformed JSON request body.", 400);
+  }
+}
+
+async function serveStatic(url, response) {
   const pathname = url.pathname === "/" ? "/index.html" : url.pathname;
   const file = path.resolve(publicRoot, `.${pathname}`);
-  if (!file.startsWith(publicRoot)) return json(response, 403, { error: "Forbidden" });
+  const relative = path.relative(publicRoot, file);
+  if (relative.startsWith("..") || path.isAbsolute(relative)) return json(response, 403, { error: "Forbidden" });
   try {
     const content = await readFile(file);
     const type = file.endsWith(".html") ? "text/html" : file.endsWith(".css") ? "text/css" : file.endsWith(".js") ? "text/javascript" : "application/octet-stream";
@@ -55,8 +152,20 @@ async function serveStatic(request, response) {
 }
 
 async function handler(request, response) {
-  const url = new URL(request.url, `http://${request.headers.host}`);
+  applySecurityHeaders(response);
   try {
+    // Host is attacker-controlled and is not needed for route dispatch. A
+    // malformed Host must never reject this async handler outside its guard.
+    const url = new URL(request.url || "/", REQUEST_URL_BASE);
+    if (request.method === "POST" && url.pathname.startsWith("/api/")) {
+      if (!authorizedOperator(request)) {
+        response.setHeader("www-authenticate", 'Bearer realm="ContextSeal operator"');
+        return json(response, 401, { error: "Operator bearer token is required." });
+      }
+      if (!jsonContentType(request)) {
+        return json(response, 415, { error: "POST requests require Content-Type: application/json." });
+      }
+    }
     if (request.method === "GET" && url.pathname === "/api/health") {
       return json(response, 200, {
         status: "ok",
@@ -71,85 +180,215 @@ async function handler(request, response) {
     }
     if (request.method === "POST" && url.pathname === "/api/analyze") {
       const input = await body(request);
-      const context = input.context || { ...fixtureContext, observedAt: new Date().toISOString() };
-      const run = analyzeChange({ request: input.request || fixtureRequest, context, policy, mode });
-      await store.save(run, "ANALYSIS_COMPLETED");
+      const rawChangeRequest = mode === "datahub" ? input.request : input.request || fixtureRequest;
+      if (!rawChangeRequest || typeof rawChangeRequest !== "object" || Array.isArray(rawChangeRequest)) {
+        throw new ContractError("DataHub mode requires an explicit change request object.");
+      }
+      // Validate before any MCP request so untrusted free text cannot cross the
+      // local evidence boundary, enter persistence, or be reflected by the UI.
+      const changeRequest = validateChangeRequest(rawChangeRequest);
+      assertAllowedTarget(changeRequest.targetUrn);
+      assertPolicyAllows(changeRequest.changeType);
+      let context;
+      let liveEvidence = null;
+      if (mode === "datahub") {
+        const client = createDataHubMcpClient();
+        try {
+          const collected = await collectLiveEvidence(client, changeRequest, {
+            maxHops: policy.impactMaxHops,
+            maxResults: 100
+          });
+          ({ normalizedContext: context, ...liveEvidence } = collected);
+        } finally {
+          await client.close();
+        }
+      } else {
+        context = input.context || { ...fixtureContext, observedAt: new Date().toISOString() };
+      }
+      const run = analyzeChange({ request: changeRequest, context, policy, mode, liveEvidence });
+      await store.save(run, "ANALYSIS_COMPLETED", { expectedState: null });
       return json(response, 201, run);
     }
     const decisionMatch = url.pathname.match(/^\/api\/runs\/([^/]+)\/decision$/);
     if (request.method === "POST" && decisionMatch) {
       const run = await store.get(decisionMatch[1]);
       if (!run) return json(response, 404, { error: "Run not found" });
+      assertAllowedTarget(run.request?.targetUrn);
+      if (run.state === "SUPERSEDED") {
+        return json(response, 409, {
+          error: "Run was superseded by refreshed live evidence and cannot be decided.",
+          supersededByRunId: run.supersededByRunId
+        });
+      }
       const decided = decideRun(run, await body(request));
-      await store.save(decided, decided.state);
+      await store.save(decided, decided.state, { expectedState: "AWAITING_HUMAN" });
       return json(response, 200, decided);
     }
     const liveMatch = url.pathname.match(/^\/api\/runs\/([^/]+)\/live-evidence$/);
     if (request.method === "POST" && liveMatch) {
       const run = await store.get(liveMatch[1]);
       if (!run) return json(response, 404, { error: "Run not found" });
+      assertAllowedTarget(run.request?.targetUrn);
       if (mode !== "datahub") return json(response, 409, { error: "Live evidence requires CONTEXTSEAL_MODE=datahub." });
+      if (run.state !== "AWAITING_HUMAN") return json(response, 409, { error: "Only an undecided run can refresh live evidence." });
       const client = createDataHubMcpClient();
-      let liveEvidence;
-      try { liveEvidence = await collectLiveEvidence(client, run.request); }
+      let collected;
+      try {
+        collected = await collectLiveEvidence(client, run.request, {
+          maxHops: policy.impactMaxHops,
+          maxResults: 100
+        });
+      }
       finally { await client.close(); }
-      const updated = {
-        ...run,
-        liveEvidence,
-        evidence: run.evidence.map((item) => item.claim === "DataHub context retrieved"
-          ? { ...item, state: "PASS", artifact: `${liveEvidence.evidence.length} raw MCP calls` }
-          : item)
-      };
-      await store.save(updated, "LIVE_MCP_EVIDENCE_CAPTURED");
-      return json(response, 200, updated);
+      const { normalizedContext, ...liveEvidence } = collected;
+      const replacement = analyzeChange({ request: run.request, context: normalizedContext, policy, mode, liveEvidence });
+      const transition = await store.supersede(run.runId, replacement, "LIVE_MCP_EVIDENCE_CAPTURED", {
+        expectedState: "AWAITING_HUMAN"
+      });
+      return json(response, 200, transition.replacement);
     }
     const writebackMatch = url.pathname.match(/^\/api\/runs\/([^/]+)\/writeback$/);
     if (request.method === "POST" && writebackMatch) {
       const run = await store.get(writebackMatch[1]);
       if (!run) return json(response, 404, { error: "Run not found" });
+      assertAllowedTarget(run.request?.targetUrn);
+      if (run.state === "SUPERSEDED") {
+        return json(response, 409, {
+          error: "Run was superseded by refreshed live evidence and cannot be written back.",
+          supersededByRunId: run.supersededByRunId
+        });
+      }
+      if (run.state !== "APPROVED_FOR_WRITEBACK") {
+        return json(response, 409, {
+          error: `Run state ${run.state} is not eligible for write-back.`,
+          state: run.state,
+          replayBlocked: Boolean(run.writeback)
+        });
+      }
       if (mode === "datahub" && !run.liveEvidence) {
         return json(response, 409, { error: "Live MCP evidence is required before DataHub write-back." });
       }
-      const operations = buildWritebackOperations(run, policy);
+      const now = new Date();
+      const operations = buildWritebackOperations(run, policy, now);
       if (mode !== "datahub") {
         return json(response, 200, { status: "FIXTURE_ONLY", operations, evidenceState: "NOT_RUN", message: "No catalog was mutated." });
       }
       if (process.env.DATAHUB_MCP_MUTATIONS_ENABLED !== "true") {
         return json(response, 409, { error: "Mutation gate is disabled.", operations });
       }
-      const client = createDataHubMcpClient();
-      let results;
+      const writebackStartedAt = new Date().toISOString();
+      await store.save({
+        ...run,
+        state: "WRITEBACK_IN_PROGRESS",
+        writeback: { startedAt: writebackStartedAt, mutationReceipts: [], readback: null }
+      }, "DATAHUB_WRITEBACK_STARTED", { expectedState: "APPROVED_FOR_WRITEBACK" });
+      let client = null;
+      let mutationReceipts;
       try {
+        client = createDataHubMcpClient();
         await client.initialize();
-        results = await executeWriteback(client, operations);
+        mutationReceipts = await executeWriteback(client, operations, { run, policy, now: new Date() });
+        const mutationsCompletedAt = new Date().toISOString();
+        const readback = await collectWritebackReadback(client, run, mutationReceipts, { policy });
+        const writebackCompletedAt = new Date().toISOString();
+        const readbackPassed = readback.state === "PASS";
+        const updated = {
+          ...run,
+          state: readbackPassed ? "CERTIFIED_AND_WRITTEN_BACK" : "WRITEBACK_VERIFICATION_FAILED",
+          writeback: {
+            startedAt: writebackStartedAt,
+            // Retain `at` as the canonical mutation-completion boundary for
+            // backwards-compatible consumers while exposing explicit phases.
+            at: mutationsCompletedAt,
+            mutationsCompletedAt,
+            completedAt: writebackCompletedAt,
+            mutationReceipts,
+            readback
+          },
+          evidence: run.evidence.map((item) => {
+            if (item.claim === "DataHub write-back completed") {
+              return { ...item, state: "PASS", artifact: mutationReceipts.map((result) => result.tool).join(", ") };
+            }
+            if (item.claim === "Durable DataHub read-back verified") {
+              return { ...item, state: readback.state, artifact: "structured properties, description, and exact document binding excerpts" };
+            }
+            return item;
+          })
+        };
+        await store.save(updated, readbackPassed ? "DATAHUB_WRITEBACK_COMPLETED" : "DATAHUB_WRITEBACK_VERIFICATION_FAILED", {
+          expectedState: "WRITEBACK_IN_PROGRESS"
+        });
+        if (!readbackPassed) {
+          return json(response, 502, {
+            error: "DataHub mutations completed, but durable read-back verification did not PASS.",
+            details: [`read-back state: ${readback.state}`],
+            run: updated
+          });
+        }
+        return json(response, 200, updated);
       } catch (error) {
         if (error instanceof WritebackError) {
+          const failedAt = new Date().toISOString();
           const failed = {
             ...run,
             state: "WRITEBACK_FAILED",
-            writeback: { at: new Date().toISOString(), results: error.results },
+            writeback: {
+              startedAt: writebackStartedAt,
+              failedAt,
+              mutationReceipts: error.results,
+              readback: error.readback
+            },
             evidence: run.evidence.map((item) => item.claim === "DataHub write-back completed"
               ? { ...item, state: "FAIL", artifact: error.results.map((result) => `${result.tool}:${result.status}`).join(", ") }
               : item)
           };
-          await store.save(failed, "DATAHUB_WRITEBACK_FAILED");
+          await store.save(failed, "DATAHUB_WRITEBACK_FAILED", { expectedState: "WRITEBACK_IN_PROGRESS" });
+          return json(response, 502, {
+            error: error.message,
+            details: error.details || [],
+            run: failed
+          });
+        } else {
+          const failedAt = new Date().toISOString();
+          const withheld = "Unexpected write-back failure; external detail was withheld.";
+          const failed = {
+            ...run,
+            state: "WRITEBACK_FAILED",
+            writeback: {
+              startedAt: writebackStartedAt,
+              failedAt,
+              mutationReceipts: mutationReceipts || [],
+              readback: null,
+              error: { name: error.name || "Error", message: withheld }
+            },
+            evidence: run.evidence.map((item) => item.claim === "DataHub write-back completed"
+              ? { ...item, state: "FAIL", artifact: "write-back did not reach verified completion" }
+              : item)
+          };
+          await store.save(failed, "DATAHUB_WRITEBACK_FAILED", { expectedState: "WRITEBACK_IN_PROGRESS" });
+          return json(response, 500, {
+            error: withheld,
+            details: [],
+            run: failed
+          });
         }
-        throw error;
-      } finally { await client.close(); }
-      const updated = {
-        ...run,
-        state: "CERTIFIED_AND_WRITTEN_BACK",
-        writeback: { at: new Date().toISOString(), results },
-        evidence: run.evidence.map((item) => item.claim === "DataHub write-back completed" ? { ...item, state: "PASS", artifact: results.map((result) => result.tool).join(", ") } : item)
-      };
-      await store.save(updated, "DATAHUB_WRITEBACK_COMPLETED");
-      return json(response, 200, updated);
+      } finally {
+        if (client) await client.close();
+      }
     }
     if (url.pathname.startsWith("/api/")) return json(response, 404, { error: "API route not found" });
-    return serveStatic(request, response);
+    return serveStatic(url, response);
   } catch (error) {
-    const status = error instanceof ContractError || error instanceof SyntaxError ? 400 : 500;
-    return json(response, status, { error: error.message, details: error.details || [] });
+    const status = error instanceof HttpRequestError ? error.status
+      : error instanceof ContractError ? 400
+      : error instanceof PassportVerificationError ? 409
+        : error instanceof RunStoreConflictError ? 409
+        : error instanceof WritebackError ? 502 : 500;
+    const expose = status < 500 || error instanceof WritebackError;
+    return json(response, status, {
+      error: expose ? error.message : "Internal request failure; external detail was withheld.",
+      details: expose ? error.details || [] : []
+    });
   }
 }
 

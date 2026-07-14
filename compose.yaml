@@ -5,7 +5,10 @@ services:
       - "4173:4173"
     environment:
       PORT: 4173
+      CONTEXTSEAL_HOST: 0.0.0.0
       CONTEXTSEAL_MODE: ${CONTEXTSEAL_MODE:-fixture}
+      CONTEXTSEAL_OPERATOR_TOKEN: ${CONTEXTSEAL_OPERATOR_TOKEN:-}
+      CONTEXTSEAL_ALLOWED_TARGET_URNS: '${CONTEXTSEAL_ALLOWED_TARGET_URNS:-[]}'
       DATAHUB_MCP_TRANSPORT: ${DATAHUB_MCP_TRANSPORT:-http}
       DATAHUB_MCP_URL: ${DATAHUB_MCP_URL:-}
       DATAHUB_GMS_URL: ${DATAHUB_GMS_URL:-http://host.docker.internal:8080}
@@ -13,6 +16,13 @@ services:
       DATAHUB_MCP_MUTATIONS_ENABLED: ${DATAHUB_MCP_MUTATIONS_ENABLED:-false}
     volumes:
       - contextseal-runs:/app/.contextseal
+    read_only: true
+    tmpfs:
+      - /tmp
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
 
 volumes:
   contextseal-runs:

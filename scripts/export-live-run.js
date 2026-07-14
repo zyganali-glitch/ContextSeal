@@ -1,6 +1,7 @@
 import path from "node:path";
 import { readdir, readFile, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
+import { validateEvidenceBundle } from "./validate-evidence.js";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const runsDirectory = path.join(root, ".contextseal", "runs");
@@ -13,8 +14,11 @@ for (const filename of await readdir(runsDirectory)) {
 candidates.sort((a, b) => Date.parse(b.writeback?.at || b.createdAt) - Date.parse(a.writeback?.at || a.createdAt));
 const run = candidates[0];
 if (!run) throw new Error("No completed live DataHub run exists.");
-if (run.writeback.results.length !== 3 || run.writeback.results.some((item) => item.status !== "PASS")) {
+if (run.writeback?.mutationReceipts?.length !== 3 || run.writeback.mutationReceipts.some((item) => item.status !== "PASS")) {
   throw new Error("Latest live run does not contain three successful bounded write-back operations.");
+}
+if (run.writeback?.readback?.state !== "PASS") {
+  throw new Error("Latest live run does not contain a complete PASS durable read-back.");
 }
 
 const output = {
@@ -23,5 +27,10 @@ const output = {
   run
 };
 const outputPath = path.join(root, "examples", "outputs", "live-datahub-writeback-evidence.json");
+const [readEvidence, policy] = await Promise.all([
+  readFile(path.join(root, "examples", "outputs", "live-datahub-read-evidence.json"), "utf8").then(JSON.parse),
+  readFile(path.join(root, "config", "policy.json"), "utf8").then(JSON.parse)
+]);
+validateEvidenceBundle({ readEvidence, writebackEvidence: output, policy });
 await writeFile(outputPath, `${JSON.stringify(output, null, 2)}\n`, "utf8");
-console.log(`PASS exported ${run.runId} -> ${path.relative(root, outputPath)}`);
+console.log(`PASS exported and structurally verified ${run.runId} -> ${path.relative(root, outputPath)}`);

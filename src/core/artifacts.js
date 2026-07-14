@@ -3,38 +3,52 @@ function sqlIdentifier(value) {
   return value;
 }
 
+function sqlType(value) {
+  const normalized = String(value || "").trim().replace(/\s+/g, " ");
+  const safeType = /^[a-zA-Z][a-zA-Z0-9_]*(?:\(\s*\d+\s*(?:,\s*\d+\s*)?\))?(?: [a-zA-Z][a-zA-Z0-9_]*)*$/;
+  if (!safeType.test(normalized)) throw new Error(`Unsafe SQL type: ${value}`);
+  return normalized;
+}
+
 function safeMigration(request) {
   const source = sqlIdentifier(request.sourceField);
   const destination = sqlIdentifier(request.destinationField || `${source}_v2`);
   const entity = sqlIdentifier(request.entityName);
+  const generatedModel = `${entity}_contextseal`;
   if (request.changeType === "rename_column") {
     return {
       strategy: "EXPAND_MIGRATE_CONTRACT",
       summary: `Add ${destination}, backfill from ${source}, migrate consumers, then deprecate ${source}.`,
+      testField: destination,
       sql: `-- ContextSeal safe expansion: keep the old field during consumer migration\nselect\n  *,\n  ${source} as ${destination}\nfrom {{ ref('${entity}') }}\n`,
-      rollback: `-- Rollback keeps the original field authoritative\nselect * exclude (${destination}) from {{ ref('${entity}_compat') }};\n`
+      rollback: `-- Roll back the generated expansion while the original field remains authoritative.\nselect * exclude (${destination}) from {{ ref('${generatedModel}') }};\n`
     };
   }
   if (request.changeType === "type_change") {
-    const destinationType = String(request.destinationType).replace(/[^a-zA-Z0-9_(), ]/g, "");
+    const destinationType = sqlType(request.destinationType);
+    const typedField = `${source}_typed`;
     return {
       strategy: "PARALLEL_TYPED_FIELD",
       summary: `Create a parallel typed field and retain ${source} until validation completes.`,
-      sql: `select\n  *,\n  try_cast(${source} as ${destinationType}) as ${source}_typed\nfrom {{ ref('${entity}') }}\n`,
-      rollback: `select * exclude (${source}_typed) from {{ ref('${entity}_typed') }};\n`
+      testField: typedField,
+      sql: `-- ContextSeal parallel type migration: preserve the source while validating the cast.\nselect\n  *,\n  try_cast(${source} as ${destinationType}) as ${typedField}\nfrom {{ ref('${entity}') }}\n`,
+      rollback: `-- Remove only the generated typed field; the source field was never changed.\nselect * exclude (${typedField}) from {{ ref('${generatedModel}') }};\n`
     };
   }
-  return {
-    strategy: "DEPRECATE_BEFORE_DROP",
-    summary: `Mark ${source} deprecated, migrate every known consumer, and drop it only in a later approved change.`,
-    sql: `-- Deliberately preserves ${source}; direct destructive removal is not generated.\nselect * from {{ ref('${entity}') }}\n`,
-    rollback: `-- No destructive operation was generated; rollback is a no-op.\nselect 1;\n`
-  };
+  if (request.changeType === "drop_column") {
+    return {
+      strategy: "DEPRECATE_BEFORE_DROP",
+      summary: `Mark ${source} deprecated, migrate every known consumer, and drop it only in a later approved change.`,
+      testField: source,
+      sql: `-- Deliberately preserves ${source}; direct destructive removal is not generated.\nselect * from {{ ref('${entity}') }}\n`,
+      rollback: `-- No destructive operation was generated; keep selecting the unchanged source model.\nselect * from {{ ref('${entity}') }};\n`
+    };
+  }
+  throw new Error(`Unsupported change type: ${request.changeType}`);
 }
 export function generateArtifacts(request, impact, risk) {
   const migration = safeMigration(request);
-  const field = request.destinationField || `${request.sourceField}_typed`;
-  const schema = `version: 2\nmodels:\n  - name: ${request.entityName}_contextseal\n    description: "ContextSeal migration candidate; strategy ${migration.strategy}."\n    columns:\n      - name: ${field}\n        tests:\n          - not_null\n`;
+  const schema = `version: 2\nmodels:\n  - name: ${request.entityName}_contextseal\n    description: "ContextSeal migration candidate; strategy ${migration.strategy}."\n    columns:\n      - name: ${migration.testField}\n        tests:\n          - not_null\n`;
   const ownerBrief = [
     "# Impacted owner briefing",
     "",
@@ -50,7 +64,7 @@ export function generateArtifacts(request, impact, risk) {
     files: [
       { path: `generated/models/${request.entityName}_contextseal.sql`, kind: "DBT_MODEL", content: migration.sql },
       { path: `generated/models/${request.entityName}_contextseal.yml`, kind: "DBT_TESTS", content: schema },
-      { path: `generated/rollback/${request.entityName}.sql`, kind: "ROLLBACK", content: migration.rollback },
+      { path: `generated/rollback/${request.entityName}_contextseal_rollback.sql`, kind: "ROLLBACK", content: migration.rollback },
       { path: "generated/IMPACTED_OWNERS.md", kind: "OWNER_BRIEF", content: ownerBrief }
     ]
   };

@@ -4,140 +4,239 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="ContextSeal certifies risky data changes with DataHub context, deterministic evidence, and human approval.">
+  <meta name="theme-color" content="#07110f">
   <title>ContextSeal — Graph-backed data change certification</title>
   <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
-  <div class="ambient ambient-one"></div>
-  <div class="ambient ambient-two"></div>
+  <a class="skip-link" href="#mainContent">Skip to main content</a>
+  <div class="ambient ambient-one" aria-hidden="true"></div>
+  <div class="ambient ambient-two" aria-hidden="true"></div>
+
   <header class="topbar">
     <a class="brand" href="#" aria-label="ContextSeal home">
-      <span class="brand-mark" aria-hidden="true">C</span>
-      <span>ContextSeal</span>
+      <svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true">
+        <path d="M20 3.5 33 8v10.2c0 8.1-5.2 15.3-13 18.3-7.8-3-13-10.2-13-18.3V8l13-4.5Z"></path>
+        <path d="m14.3 20.1 3.6 3.7 7.8-8.2"></path>
+      </svg>
+      <span class="brand-copy"><strong>ContextSeal</strong><small>Change certification agent</small></span>
     </a>
     <div class="top-actions">
-      <span id="modeBadge" class="badge badge-fixture">Checking mode…</span>
-      <a class="ghost-link" href="https://github.com/zyganali-glitch/ContextSeal">GitHub</a>
+      <span id="modeBadge" class="badge badge-pending" role="status" aria-live="polite" aria-atomic="true"><span class="badge-dot" aria-hidden="true"></span>Checking runtime</span>
+      <a class="ghost-link" href="https://github.com/zyganali-glitch/ContextSeal" target="_blank" rel="noreferrer">
+        View source <span aria-hidden="true">↗</span><span class="sr-only"> (opens in a new tab)</span>
+      </a>
     </div>
   </header>
 
-  <main>
-    <section class="hero">
-      <div class="eyebrow">DATAHUB-NATIVE CHANGE CONTROL</div>
-      <h1>Every data change ships<br><span>with proof.</span></h1>
-      <p class="hero-copy">ContextSeal turns a risky schema request into a lineage-aware migration, a reviewable evidence trail, and a durable DataHub change passport.</p>
-      <div class="hero-actions">
-        <button id="analyzeButton" class="primary-button">Analyze the demo change</button>
-        <span class="microcopy">No catalog is modified in fixture mode.</span>
+  <main id="mainContent">
+    <section id="runtimeBanner" class="runtime-banner runtime-pending" aria-labelledby="runtimeTitle">
+      <div class="runtime-symbol" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M12 3v3m0 12v3M3 12h3m12 0h3M5.6 5.6l2.1 2.1m8.6 8.6 2.1 2.1m0-12.8-2.1 2.1m-8.6 8.6-2.1 2.1"></path></svg>
       </div>
+      <div>
+        <p id="runtimeLabel" class="runtime-label">EVIDENCE BOUNDARY</p>
+        <h2 id="runtimeTitle">Verifying this experience</h2>
+        <p id="runtimeCopy">ContextSeal is checking whether this page is a hosted walkthrough, a local fixture run, or a connected DataHub session.</p>
+      </div>
+      <span id="runtimeBoundary" class="runtime-boundary">PENDING</span>
+      <form id="operatorAuthForm" class="operator-auth hidden" autocomplete="off">
+        <div>
+          <label for="operatorToken">ContextSeal operator token</label>
+          <small id="operatorTokenHint">Required only for the protected live API; kept in memory for this tab and never written into a run.</small>
+        </div>
+        <input id="operatorToken" type="password" autocomplete="new-password" spellcheck="false" required aria-describedby="operatorTokenHint">
+        <button id="operatorTokenButton" class="compact-button" type="submit">Use for this tab</button>
+      </form>
     </section>
 
-    <section class="workflow-strip" aria-label="ContextSeal workflow">
-      <div class="workflow-step active"><span>01</span>Request</div>
-      <div class="workflow-line"></div>
-      <div class="workflow-step"><span>02</span>Context</div>
-      <div class="workflow-line"></div>
-      <div class="workflow-step"><span>03</span>Proof</div>
-      <div class="workflow-line"></div>
-      <div class="workflow-step"><span>04</span>Decision</div>
-      <div class="workflow-line"></div>
-      <div class="workflow-step"><span>05</span>Write-back</div>
+    <section class="hero" aria-labelledby="heroTitle">
+      <div class="hero-copy-block">
+        <p class="eyebrow">DATAHUB-NATIVE CHANGE CONTROL</p>
+        <h1 id="heroTitle">Ship the change.<br><span>Keep the proof.</span></h1>
+        <p class="hero-copy">ContextSeal turns a destructive schema request into a lineage-aware migration plan, reviewable evidence, and a hash-bound DataHub change passport.</p>
+        <div class="hero-actions">
+          <button id="analyzeButton" class="primary-button" type="button">
+            <span>Analyze the demo change</span>
+            <svg viewBox="0 0 20 20" aria-hidden="true"><path d="m7 4 6 6-6 6"></path></svg>
+          </button>
+          <p id="heroHint" class="microcopy">No catalog is modified in fixture mode.</p>
+        </div>
+      </div>
+
+      <aside class="agent-card" aria-label="ContextSeal agent loop">
+        <div class="agent-card-heading">
+          <div>
+            <span class="agent-pulse" aria-hidden="true"></span>
+            <span>Certification protocol</span>
+          </div>
+          <span>HUMAN-GATED</span>
+        </div>
+        <ol class="agent-loop">
+          <li><span>01</span><div><strong>Read</strong><small>DataHub metadata, lineage, queries</small></div></li>
+          <li><span>02</span><div><strong>Decide</strong><small>Deterministic risk and policy gate</small></div></li>
+          <li><span>03</span><div><strong>Generate</strong><small>Migration, tests, rollback, owner brief</small></div></li>
+          <li><span>04</span><div><strong>Certify</strong><small>Scoped approval and hash-bound passport</small></div></li>
+          <li><span>05</span><div><strong>Write back</strong><small>Explicitly enabled, verified mutations</small></div></li>
+        </ol>
+      </aside>
     </section>
 
-    <section id="workspace" class="workspace hidden" aria-live="polite">
+    <nav class="workflow-strip" aria-label="Certification progress">
+      <ol>
+        <li id="stepRequest" class="workflow-step current" aria-current="step"><span>01</span><strong>Request</strong><small>Change intent</small></li>
+        <li id="stepContext" class="workflow-step"><span>02</span><strong>Context</strong><small>Graph signals</small></li>
+        <li id="stepProof" class="workflow-step"><span>03</span><strong>Proof</strong><small>Safe artifacts</small></li>
+        <li id="stepDecision" class="workflow-step"><span>04</span><strong>Decision</strong><small>Human scope</small></li>
+        <li id="stepWriteback" class="workflow-step"><span>05</span><strong>Write-back</strong><small id="stepWritebackDetail">Verified result</small></li>
+      </ol>
+    </nav>
+
+    <div id="notificationRegion" class="notification hidden" role="status" aria-live="polite" aria-atomic="true">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2.5a7.5 7.5 0 1 0 0 15 7.5 7.5 0 0 0 0-15Zm0 4v4m0 3v.1"></path></svg>
+      <span id="notificationText"></span>
+      <button id="dismissNotification" type="button" aria-label="Dismiss notification">×</button>
+    </div>
+
+    <section id="workspace" class="workspace hidden" aria-label="Certification workspace" tabindex="-1">
+      <div class="run-bar">
+        <div class="run-identity">
+          <span class="run-icon" aria-hidden="true">CS</span>
+          <div><small>CERTIFICATION RUN</small><strong id="runId">—</strong></div>
+        </div>
+        <dl class="run-meta">
+          <div><dt>State</dt><dd id="runState">—</dd></div>
+          <div><dt>Evidence source</dt><dd id="runSource">—</dd></div>
+          <div><dt>Observed</dt><dd id="observedAt">—</dd></div>
+        </dl>
+        <button id="downloadBundleButton" class="compact-button" type="button" title="Download this run and its evidence as JSON">Download evidence</button>
+      </div>
+
       <article class="panel request-panel">
-        <div class="panel-heading">
+        <div class="panel-heading request-heading">
           <div>
             <p class="kicker">CHANGE REQUEST</p>
             <h2 id="requestTitle">—</h2>
+            <p id="requestUrn" class="urn-copy">—</p>
           </div>
-          <span id="requestState" class="status-pill">ANALYZING</span>
+          <div class="request-chips">
+            <span id="requestType" class="neutral-chip">—</span>
+            <span id="requestState" class="status-pill">ANALYZING</span>
+          </div>
         </div>
-        <div class="code-change">
-          <div><span class="minus">−</span><code id="sourceField">—</code></div>
-          <div><span class="plus">+</span><code id="destinationField">—</code></div>
+        <div class="change-summary">
+          <div class="change-code" aria-label="Requested field change">
+            <div><span class="change-sign minus" aria-hidden="true">−</span><div><small>DIRECT REMOVAL</small><code id="sourceField">—</code></div></div>
+            <div class="change-arrow" aria-hidden="true">→</div>
+            <div><span class="change-sign plus" aria-hidden="true">+</span><div><small>SAFE EXPANSION</small><code id="destinationField">—</code></div></div>
+          </div>
+          <div class="request-rationale">
+            <small>REQUESTED BY <strong id="requestedBy">—</strong></small>
+            <p id="requestRationale">—</p>
+          </div>
         </div>
-        <p id="requestRationale" class="muted"></p>
       </article>
 
-      <section class="metric-grid">
+      <section class="metric-grid" aria-label="Certification metrics">
         <article class="metric-card risk-card">
-          <p>Risk score</p>
+          <div class="metric-label"><span>Direct-change risk</span><span class="metric-icon" aria-hidden="true">!</span></div>
           <strong id="riskScore">—</strong>
-          <span id="riskVerdict">—</span>
+          <div id="riskMeterTrack" class="risk-meter" role="meter" aria-label="Direct-change risk score" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="riskMeter"></span></div>
+          <small id="riskVerdict">—</small>
         </article>
         <article class="metric-card">
-          <p>Downstream assets</p>
+          <div class="metric-label"><span>Downstream assets</span><span class="metric-icon graph-icon" aria-hidden="true">⌘</span></div>
           <strong id="impactCount">—</strong>
-          <span id="criticalCount">— critical</span>
+          <small id="criticalCount">— high criticality</small>
         </article>
         <article class="metric-card">
-          <p>Observed queries</p>
+          <div class="metric-label"><span>Query signals</span><span class="metric-icon query-icon" aria-hidden="true">Q</span></div>
           <strong id="queryCount">—</strong>
-          <span>real usage signals</span>
+          <small id="queryCaption">Evidence source pending</small>
         </article>
-        <article class="metric-card">
-          <p>Migration</p>
+        <article class="metric-card strategy-card">
+          <div class="metric-label"><span>Safe alternative</span><span class="metric-icon strategy-icon" aria-hidden="true">✓</span></div>
           <strong class="metric-word" id="strategy">—</strong>
-          <span>safe alternative</span>
+          <small>Generated; never auto-executed</small>
         </article>
       </section>
 
-      <article class="panel wide-panel">
+      <article class="panel wide-panel context-panel">
         <div class="panel-heading">
           <div>
             <p class="kicker">CONTEXT TRACE</p>
-            <h2>Why this change is risky</h2>
+            <h2>Downstream blast radius</h2>
+            <p id="graphSummary" class="panel-subtitle">Waiting for impact analysis.</p>
           </div>
-          <span class="datahub-chip">Grounded by DataHub</span>
+          <div class="legend" aria-label="Graph legend"><span><i class="target-key"></i>Target</span><span><i class="critical-key"></i>High criticality</span></div>
         </div>
         <div id="impactGraph" class="impact-graph"></div>
       </article>
 
       <div class="two-column">
-        <article class="panel">
+        <article class="panel findings-panel">
           <div class="panel-heading">
             <div>
-              <p class="kicker">POLICY FINDINGS</p>
+              <p class="kicker">DETERMINISTIC POLICY</p>
               <h2>Explainable risk gate</h2>
+              <p class="panel-subtitle">Every score contribution remains inspectable.</p>
             </div>
+            <span id="findingCount" class="count-chip">0 findings</span>
           </div>
           <div id="findings" class="finding-list"></div>
         </article>
 
-        <article class="panel">
+        <article class="panel artifacts-panel">
           <div class="panel-heading">
             <div>
               <p class="kicker">GENERATED DELIVERY</p>
-              <h2>Mergeable evidence</h2>
+              <h2>Reviewable migration bundle</h2>
+              <p class="panel-subtitle">Select an artifact to inspect its generated content.</p>
             </div>
+            <span id="artifactCount" class="count-chip">0 files</span>
           </div>
           <div id="artifacts" class="artifact-list"></div>
         </article>
       </div>
 
-      <article class="panel wide-panel decision-panel">
-        <div>
+      <article class="panel decision-panel">
+        <div class="decision-copy">
           <p class="kicker">HUMAN DECISION GATE</p>
-          <h2>Approve only the safe migration scope</h2>
-          <p class="muted">Approval certifies the generated expand–migrate–contract plan. It does not approve a direct destructive rename.</p>
+          <h2>Approve the safe plan—not the destructive request</h2>
+          <p>The direct change stays <strong class="danger-copy">BLOCKED</strong>. Approval is scoped only to the generated expand–migrate–contract artifacts and their exact manifest hash.</p>
+          <div class="scope-boundary">
+            <span aria-hidden="true">✓</span>
+            <div><strong>Scope-bound certification</strong><small id="scopeBoundaryCopy">Any artifact or evidence change invalidates this decision.</small></div>
+          </div>
         </div>
-        <div class="decision-form">
-          <label>Reviewer <input id="reviewer" value="demo-reviewer" autocomplete="off"></label>
-          <label>Decision note <input id="decisionNote" value="Approved safe staged migration only." autocomplete="off"></label>
-          <button id="approveButton" class="primary-button">Approve safe plan</button>
-        </div>
+        <form id="decisionForm" class="decision-form">
+          <div class="field-group">
+            <label for="reviewer">Reviewer identity</label>
+            <input id="reviewer" value="demo-reviewer" autocomplete="off" required aria-describedby="decisionModeNote scopeBoundaryCopy">
+          </div>
+          <div class="field-group">
+            <label for="decisionNote">Decision note</label>
+            <textarea id="decisionNote" rows="3" required aria-describedby="decisionModeNote scopeBoundaryCopy">Approved safe staged migration only.</textarea>
+          </div>
+          <p id="decisionModeNote" class="form-note">A reviewer identity and scoped note are required.</p>
+          <div class="decision-actions">
+            <button id="rejectButton" class="reject-button" type="button" aria-describedby="decisionModeNote scopeBoundaryCopy">Reject scope</button>
+            <button id="approveButton" class="primary-button" type="button" aria-describedby="decisionModeNote scopeBoundaryCopy">Approve safe plan</button>
+          </div>
+        </form>
       </article>
 
-      <div class="two-column">
+      <div class="two-column evidence-passport-grid">
         <article class="panel evidence-panel">
           <div class="panel-heading">
             <div>
-              <p class="kicker">EVIDENCE BOUNDARY</p>
+              <p class="kicker">EVIDENCE LEDGER</p>
               <h2>Claims stay honest</h2>
+              <p class="panel-subtitle">State, artifact, and provenance are shown without collapsing uncertainty.</p>
             </div>
           </div>
           <div id="evidence" class="evidence-list"></div>
+          <div id="provenanceSummary" class="provenance-summary hidden"></div>
         </article>
 
         <article class="panel passport-panel">
@@ -145,31 +244,51 @@
             <div>
               <p class="kicker">CHANGE PASSPORT</p>
               <h2 id="passportTitle">Waiting for approval</h2>
+              <p id="passportSubtitle" class="panel-subtitle">The passport is created only after a scoped human decision.</p>
             </div>
             <span id="passportStatus" class="seal waiting">PENDING</span>
           </div>
-          <dl id="passportDetails" class="passport-details">
-            <div><dt>Passport</dt><dd>—</dd></div>
-            <div><dt>Manifest</dt><dd>—</dd></div>
-            <div><dt>Valid until</dt><dd>—</dd></div>
+          <dl class="passport-details">
+            <div><dt>Passport</dt><dd id="passportId">—</dd></div>
+            <div><dt>Manifest</dt><dd id="manifestHash">—</dd></div>
+            <div><dt>Context</dt><dd id="contextHash">—</dd></div>
+            <div><dt>Valid until</dt><dd id="validUntil">—</dd></div>
           </dl>
-          <button id="writebackButton" class="secondary-button" disabled>Prepare DataHub write-back</button>
-          <p id="writebackMessage" class="microcopy"></p>
+          <button id="writebackButton" class="secondary-button" type="button" disabled>
+            <span>Prepare DataHub write-back</span><span aria-hidden="true">→</span>
+          </button>
+          <div id="writebackResult" class="writeback-result hidden" aria-live="polite">
+            <p id="writebackMessage"></p>
+            <ul id="writebackOperations"></ul>
+          </div>
         </article>
       </div>
     </section>
 
-    <section class="principles">
-      <div><strong>Graph first</strong><span>Lineage, ownership, terms, quality, and real queries shape the decision.</span></div>
-      <div><strong>Evidence locked</strong><span>PASS, FAIL, NOT_RUN, STALE, and FIXTURE never collapse into a confident summary.</span></div>
-      <div><strong>Human accountable</strong><span>Risky mutations require an explicit, scoped decision.</span></div>
+    <section class="principles" aria-label="ContextSeal principles">
+      <article><span>01</span><div><strong>Graph-grounded</strong><p>Lineage, ownership, governance, quality, and inspectable query signals shape the decision.</p></div></article>
+      <article><span>02</span><div><strong>Evidence-locked</strong><p>PASS, WARN, FAIL, NOT_RUN, STALE, and FIXTURE remain explicit and inspectable.</p></div></article>
+      <article><span>03</span><div><strong>Human-accountable</strong><p>Risky mutations require an explicit, scoped decision plus runtime enablement.</p></div></article>
     </section>
   </main>
 
   <footer>
-    <span>ContextSeal · Apache-2.0</span>
-    <span>Built for Build with DataHub: The Agent Hackathon</span>
+    <div><strong>ContextSeal</strong><span>Graph-backed data change certification</span></div>
+    <div class="footer-links"><span>Apache-2.0</span><span aria-hidden="true">·</span><span>Built for Build with DataHub: The Agent Hackathon</span></div>
   </footer>
+
+  <dialog id="artifactDialog" class="artifact-dialog" aria-labelledby="artifactDialogTitle">
+    <div class="dialog-heading">
+      <div><p id="artifactDialogKind" class="kicker">GENERATED ARTIFACT</p><h2 id="artifactDialogTitle">Artifact preview</h2></div>
+      <div class="dialog-actions">
+        <button id="copyArtifactButton" class="dialog-action" type="button">Copy</button>
+        <button id="downloadArtifactButton" class="dialog-action" type="button">Download</button>
+        <button id="closeArtifactDialog" type="button" aria-label="Close artifact preview">×</button>
+      </div>
+    </div>
+    <pre tabindex="0" aria-label="Generated artifact content"><code id="artifactDialogContent"></code></pre>
+  </dialog>
+
   <script type="module" src="./app.js"></script>
 </body>
 </html>

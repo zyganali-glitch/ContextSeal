@@ -2,165 +2,249 @@
 
 > **Every data change ships with proof, not confidence.**
 
-ContextSeal is a DataHub-native certification agent for risky schema changes. It turns a proposed column rename, drop, or type change into a lineage-aware impact trace, an explainable policy verdict, a staged dbt migration, a scoped human decision, and a durable change passport written back to DataHub.
+ContextSeal is a DataHub-native certification agent for risky schema changes. It reads the context graph, reconstructs downstream impact, deterministically blocks unsafe action, generates a reversible dbt migration, binds scoped human approval into an expiring passport, writes the decision back to DataHub, and verifies what persisted.
 
 [![CI](https://github.com/zyganali-glitch/ContextSeal/actions/workflows/ci.yml/badge.svg)](https://github.com/zyganali-glitch/ContextSeal/actions/workflows/ci.yml)
-[![License](https://img.shields.io/badge/license-Apache--2.0-green.svg)](LICENSE)
-[![DataHub](https://img.shields.io/badge/context-DataHub-5A67D8)](https://datahub.com/)
+[![License](https://img.shields.io/badge/license-Apache--2.0-2ea44f.svg)](LICENSE)
+[![Node](https://img.shields.io/badge/Node.js-20%20%7C%2024-339933.svg)](package.json)
+[![Evidence](https://img.shields.io/badge/evidence-explicit-63e6b8.svg)](docs/EVIDENCE_MANIFEST.md)
 
-**[Open the judge-ready fixture demo](https://zyganali-glitch.github.io/ContextSeal/)** · [Türkçe README](README.tr.md)
+**[Open the no-install fixture walkthrough](https://zyganali-glitch.github.io/ContextSeal/)** · **[Judge path](docs/JUDGE_TEST_PATH.md)** · [Türkçe README](README.tr.md)
 
-Built as a clean-room entry for **Build with DataHub: The Agent Hackathon**. No pre-existing personal-project code is included.
+Built as a clean-room entry for [Build with DataHub: The Agent Hackathon](https://datahub.devpost.com/).
+
+## Judge in two minutes
+
+Requirements: Node.js 20 or newer. DataHub is not required for this path.
+
+```bash
+git clone https://github.com/zyganali-glitch/ContextSeal.git
+cd ContextSeal
+npm install
+npm run validate
+npm start
+```
+
+Open [http://127.0.0.1:4173](http://127.0.0.1:4173), then:
+
+1. Select **Run local certification**.
+2. See the direct `customer_email → contact_email` request score `80` and become `BLOCKED`.
+3. Inspect five downstream fixture assets, full branching paths, and two clearly synthetic query signals.
+4. Preview the generated dbt model, schema tests, non-colliding rollback, and owner brief.
+5. Select **Approve safe plan** and inspect the `csp_...` passport and hashes.
+6. Select **Prepare protected operations** and confirm all three DataHub operations remain `NOT_RUN` in fixture mode.
+
+This proves the real local engine, API, state machine, generation, approval, and mutation boundary. It does **not** prove live DataHub, warehouse execution, production readiness, or customer impact. [Exact two-minute instructions →](docs/JUDGE_TEST_PATH.md)
+
+## Three honest surfaces
+
+| Surface | Experience | Evidence boundary |
+| --- | --- | --- |
+| GitHub Pages | Generated historical fixture walkthrough | No backend; committed `FIXTURE` snapshot |
+| Local fixture | Real ContextSeal execution with synthetic graph | DataHub calls and mutations `NOT_RUN` |
+| DataHub mode | Official MCP reads, normalized analysis, gated write-back, read-back | Disposable synthetic-local proof or operator-owned environment |
+
+The UI never turns “configured for DataHub” into “verified live.” It requires a successful raw evidence hash, normalized boundary, and `PASS` context claim.
 
 ## The problem
 
-Code review and CI can inspect a repository. They usually cannot see that a field feeds a Looker dashboard three hops away, appears in observed production queries, carries a PII glossary term, powers an ML model, or belongs to another team. An AI coding agent can produce syntactically correct data code while still making an organizationally unsafe change.
+Code review can inspect a repository. It usually cannot see that a column feeds another team's pipeline, a distant dashboard, a model-scoring workflow, privacy governance, or real query usage. A coding agent can therefore create locally correct code that is organizationally unsafe.
 
-DataHub already holds that missing context: schemas, column- and table-level lineage, ownership, governance terms, quality signals, incidents, and observed queries. ContextSeal makes that context an enforceable pre-merge decision.
+DataHub holds the missing schemas, lineage, ownership, governance, quality, incident, and query context. ContextSeal turns that context into a change decision and durable evidence.
 
-## What ContextSeal does
+## Why this is an agent
 
-1. Validates a typed change request.
-2. Collects target, lineage, usage, ownership, governance, and quality evidence through DataHub MCP.
-3. Traces every reachable downstream asset and preserves the path that explains the impact.
-4. Calculates deterministic findings such as `BREAKING_LINEAGE`, `SENSITIVE_DATA`, `LIVE_QUERY_USAGE`, and `STALE_CONTEXT`.
-5. Replaces a destructive operation with an expand–migrate–contract strategy.
-6. Generates a dbt model, schema tests, rollback file, and impacted-owner briefing.
-7. Requires a scoped human decision.
-8. Creates a SHA-256 change passport covering the request, context, risk, artifacts, evidence, approval, and validity window.
-9. Writes certification properties, a description, and a decision document back to DataHub only when every mutation gate is open.
+ContextSeal is not a chatbot.
 
-## Honest evidence boundary
+Given a change intent, it autonomously:
 
-ContextSeal never collapses these states:
+- chooses bounded DataHub MCP tools;
+- follows every discovered downstream target to an exact path;
+- maintains persistent workflow state;
+- applies deterministic policy;
+- generates working delivery artifacts;
+- stops at a scoped human authority boundary;
+- performs an approved external write;
+- verifies the durable result.
 
-| State | Meaning |
-| --- | --- |
-| `PASS` | A named check or operation completed successfully. |
-| `WARN` | Evidence exists but needs attention. |
-| `FAIL` | A named check completed and failed. |
-| `NOT_RUN` | The check or mutation did not run. |
-| `STALE` | Context is older than policy allows. |
-| `FIXTURE` | The result came from the public, synthetic judge fixture. |
+The loop closes:
 
-The hosted/local fixture demo is real application execution against synthetic metadata. It is not presented as a live DataHub tenant. Live MCP capture and mutations are separately gated and recorded.
+```text
+read context → decide → generate safe work → human approve/reject
+             → passport → DataHub write-back → read-back verification
+```
+
+An LLM may explain a proposal in a future version. It may never overwrite evidence or policy authority.
+
+## What it does
+
+1. Validates a typed rename, drop, or type-change request.
+2. Retrieves the exact DataHub target metadata, then paginates `list_schema_fields` to prove the complete target field set before checking the source or a generated destination.
+3. Discovers bounded downstream lineage and requests an exact path for every target; every returned path and the reconstructed impact remain inside the same policy hop bound.
+4. Reads inspectable dataset-query records and preserves a real zero as zero.
+5. Normalizes and hashes raw MCP evidence, then recomputes the decision inputs.
+6. Calculates named findings such as `BREAKING_LINEAGE`, `SENSITIVE_DATA`, `LIVE_QUERY_USAGE`, and `STALE_CONTEXT`.
+7. Replaces direct destruction with expand–migrate–contract or another non-destructive strategy.
+8. Generates a dbt model, YAML tests, separately named rollback, and impacted-owner brief.
+9. Requires a human decision scoped to the exact manifest.
+10. Creates a passport binding request, policy, context, raw evidence, impact, risk, artifacts, approval, and expiry.
+11. Writes three bounded metadata changes only when every independent gate is open.
+12. Separately reads back structured metadata and exact decision-document bindings.
 
 ## Architecture
 
 ```mermaid
 flowchart LR
-    R["Schema change request"] --> C["DataHub MCP context"]
-    C --> I["Lineage impact trace"]
-    I --> P["Deterministic policy gate"]
-    P --> G["Safe dbt artifacts"]
-    G --> H{"Human decision"}
-    H -->|Approve safe scope| S["SHA-256 passport"]
+    R["Change intent"] --> M["DataHub MCP reads"]
+    M --> E["Raw evidence hash + normalization"]
+    E --> I["Exact impact paths"]
+    I --> P["Deterministic policy"]
+    P --> G["Safe dbt bundle"]
+    G --> H{"Human scope gate"}
     H -->|Reject| X["Rejected record"]
-    S --> W["DataHub write-back"]
-    W --> C
+    H -->|Approve| C["Expiring passport"]
+    C --> W{"Runtime mutation gate"}
+    W -->|Closed| N["NOT_RUN"]
+    W -->|Open| D["DataHub write-back"]
+    D --> V["Durable read-back"]
 ```
 
-See [Architecture](docs/ARCHITECTURE.md), [Evidence Boundary](docs/EVIDENCE_BOUNDARY.md), and [Threat Model](docs/THREAT_MODEL.md).
+[Detailed architecture →](docs/ARCHITECTURE.md) · [Threat model →](docs/THREAT_MODEL.md)
 
-## Sixty-second local demo
+## DataHub integration
 
-Requirements: Node.js 20 or newer.
+Read and path tools:
+
+- `get_entities`
+- `list_schema_fields`
+- `get_lineage`
+- `get_lineage_paths_between`
+- `get_dataset_queries`
+
+Approved mutation tools:
+
+- `add_structured_properties`
+- `update_description` in append mode
+- `save_document`
+
+Verification tools:
+
+- `get_entities`
+- `grep_documents`
+
+The committed proof launches the official open-source `mcp-server-datahub` v0.6.0 package against a disposable local DataHub Core catalog. Its captured MCP handshake reports protocol `2025-03-26` and `serverInfo` name/version `datahub`/`3.4.4`; those handshake fields are distinct from the launcher package release. The seed uses native Dataset, DataJob, and Dashboard entities and no source rows. The local query tool returned zero records; ContextSeal records that honestly. Two query examples exist only in the clearly labeled fixture to demonstrate the query-risk rule.
+
+Current committed proof: **10 MCP reads** (including one complete three-field schema page), **6 downstream assets** split as 2 Datasets / 2 DataJobs / 2 Dashboards, **6 exact paths**, and **0 query records**. Deterministic policy scored the direct request **70 / `BLOCKED`**; the approved safe alternative produced exactly **3 `PASS` mutation receipts** followed by a separate durable read-back `PASS`.
+
+The two evidence surfaces intentionally model ML impact differently: the fixture with five downstream assets contains a clearly synthetic `ML_MODEL` node for the deterministic judge story, while the live-local seed represents MLflow scoring metadata as a native `DataJob` and makes no inference-execution claim. Counts and entity types are never mixed across those surfaces.
+
+See [Live-local setup and proof reproduction](docs/LIVE_DATAHUB_SETUP.md) and [claim-by-claim evidence](docs/EVIDENCE_MANIFEST.md).
+
+## Safety and integrity
+
+### Evidence vocabulary
+
+| State | Meaning |
+| --- | --- |
+| `PASS` | The named check or operation ran and passed its verification condition. |
+| `WARN` | Evidence exists but is incomplete or needs attention. |
+| `FAIL` | The named check ran and failed. |
+| `NOT_RUN` | The check or operation did not run. |
+| `STALE` | Context or certification exceeded the active freshness window. |
+| `FIXTURE` | The result came from the deterministic synthetic fixture. |
+
+### Live mutation gates
+
+DataHub mode refuses to start without:
+
+- a separate `CONTEXTSEAL_OPERATOR_TOKEN`;
+- a non-empty exact `CONTEXTSEAL_ALLOWED_TARGET_URNS` list.
+
+A write additionally requires verified live evidence, a fresh approved passport, unchanged policy and artifacts, no replay/in-progress/superseded state, and `DATAHUB_MCP_MUTATIONS_ENABLED=true`.
+
+Mutation calls are never retried. Only read-only post-write verification uses bounded retries for eventual consistency.
+
+[Full evidence boundary →](docs/EVIDENCE_BOUNDARY.md)
+
+## Local fixture and Docker
+
+Standard:
 
 ```bash
 npm install
-npm test
-npm run demo
+npm run validate
 npm start
 ```
 
-Open <http://127.0.0.1:4173>, then:
-
-1. Select **Analyze the demo change**.
-2. Inspect the five-hop DataHub-compatible impact trace and risk findings.
-3. Select **Approve safe plan**.
-4. Inspect the passport ID and evidence states.
-5. Select **Prepare DataHub write-back**. In fixture mode, the application proves that operations were prepared while keeping write-back `NOT_RUN`.
-
-Or use Docker:
+Docker fixture path:
 
 ```bash
 docker compose up --build
 ```
 
-## Live DataHub mode
+The default container is unprivileged, capability-dropped, read-only apart from its run volume, and intended for the fixture judge path. Local stdio MCP requires `uv`/Python on the host; the image does not bundle a second runtime.
 
-### 1. Start DataHub and install the MCP launcher
+## Optional DataHub mode
 
-Follow the official DataHub Quickstart and MCP documentation. DataHub Core exposes GMS at `http://localhost:8080`; the official open-source MCP server is launched locally with `uvx`, using stdio transport. DataHub Cloud uses its streamable HTTP MCP endpoint instead.
+Copy the example:
 
-### 2. Configure ContextSeal
+```powershell
+Copy-Item .env.example .env
+```
 
-Copy `.env.example` to `.env`, then set:
+Minimum local shape:
 
 ```dotenv
 CONTEXTSEAL_MODE=datahub
+CONTEXTSEAL_HOST=127.0.0.1
+# Generate a separate random value and paste it only into your local .env.
+CONTEXTSEAL_OPERATOR_TOKEN=
+CONTEXTSEAL_ALLOWED_TARGET_URNS=["urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)"]
 DATAHUB_MCP_TRANSPORT=stdio
 DATAHUB_MCP_COMMAND=uvx
-DATAHUB_MCP_ARGS=["mcp-server-datahub@latest"]
+DATAHUB_MCP_ARGS=["mcp-server-datahub@0.6.0"]
 DATAHUB_GMS_URL=http://localhost:8080
-DATAHUB_GMS_TOKEN=your-local-token
+DATAHUB_GMS_TOKEN=
 DATAHUB_MCP_MUTATIONS_ENABLED=false
 ```
 
-Keep mutations disabled while validating search, entity, lineage, and query evidence. Enable them only for the final, approved write-back demonstration:
+The two short commands below are read-only preflights; they do not seed or
+upsert anything:
 
-```dotenv
-DATAHUB_MCP_MUTATIONS_ENABLED=true
-```
-
-ContextSeal launches the official local MCP process for each bounded operation and passes the mutation setting explicitly. Credentials must never be committed. For DataHub Cloud, set `DATAHUB_MCP_TRANSPORT=http` and provide the tenant MCP URL.
-
-### 3. Install ContextSeal structured properties
-
-```bash
-datahub properties upsert -f config/contextseal-structured-properties.yml
+```powershell
 npm run datahub:seed
+npm run datahub:properties
 ```
 
-### 4. Run
+Each apply requires the preflight's exact plan hash, a generic and operation-
+specific shell confirmation, and a short-lived
+`DATAHUB_MCP_MUTATIONS_ENABLED=true` window. The named mutation commands are
+`datahub:seed:apply` and `datahub:properties:apply`; do not run either without
+the complete procedure. The helpers accept loopback GMS by default, refuse
+same-URN marker conflicts, and require separate exact endpoint/URN allowlists
+for remote bootstrap. Restore the mutation gate to `false` before `npm start`.
 
-```bash
-npm start
-```
+Keep mutations disabled for the first read-only run. Never commit `.env` or paste either credential into an issue, screenshot, video, run, or evidence file. [Follow the complete procedure →](docs/LIVE_DATAHUB_SETUP.md)
 
-The application calls DataHub MCP tools for entity context, downstream lineage, observed dataset queries, and bounded metadata mutations. See [Live DataHub Setup](docs/LIVE_DATAHUB_SETUP.md) for the exact verification path and limitations.
+## Generated output
 
-The repository includes a completed disposable-local proof under `examples/outputs/`: five downstream assets were returned through live MCP, and the approved status, risk score, passport ID, validity date, appended description, and decision document were written and verified against synthetic DataHub metadata.
-
-## MCP tools used
-
-Read path:
-
-- `get_entities`
-- `get_lineage`
-- `get_dataset_queries`
-
-Approved write-back path:
-
-- `add_structured_properties`
-- `update_description`
-- `save_document`
-
-The reusable workflow is also packaged as [`contextseal-change-certification`](skills/contextseal-change-certification/SKILL.md), designed for contribution to the DataHub Skills ecosystem.
-
-## Repository map
+`npm run demo:generate` creates:
 
 ```text
-src/core/       deterministic contracts, impact, risk, artifacts, passport
-src/datahub/    MCP client, live evidence capture, bounded write-back
-public/         dependency-free judge dashboard
-config/         policy and DataHub structured-property definitions
-examples/       synthetic graph, request, and generated evidence
-skills/         reusable DataHub change-certification skill
-tests/          contract, risk, lineage, passport, and MCP safety tests
-docs/           architecture, judging, evidence, security, submission guides
-docs/tr/        beginner-safe Turkish operator, Devpost, and video guides
+examples/outputs/
+├── demo-certification.json
+├── generated/
+│   ├── models/gold_customers_contextseal.sql
+│   ├── models/gold_customers_contextseal.yml
+│   ├── rollback/gold_customers_contextseal_rollback.sql
+│   └── IMPACTED_OWNERS.md
+├── live-datahub-read-evidence.json
+└── live-datahub-writeback-evidence.json
 ```
+
+Generation is deterministic and `npm run demo:check` fails if committed output drifts.
+
+Evidence boundary: the four physical files under `examples/outputs/generated/` are the deterministic **fixture** artifacts. A live DataHub run generates its own four-file artifact bundle in memory and binds those exact contents and hashes inside the committed live write-back evidence. Fixture risk, query, and entity-type facts must not be attributed to the live-local run.
 
 ## Validation
 
@@ -168,46 +252,59 @@ docs/tr/        beginner-safe Turkish operator, Devpost, and video guides
 npm run validate
 ```
 
-This runs repository-integrity checks, the deterministic Node test suite, and a fresh end-to-end fixture certification. CI also builds the container.
+The command is check-only and must leave no Git diff. It runs:
 
-## Judge paths
+- repository/link/credential checks;
+- structural committed-evidence validation;
+- Node tests, including adversarial passport/MCP/write-back cases;
+- deterministic demo idempotence;
+- a spawned fixture server smoke flow.
 
-- [Two-minute judge test path](docs/JUDGE_TEST_PATH.md)
-- [Official criteria mapping](docs/JUDGING_MAP.md)
-- [Claim-by-claim evidence map](docs/EVIDENCE_MANIFEST.md)
+CI repeats this on Node 20 and 24, then builds and smoke-tests the production container.
+CI also runs `npm run datahub:safety:test` with Python 3.11 as a separate
+standard-library suite for bootstrap URL, confirmation, scope, ownership, and
+contract-hash gates. It is intentionally not part of the Node-only judge
+`validate` path.
+
+## Repository map
+
+```text
+src/core/       contracts, impact, policy, artifacts, passport
+src/datahub/    MCP transport, live normalization, gated write-back/read-back
+public/         accessible no-dependency judge dashboard
+config/         versioned policy and DataHub structured-property definitions
+examples/       synthetic request/graph and committed generated evidence
+scripts/        generation, seed, evidence, repository, and server checks
+skills/         generic executable DataHub schema-change certification skill
+tests/          unit, adversarial, evidence, transport, and server integration tests
+tests_py/       standard-library tests for fail-closed DataHub bootstrap gates
+docs/           architecture, judging, evidence, video, setup, and submission package
+docs/tr/        step-by-step Turkish operator guides
+```
+
+## Submission package
+
+- [Devpost final copy](docs/DEVPOST_SUBMISSION.md)
+- [Three-minute exact narration](docs/DEMO_SCRIPT.md)
+- [Video shot list](docs/VIDEO_SHOT_LIST.md)
+- [Official criteria map](docs/JUDGING_MAP.md)
+- [Pre-submission checklist](docs/PRE_SUBMISSION_CHECKLIST.md)
 - [Build-period disclosure](docs/BUILD_PERIOD_DISCLOSURE.md)
-- [Demo script](docs/DEMO_SCRIPT.md)
-- [Devpost submission draft](docs/DEVPOST_SUBMISSION.md)
+- [DataHub skill contribution package](docs/DATAHUB_SKILL_CONTRIBUTION.md)
+- [Reusable DataHub schema-change certification skill](skills/datahub-schema-change-certification/SKILL.md)
 
-Turkish beginner guides:
+## Current limitations
 
-- [What the operator must do](docs/tr/BENIM_YAPMAM_GEREKENLER.md)
-- [Devpost submission guide](docs/tr/DEVPOST_BASVURU_REHBERI.md)
-- [Demo recording guide](docs/tr/DEMO_VIDEO_CEKIM_REHBERI.md)
+ContextSeal does not claim:
 
-## Current scope
+- production warehouse execution;
+- automatic PR merge or deployment;
+- complete lineage when DataHub has not ingested it;
+- production/customer use or measured incident reduction;
+- formal security certification;
+- a submitted upstream DataHub Skills PR until a public PR URL exists.
 
-Implemented:
-
-- Three change contracts: rename, drop, and type change
-- Multi-hop downstream path reconstruction
-- Deterministic risk policy
-- Safe dbt artifact generation
-- Human approval contract
-- Hash-bound change passport
-- MCP client, live evidence capture, and gated write-back operations
-- Persistent local run/event records
-- Responsive no-dependency dashboard
-- Automated tests, CI, Docker, and complete judging documentation
-
-Explicitly not claimed:
-
-- Automatic production merge or deployment
-- Production warehouse SQL execution
-- Comprehensive SQL parsing
-- Security certification
-- Customer adoption or incident-reduction metrics
-- Live DataHub proof until the operator completes and records the documented live run
+The live normalizer currently certifies asset-level paths and validates source/destination fields against complete paginated target-schema evidence. Column-level path expansion is future work.
 
 ## License
 

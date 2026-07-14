@@ -1,49 +1,92 @@
-# Demo Script — 2:45 Target
+# Demo narration — 2:55 target
 
-## Story
+Record the real product. Keep the runtime badge visible. Use the local fixture for the uninterrupted interaction, then show the disposable local DataHub proof only in the final evidence cut.
 
-A developer requests a direct rename of `customer_email` to `contact_email`. ContextSeal discovers privacy and downstream impact, blocks the destructive request, creates a staged migration, records human approval, and prepares a DataHub passport write-back.
+## 0:00–0:15 — Problem hook
 
-## Shot plan
+**Screen:** ContextSeal hero, then the `customer_email → contact_email` request.
 
-### 00:00–00:15 — Problem
+**Narration:**
 
-Show the title and one sentence:
+> An AI coding agent can produce valid SQL and still break a dashboard four hops away. The repository sees code. DataHub sees the organizational blast radius.
 
-> A repository can see code. DataHub can see what the code will break.
+## 0:15–0:35 — What ContextSeal is
 
-### 00:15–00:30 — Request
+**Screen:** Agent loop card: Read, Decide, Generate, Certify, Write back.
 
-Show `customer_email → contact_email`. Click **Analyze the demo change**.
+**Narration:**
 
-### 00:30–00:58 — DataHub context
+> ContextSeal is not a chatbot. It is a bounded change-certification agent. It reads DataHub context, makes a deterministic safety decision, generates a reversible migration, pauses for scoped human approval, and writes an expiring change passport back to the graph.
 
-Point to five downstream assets, including the Airflow job, Snowflake dataset, dashboards, and ML model. State that every node includes its lineage path.
+## 0:35–1:20 — Analyze the risky rename
 
-### 00:58–01:18 — Explainable block
+**Screen:** Keep **LOCAL FIXTURE · CONNECTED** visible. Select **Run local certification**. Move through request, risk, and graph without scrolling too fast.
 
-Show risk 80 and `BLOCKED`. Highlight `BREAKING_LINEAGE`, `SENSITIVE_DATA`, and `LIVE_QUERY_USAGE`.
+**Narration:**
 
-### 01:18–01:42 — Real work
+> For a reproducible judge run, this badge says fixture: the application is executing for real, but the metadata is synthetic. A team asks to rename customer email directly. ContextSeal validates the request, traces five downstream fixture assets, and preserves every path. The deepest path is four hops. Two synthetic query examples reference the field, and the target carries privacy and Tier-One signals. The requested destructive change scores eighty and is blocked.
 
-Show the generated dbt model, schema tests, rollback, and owner briefing. Explain that ContextSeal refused the direct rename and generated an expand–migrate–contract alternative.
+## 1:20–1:50 — Explain the decision
 
-### 01:42–02:02 — Human decision
+**Screen:** Show the branching paths, owners, and `BREAKING_LINEAGE`, `SENSITIVE_DATA`, and `LIVE_QUERY_USAGE` fixture findings.
 
-Show the exact reviewer and note. Click **Approve safe plan**.
+**Narration:**
 
-### 02:02–02:22 — Passport
+> This is not model confidence. Each point comes from a named, versioned rule. The graph shows who owns every affected asset and how the change reaches it. If lineage or query evidence is truncated or cannot be inspected, live certification fails closed instead of quietly undercounting risk.
 
-Show the passport ID, manifest hash, expiry, and locked evidence states. Emphasize that unexecuted checks remain `NOT_RUN`.
+## 1:50–2:15 — Show real work
 
-### 02:22–02:38 — DataHub write-back
+**Screen:** Preview the generated SQL, YAML tests, rollback, and owner brief.
 
-Cut to the already prepared local DataHub tab. Show the target asset's ContextSeal Status, Risk Score, Passport ID, Valid Until field, appended description, and saved decision document. State clearly that this is a live local DataHub instance containing synthetic metadata, not production data.
+**Narration:**
 
-### 02:38–02:45 — Close
+> ContextSeal refuses to generate the direct rename. It creates an expand–migrate–contract dbt model that keeps the source field, tests the new field, produces a separately named rollback, and briefs impacted owners. These are reviewable artifacts, not executed warehouse SQL.
 
-> ContextSeal turns DataHub context into a safe decision the next human and agent can inherit.
+## 2:15–2:35 — Human gate and passport
 
-## Recording rule
+**Screen:** Show reviewer and note. Select **Approve safe plan**. Show passport ID, manifest hash, context hash, and validity.
 
-Never crop out the fixture/live badge. Never narrate a prepared operation as completed. The video must match the committed evidence manifest.
+**Narration:**
+
+> The reviewer approves only this safe manifest, not the original destructive request. The passport binds the request, policy, raw and normalized evidence, impact, risk, every artifact, the exact approval, and its expiry. Change any bound input and write-back is rejected.
+
+## 2:35–2:50 — Honest write-back boundary
+
+**Screen:** Select **Prepare protected operations**. Hold on all three fixture operations as `NOT_RUN`, then cut to one pre-arranged proof view containing the synthetic-local DataHub target and returned decision document. Overlay: **10 MCP reads · 6 exact paths · 0 queries · 3 PASS mutations · read-back PASS**.
+
+**Narration:**
+
+> In fixture mode, all three payloads remain not run. Our separate synthetic-local DataHub proof records three successful mutation receipts and a passing durable read-back.
+
+## 2:50–2:58 — Close
+
+**Screen:** Return to the passport and evidence ledger. End on repository URL.
+
+**Narration:**
+
+> ContextSeal turns DataHub context into safe action and durable evidence. Every change ships with proof, not confidence.
+
+## Accuracy rules
+
+- Never crop out the hosted, fixture, or live badge.
+- Say **five downstream fixture assets**, not “five-hop path.”
+- Do not call fixture queries observed production queries.
+- Keep the ML surfaces distinct: the fixture contains a synthetic `ML_MODEL` node; the live-local proof represents MLflow scoring metadata as a `DataJob`. Neither proves that inference ran.
+- A prepared operation is `NOT_RUN`.
+- A mutation `PASS` is not durable verification unless read-back is also `PASS`.
+- Say “disposable local DataHub with synthetic metadata,” never production or customer DataHub.
+- Do not show `.env`, terminal secrets, operator token, browser profile, notifications, or personal tabs.
+
+## 90-second backup narration
+
+Use the same screen order with faster cuts:
+
+> A repository can validate SQL, but it cannot see the dashboard, pipeline, or model-scoring job a field will break. DataHub can. ContextSeal is a bounded certification agent, not a chatbot.
+>
+> This is the real application running against a clearly labeled synthetic fixture. We request a direct customer-email rename. ContextSeal reconstructs five downstream paths, finds privacy, criticality, and two synthetic query signals, and deterministically blocks the request at eighty.
+>
+> It does real work next: a non-destructive dbt expansion model, schema tests, a separate rollback, and an owner brief. A human approves only that safe manifest. ContextSeal creates an expiring passport bound to the request, policy, evidence, impact, risk, artifacts, and exact decision.
+>
+> Fixture write-back stays not run. In a separate disposable local DataHub proof, the approved three-operation write-back completed and structured metadata plus exact decision-document bindings were read back. No production data or warehouse SQL is claimed.
+>
+> ContextSeal turns DataHub's graph into a safe action the next human or agent can inherit. Every data change ships with proof, not confidence.
