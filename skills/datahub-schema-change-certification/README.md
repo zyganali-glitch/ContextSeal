@@ -26,9 +26,13 @@ Certify risky dataset field renames, drops, and type changes with exact DataHub 
 ## Requirements
 
 - Python 3.11+ for `scripts/certify_change.py`;
-- a configured official DataHub MCP server for live execution;
+- a configured official DataHub MCP server for live execution; CLI-only sessions remain `NOT_RUN` rather than falling back to simulated evidence;
 - host-exposed mutation tools for write-back;
 - repository and dbt context before generated code can be marked structurally valid.
+
+Resolve the helper from the installed skill directory instead of assuming the current working directory. Claude Code can use `${CLAUDE_SKILL_DIR}/scripts/certify_change.py`; other agents should use their resolved absolute skill path. Commands use `python3` on POSIX systems and `python` on Windows when it resolves to Python 3.11 or newer.
+
+The bundled `references/policy-v1.json` is a versioned reference default, not an official universal DataHub risk standard. Operators may select a reviewed custom policy before starting a run; the selected policy hash then remains authoritative for scope and passport verification.
 
 Plain lineage questions belong to `/datahub-lineage`; ordinary metadata edits belong to `/datahub-enrich`.
 

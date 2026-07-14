@@ -82,7 +82,7 @@ Use this immediately before submitting. Automated checks prove repository facts;
 - [ ] Sample dbt, YAML, rollback, owner, passport, and evidence outputs are linked.
 - [ ] Build-period disclosure mentions AI development assistance and no copied personal-project code.
 - [ ] Limitations remain included.
-- [ ] DataHub Skills/open-source bonus is linked only if a real public issue or PR exists.
+- [x] DataHub Skills/open-source bonus links the real public [PR #35](https://github.com/datahub-project/datahub-skills/pull/35) and labels it `OPEN / DRAFT / NOT_MERGED`.
 - [ ] Any Most Valuable Feedback submission contains real, actionable experience—not invented feedback.
 
 ## 7. Final incognito and clean-checkout review

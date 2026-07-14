@@ -142,7 +142,7 @@ Repository belgesindeki placeholder operatör hatırlatıcısı olarak kalabilir
 - Lisansı `Apache-2.0` olarak seç veya belirt.
 - [BUILD_PERIOD_DISCLOSURE.md](../BUILD_PERIOD_DISCLOSURE.md) ile uyumlu biçimde AI geliştirme yardımı kullanıldığını ve önceden var olan kişisel projeden kod kopyalanmadığını açıkla.
 - DataHub Skills katkısı yalnız gerçek public issue/PR URL'si varsa bonus olarak sunulabilir.
-- Şu an public PR yoksa durum `NOT_SUBMITTED` olarak kalır; hazırlanmış yerel paket submitted contribution değildir.
+- Public katkı artık [DataHub Skills PR #35](https://github.com/datahub-project/datahub-skills/pull/35) adresindedir; durumu `OPEN / DRAFT / NOT_MERGED` olarak yaz ve inceleme, kabul veya merge iddia etme.
 
 ## 9. Görsel ve logo alanları
 

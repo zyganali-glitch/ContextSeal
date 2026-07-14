@@ -29,7 +29,7 @@ This is the claim ledger for the repository. `PASS` means the named claim has a 
 | Automatic merge or deployment | `NOT_RUN` | None by design | Not applicable | Generated artifacts require existing review/deployment controls |
 | Production/customer impact measured | `NOT_RUN` | None | Not applicable | No production deployment or customer study claimed |
 | Formal security certification | `NOT_RUN` | None | Not applicable | Threat model and tests are engineering evidence, not certification |
-| Upstream DataHub Skills pull request | `NOT_RUN` | Local contribution package only | See `docs/DATAHUB_SKILL_CONTRIBUTION.md` | Change only after a real public PR exists |
+| Public upstream DataHub Skills pull request | `PASS` | PR #35 is `OPEN / DRAFT / NOT_MERGED` | [datahub-project/datahub-skills#35](https://github.com/datahub-project/datahub-skills/pull/35) | PR creation is verified; review, acceptance, and merge are not claimed |
 
 ## One-command verification
 
