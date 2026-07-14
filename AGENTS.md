@@ -14,4 +14,4 @@ ContextSeal is a clean-room project created during the Build with DataHub Agent 
 
 ## Required checks
 
-Run `npm run validate` before claiming a change is complete.
+Run `npm run validate` before claiming a change is complete. Validation must be check-only and leave no Git diff. For UI changes, also exercise the hosted snapshot and local fixture in a real browser. For live DataHub changes, keep mutations disabled until read-only evidence passes and regenerate the committed synthetic-local proof before updating any `PASS` claim.

@@ -1,8 +1,10 @@
 {
-  "runId": "csr_781d8a1fe07daafe",
+  "runId": "csr_230a76cce6c1e84c36d4f1826d6c82cd",
   "state": "APPROVED_FOR_WRITEBACK",
   "mode": "fixture",
-  "createdAt": "2026-07-14T14:23:14.222Z",
+  "createdAt": "2026-07-14T12:30:00.000Z",
+  "policyVersion": "2026-07-14",
+  "policyHash": "eadf377cceb74742db8523466ec4fd700574e55e4786bbc993c7985053d31a82",
   "request": {
     "targetUrn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)",
     "entityName": "gold_customers",
@@ -15,7 +17,7 @@
   },
   "context": {
     "source": "DataHub-compatible fixture",
-    "observedAt": "2026-07-14T14:23:14.220Z",
+    "observedAt": "2026-07-14T12:00:00.000Z",
     "assets": [
       {
         "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)",
@@ -323,7 +325,7 @@
         ]
       }
     ],
-    "contextAgeHours": 5.555555555555555e-7
+    "contextAgeHours": 0.5
   },
   "artifacts": {
     "strategy": "EXPAND_MIGRATE_CONTRACT",
@@ -340,9 +342,9 @@
         "content": "version: 2\nmodels:\n  - name: gold_customers_contextseal\n    description: \"ContextSeal migration candidate; strategy EXPAND_MIGRATE_CONTRACT.\"\n    columns:\n      - name: contact_email\n        tests:\n          - not_null\n"
       },
       {
-        "path": "generated/rollback/gold_customers.sql",
+        "path": "generated/rollback/gold_customers_contextseal_rollback.sql",
         "kind": "ROLLBACK",
-        "content": "-- Rollback keeps the original field authoritative\nselect * exclude (contact_email) from {{ ref('gold_customers_compat') }};\n"
+        "content": "-- Roll back the generated expansion while the original field remains authoritative.\nselect * exclude (contact_email) from {{ ref('gold_customers_contextseal') }};\n"
       },
       {
         "path": "generated/IMPACTED_OWNERS.md",
@@ -358,9 +360,14 @@
       "artifact": "fixture context snapshot"
     },
     {
-      "claim": "Column-level impact traced",
-      "state": "PASS",
-      "artifact": "impact paths"
+      "claim": "Target field validated in schema",
+      "state": "FIXTURE",
+      "artifact": "fixture schema contract"
+    },
+    {
+      "claim": "Entity-level downstream impact traced",
+      "state": "FIXTURE",
+      "artifact": "fixture impact paths"
     },
     {
       "claim": "Migration artifacts generated",
@@ -381,22 +388,34 @@
       "claim": "DataHub write-back completed",
       "state": "NOT_RUN",
       "artifact": null
+    },
+    {
+      "claim": "Durable DataHub read-back verified",
+      "state": "NOT_RUN",
+      "artifact": null
     }
   ],
   "approval": {
     "decision": "APPROVE",
     "reviewer": "demo-reviewer",
     "note": "Approved safe expand-migrate-contract scope only.",
-    "scopeAccepted": true
+    "scopeAccepted": true,
+    "decidedAt": "2026-07-14T12:32:00.000Z"
   },
   "passport": {
-    "passportVersion": "1.0",
-    "runId": "csr_781d8a1fe07daafe",
+    "passportVersion": "2.0",
+    "runId": "csr_230a76cce6c1e84c36d4f1826d6c82cd",
+    "createdAt": "2026-07-14T12:30:00.000Z",
     "status": "CERTIFIED",
     "mode": "fixture",
     "targetUrn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)",
     "requestHash": "a0bd0168caa39e82d232eac2a3a9f3ebeeaf9a0b7dc3dac7ef84e05d6bb281f9",
-    "contextHash": "c5fbdc6ca8b20720c9bfd405e5a9db9543cdd9b2a7a38621a72d2317387b15ba",
+    "contextHash": "545fd6296d89b365ca666d8f56d28522fcea72d3239851f1cbe0febc95880db4",
+    "policy": {
+      "version": "2026-07-14",
+      "sha256": "eadf377cceb74742db8523466ec4fd700574e55e4786bbc993c7985053d31a82"
+    },
+    "liveEvidence": null,
     "risk": {
       "verdict": "BLOCKED",
       "score": 80,
@@ -404,7 +423,8 @@
         "BREAKING_LINEAGE",
         "SENSITIVE_DATA",
         "LIVE_QUERY_USAGE"
-      ]
+      ],
+      "sha256": "607689e34883228cd8e6511919d06957f3d9c6e1ab8a3ba7ff8fc02123032870"
     },
     "impact": {
       "total": 5,
@@ -416,7 +436,9 @@
         "ML_MODEL": 1
       }
     },
+    "impactHash": "93cbddbfe5f6ef62d3df4d309b25a9eca5fc2c7d73673568465d60abd5e06711",
     "migrationStrategy": "EXPAND_MIGRATE_CONTRACT",
+    "migrationSummary": "Add contact_email, backfill from customer_email, migrate consumers, then deprecate customer_email.",
     "artifactHashes": [
       {
         "path": "generated/models/gold_customers_contextseal.sql",
@@ -427,8 +449,8 @@
         "sha256": "e8efd6111df11548bd6890f2225ea3ebc5dc217f34c35b4a204a41db48d17a65"
       },
       {
-        "path": "generated/rollback/gold_customers.sql",
-        "sha256": "8b9cdd8d9e3a02e9a18382fa2bf6f9bcaf15ba587a03a5b9dc8bbd10f0a8eb17"
+        "path": "generated/rollback/gold_customers_contextseal_rollback.sql",
+        "sha256": "2031851eec0656e1dd85352b015fe7556102e554cca16863720353a9c8d80305"
       },
       {
         "path": "generated/IMPACTED_OWNERS.md",
@@ -442,9 +464,14 @@
         "artifact": "fixture context snapshot"
       },
       {
-        "claim": "Column-level impact traced",
-        "state": "PASS",
-        "artifact": "impact paths"
+        "claim": "Target field validated in schema",
+        "state": "FIXTURE",
+        "artifact": "fixture schema contract"
+      },
+      {
+        "claim": "Entity-level downstream impact traced",
+        "state": "FIXTURE",
+        "artifact": "fixture impact paths"
       },
       {
         "claim": "Migration artifacts generated",
@@ -458,11 +485,16 @@
       },
       {
         "claim": "Human scope approval recorded",
+        "state": "PASS",
+        "artifact": "demo-reviewer"
+      },
+      {
+        "claim": "DataHub write-back completed",
         "state": "NOT_RUN",
         "artifact": null
       },
       {
-        "claim": "DataHub write-back completed",
+        "claim": "Durable DataHub read-back verified",
         "state": "NOT_RUN",
         "artifact": null
       }
@@ -471,10 +503,11 @@
       "reviewer": "demo-reviewer",
       "note": "Approved safe expand-migrate-contract scope only.",
       "decision": "APPROVE",
-      "decidedAt": "2026-07-14T14:23:14.225Z"
+      "scopeAccepted": true,
+      "decidedAt": "2026-07-14T12:32:00.000Z"
     },
-    "validUntil": "2026-07-15T14:23:14.225Z",
-    "passportId": "csp_e2b1306260c118166d6b",
-    "manifestHash": "e2b1306260c118166d6be909cbf1b0ed273ec2a8de244d8d191dbb0054d68839"
+    "validUntil": "2026-07-15T12:32:00.000Z",
+    "passportId": "csp_cfa40d4ef08349e72937",
+    "manifestHash": "cfa40d4ef08349e72937f315e0366c4e003dbe492c918225863117cfa7a51da1"
   }
 }

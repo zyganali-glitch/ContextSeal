@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
-import { validateChangeRequest, ContractError } from "../src/core/contracts.js";
+import { validateApproval, validateChangeRequest, ContractError } from "../src/core/contracts.js";
 import { traceImpact } from "../src/core/impact.js";
 import { evaluateRisk } from "../src/core/risk.js";
 import { analyzeChange, decideRun } from "../src/core/workflow.js";
@@ -14,6 +14,60 @@ const now = new Date("2026-07-14T12:30:00.000Z");
 
 test("change contract rejects a rename without a destination", () => {
   assert.throws(() => validateChangeRequest({ ...fixtureRequest, destinationField: "" }), ContractError);
+});
+
+test("contracts reject credential material without reflecting it in errors", () => {
+  const pasted = ["github", "pat", "F7".repeat(16)].join("_");
+  for (const [validate, input, field] of [
+    [validateChangeRequest, { ...fixtureRequest, requestedBy: pasted }, "requestedBy"],
+    [validateChangeRequest, { ...fixtureRequest, rationale: `emergency ${pasted}` }, "rationale"],
+    [validateApproval, {
+      decision: "APPROVE",
+      reviewer: pasted,
+      note: "Approve exact staged scope only.",
+      scopeAccepted: true
+    }, "reviewer"],
+    [validateApproval, {
+      decision: "APPROVE",
+      reviewer: "data-owner",
+      note: `Authorization: Bearer ${pasted}`,
+      scopeAccepted: true
+    }, "note"]
+  ]) {
+    assert.throws(() => validate(input), (error) => {
+      const safeEnvelope = `${error.message}\n${(error.details || []).join("\n")}`;
+      return error instanceof ContractError
+        && safeEnvelope.includes(`${field} must not contain credential material`)
+        && !safeEnvelope.includes(pasted);
+    });
+  }
+});
+
+test("contracts preserve ordinary prose and valid DataHub URNs", () => {
+  const request = validateChangeRequest({
+    ...fixtureRequest,
+    rationale: "Never paste a token here; certify only the exact DataHub URN."
+  });
+  const approval = validateApproval({
+    decision: "APPROVE",
+    reviewer: "data-owner",
+    note: `Approve staged migration for ${fixtureRequest.targetUrn}.`,
+    scopeAccepted: true
+  });
+  assert.equal(request.targetUrn, fixtureRequest.targetUrn);
+  assert.equal(approval.reviewer, "data-owner");
+  assert.deepEqual(validateApproval({
+    decision: "REJECT",
+    reviewer: "data-owner",
+    note: "Reject this scope pending owner review.",
+    scopeAccepted: false
+  }).scopeAccepted, false);
+  assert.throws(() => validateApproval({
+    decision: "REJECT",
+    reviewer: "data-owner",
+    note: "Reject this scope pending owner review.",
+    scopeAccepted: true
+  }), /Invalid approval/);
 });
 
 test("impact trace returns downstream paths without duplicates", () => {
@@ -46,10 +100,31 @@ test("workflow generates a staged migration and keeps unexecuted claims NOT_RUN"
   assert.equal(run.evidence[0].state, "FIXTURE");
 });
 
+test("run ID binds normalized context, raw evidence, and the complete active policy", () => {
+  const base = analyzeChange({ request: fixtureRequest, context: fixtureContext, policy, mode: "fixture", now });
+  const changedContext = analyzeChange({
+    request: fixtureRequest,
+    context: { ...fixtureContext, assets: fixtureContext.assets.map((asset, index) => index === 0 ? { ...asset, name: "changed" } : asset) },
+    policy,
+    mode: "fixture",
+    now
+  });
+  const changedPolicy = analyzeChange({
+    request: fixtureRequest,
+    context: fixtureContext,
+    policy: { ...policy, riskWeights: { ...policy.riskWeights, sensitiveData: policy.riskWeights.sensitiveData + 1 } },
+    mode: "fixture",
+    now
+  });
+  assert.match(base.runId, /^csr_[a-f0-9]{32}$/);
+  assert.notEqual(changedContext.runId, base.runId);
+  assert.notEqual(changedPolicy.runId, base.runId);
+});
+
 test("datahub mode cannot claim live context before MCP evidence arrives", () => {
   const run = analyzeChange({ request: fixtureRequest, context: fixtureContext, policy, mode: "datahub", now: new Date(fixtureContext.observedAt) });
   assert.equal(run.evidence.find((item) => item.claim === "DataHub context retrieved").state, "NOT_RUN");
-  assert.equal(run.evidence.find((item) => item.claim === "Column-level impact traced").state, "FIXTURE");
+  assert.equal(run.evidence.find((item) => item.claim === "Entity-level downstream impact traced").state, "NOT_RUN");
 });
 
 test("approval creates a hashed passport without rewriting deterministic risk", () => {
@@ -65,11 +140,28 @@ test("approval creates a hashed passport without rewriting deterministic risk", 
   assert.equal(approved.passport.status, "CERTIFIED");
   assert.match(approved.passport.passportId, /^csp_[a-f0-9]{20}$/);
   assert.equal(approved.passport.artifactHashes.length, 4);
+  assert.equal(approved.passport.evidence.find((item) => item.claim === "Human scope approval recorded").state, "PASS");
+});
+
+test("human rejection records an explicit non-authorizing passport", () => {
+  const run = analyzeChange({ request: fixtureRequest, context: fixtureContext, policy, mode: "fixture", now });
+  const rejected = decideRun(run, {
+    decision: "REJECT",
+    reviewer: "data-owner",
+    note: "Reject pending a narrower owner-approved scope.",
+    scopeAccepted: false
+  }, now);
+  assert.equal(rejected.state, "REJECTED");
+  assert.equal(rejected.approval.scopeAccepted, false);
+  assert.equal(rejected.passport.status, "REJECTED");
+  assert.throws(() => buildWritebackOperations(rejected, policy, now), (error) =>
+    Array.isArray(error?.details)
+      && error.details.some((detail) => /not approved|not CERTIFIED|approval/i.test(detail)));
 });
 
 test("write-back operations cannot be built before scoped approval", () => {
   const run = analyzeChange({ request: fixtureRequest, context: fixtureContext, policy, mode: "fixture", now });
-  assert.throws(() => buildWritebackOperations(run, policy), /approved certified run/);
+  assert.throws(() => buildWritebackOperations(run, policy), /Certified passport is missing/);
 });
 
 test("approved passport produces bounded DataHub mutation operations", () => {
@@ -80,23 +172,31 @@ test("approved passport produces bounded DataHub mutation operations", () => {
     note: "Approve staged migration only.",
     scopeAccepted: true
   }, now);
-  const operations = buildWritebackOperations(approved, policy);
+  const operations = buildWritebackOperations(approved, policy, now);
   assert.deepEqual(operations.map((item) => item.tool), ["add_structured_properties", "update_description", "save_document"]);
   assert.deepEqual(operations[0].arguments.entity_urns, [fixtureRequest.targetUrn]);
   assert.deepEqual(operations[2].arguments.related_assets, [fixtureRequest.targetUrn]);
 });
 
 test("write-back stops and preserves partial operation evidence on tool failure", async () => {
+  const run = analyzeChange({ request: fixtureRequest, context: fixtureContext, policy, mode: "fixture", now });
+  const approved = decideRun(run, {
+    decision: "APPROVE",
+    reviewer: "data-owner",
+    note: "Approve staged migration only.",
+    scopeAccepted: true
+  }, now);
+  const operations = buildWritebackOperations(approved, policy, now);
   let calls = 0;
   const client = {
     async callTool() {
       calls += 1;
       if (calls === 2) throw new Error("catalog denied description");
-      return { isError: false };
+      return { isError: false, structuredContent: { success: true } };
     }
   };
   await assert.rejects(
-    () => executeWriteback(client, [{ tool: "one", arguments: {} }, { tool: "two", arguments: {} }, { tool: "three", arguments: {} }]),
+    () => executeWriteback(client, operations, { run: approved, policy, now }),
     (error) => error instanceof WritebackError && error.results.map((item) => item.status).join(",") === "PASS,FAIL"
   );
   assert.equal(calls, 2);

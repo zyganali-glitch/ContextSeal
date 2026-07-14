@@ -12,13 +12,45 @@ jobs:
   validate:
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [20, 24]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 24
+          node-version: ${{ matrix.node-version }}
           cache: npm
-      - run: npm install --ignore-scripts
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: npm ci --ignore-scripts
+      - name: Test fail-closed DataHub bootstrap gates
+        run: npm run datahub:safety:test
       - run: npm run validate
-      - name: Build container
+      - name: Prove validation is idempotent
+        run: git diff --exit-code
+
+  container-smoke:
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build production image
         run: docker build -t contextseal:${{ github.sha }} .
+      - name: Start fixture-only container
+        run: docker run --detach --name contextseal-ci --publish 4173:4173 contextseal:${{ github.sha }}
+      - name: Verify container health and API behavior
+        run: |
+          curl --fail --retry 10 --retry-all-errors --retry-delay 1 http://127.0.0.1:4173/api/health --output health.json
+          jq --exit-status '.status == "ok" and .mode == "fixture" and .mutationsEnabled == false and (.evidenceBoundary | startswith("FIXTURE:"))' health.json
+          curl --fail --request POST --header 'content-type: application/json' --data '{}' http://127.0.0.1:4173/api/analyze --output analysis.json
+          jq --exit-status '.state == "AWAITING_HUMAN" and (.artifacts.files | length) == 4 and (.evidence[] | select(.claim == "DataHub context retrieved").state) == "FIXTURE"' analysis.json
+      - name: Show container logs
+        if: always()
+        run: docker logs contextseal-ci
+      - name: Stop container
+        if: always()
+        run: docker rm --force contextseal-ci
