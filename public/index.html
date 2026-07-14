@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="ContextSeal certifies risky data changes with DataHub context, deterministic evidence, and human approval.">
+  <title>ContextSeal — Graph-backed data change certification</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="ambient ambient-one"></div>
+  <div class="ambient ambient-two"></div>
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="ContextSeal home">
+      <span class="brand-mark" aria-hidden="true">C</span>
+      <span>ContextSeal</span>
+    </a>
+    <div class="top-actions">
+      <span id="modeBadge" class="badge badge-fixture">Checking mode…</span>
+      <a class="ghost-link" href="https://github.com/zyganali-glitch/ContextSeal">GitHub</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="eyebrow">DATAHUB-NATIVE CHANGE CONTROL</div>
+      <h1>Every data change ships<br><span>with proof.</span></h1>
+      <p class="hero-copy">ContextSeal turns a risky schema request into a lineage-aware migration, a reviewable evidence trail, and a durable DataHub change passport.</p>
+      <div class="hero-actions">
+        <button id="analyzeButton" class="primary-button">Analyze the demo change</button>
+        <span class="microcopy">No catalog is modified in fixture mode.</span>
+      </div>
+    </section>
+
+    <section class="workflow-strip" aria-label="ContextSeal workflow">
+      <div class="workflow-step active"><span>01</span>Request</div>
+      <div class="workflow-line"></div>
+      <div class="workflow-step"><span>02</span>Context</div>
+      <div class="workflow-line"></div>
+      <div class="workflow-step"><span>03</span>Proof</div>
+      <div class="workflow-line"></div>
+      <div class="workflow-step"><span>04</span>Decision</div>
+      <div class="workflow-line"></div>
+      <div class="workflow-step"><span>05</span>Write-back</div>
+    </section>
+
+    <section id="workspace" class="workspace hidden" aria-live="polite">
+      <article class="panel request-panel">
+        <div class="panel-heading">
+          <div>
+            <p class="kicker">CHANGE REQUEST</p>
+            <h2 id="requestTitle">—</h2>
+          </div>
+          <span id="requestState" class="status-pill">ANALYZING</span>
+        </div>
+        <div class="code-change">
+          <div><span class="minus">−</span><code id="sourceField">—</code></div>
+          <div><span class="plus">+</span><code id="destinationField">—</code></div>
+        </div>
+        <p id="requestRationale" class="muted"></p>
+      </article>
+
+      <section class="metric-grid">
+        <article class="metric-card risk-card">
+          <p>Risk score</p>
+          <strong id="riskScore">—</strong>
+          <span id="riskVerdict">—</span>
+        </article>
+        <article class="metric-card">
+          <p>Downstream assets</p>
+          <strong id="impactCount">—</strong>
+          <span id="criticalCount">— critical</span>
+        </article>
+        <article class="metric-card">
+          <p>Observed queries</p>
+          <strong id="queryCount">—</strong>
+          <span>real usage signals</span>
+        </article>
+        <article class="metric-card">
+          <p>Migration</p>
+          <strong class="metric-word" id="strategy">—</strong>
+          <span>safe alternative</span>
+        </article>
+      </section>
+
+      <article class="panel wide-panel">
+        <div class="panel-heading">
+          <div>
+            <p class="kicker">CONTEXT TRACE</p>
+            <h2>Why this change is risky</h2>
+          </div>
+          <span class="datahub-chip">Grounded by DataHub</span>
+        </div>
+        <div id="impactGraph" class="impact-graph"></div>
+      </article>
+
+      <div class="two-column">
+        <article class="panel">
+          <div class="panel-heading">
+            <div>
+              <p class="kicker">POLICY FINDINGS</p>
+              <h2>Explainable risk gate</h2>
+            </div>
+          </div>
+          <div id="findings" class="finding-list"></div>
+        </article>
+
+        <article class="panel">
+          <div class="panel-heading">
+            <div>
+              <p class="kicker">GENERATED DELIVERY</p>
+              <h2>Mergeable evidence</h2>
+            </div>
+          </div>
+          <div id="artifacts" class="artifact-list"></div>
+        </article>
+      </div>
+
+      <article class="panel wide-panel decision-panel">
+        <div>
+          <p class="kicker">HUMAN DECISION GATE</p>
+          <h2>Approve only the safe migration scope</h2>
+          <p class="muted">Approval certifies the generated expand–migrate–contract plan. It does not approve a direct destructive rename.</p>
+        </div>
+        <div class="decision-form">
+          <label>Reviewer <input id="reviewer" value="demo-reviewer" autocomplete="off"></label>
+          <label>Decision note <input id="decisionNote" value="Approved safe staged migration only." autocomplete="off"></label>
+          <button id="approveButton" class="primary-button">Approve safe plan</button>
+        </div>
+      </article>
+
+      <div class="two-column">
+        <article class="panel evidence-panel">
+          <div class="panel-heading">
+            <div>
+              <p class="kicker">EVIDENCE BOUNDARY</p>
+              <h2>Claims stay honest</h2>
+            </div>
+          </div>
+          <div id="evidence" class="evidence-list"></div>
+        </article>
+
+        <article class="panel passport-panel">
+          <div class="panel-heading">
+            <div>
+              <p class="kicker">CHANGE PASSPORT</p>
+              <h2 id="passportTitle">Waiting for approval</h2>
+            </div>
+            <span id="passportStatus" class="seal waiting">PENDING</span>
+          </div>
+          <dl id="passportDetails" class="passport-details">
+            <div><dt>Passport</dt><dd>—</dd></div>
+            <div><dt>Manifest</dt><dd>—</dd></div>
+            <div><dt>Valid until</dt><dd>—</dd></div>
+          </dl>
+          <button id="writebackButton" class="secondary-button" disabled>Prepare DataHub write-back</button>
+          <p id="writebackMessage" class="microcopy"></p>
+        </article>
+      </div>
+    </section>
+
+    <section class="principles">
+      <div><strong>Graph first</strong><span>Lineage, ownership, terms, quality, and real queries shape the decision.</span></div>
+      <div><strong>Evidence locked</strong><span>PASS, FAIL, NOT_RUN, STALE, and FIXTURE never collapse into a confident summary.</span></div>
+      <div><strong>Human accountable</strong><span>Risky mutations require an explicit, scoped decision.</span></div>
+    </section>
+  </main>
+
+  <footer>
+    <span>ContextSeal · Apache-2.0</span>
+    <span>Built for Build with DataHub: The Agent Hackathon</span>
+  </footer>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

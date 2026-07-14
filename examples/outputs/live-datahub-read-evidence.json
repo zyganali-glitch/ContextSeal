@@ -1,0 +1,668 @@
+{
+  "status": "PASS",
+  "transport": "stdio",
+  "mutationToolsEnabled": false,
+  "observedAt": "2026-07-14T14:18:44.134Z",
+  "targetUrn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)",
+  "evidence": [
+    {
+      "tool": "get_entities",
+      "arguments": {
+        "urns": [
+          "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)"
+        ]
+      },
+      "payload": {
+        "result": [
+          {
+            "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)",
+            "name": "gold_customers",
+            "platform": {
+              "urn": "urn:li:dataPlatform:snowflake",
+              "name": "snowflake"
+            },
+            "editableProperties": {
+              "description": "Tier-1 customer contact dataset used by the ContextSeal local demonstration.\n\n---\nContextSeal passport **csp_910a779e1ca2e29e9b88**: Add contact_email, backfill from customer_email, migrate consumers, then deprecate customer_email."
+            },
+            "properties": {
+              "name": "gold_customers",
+              "customProperties": [
+                {
+                  "key": "evidence_boundary",
+                  "value": "synthetic-local"
+                },
+                {
+                  "key": "contextseal_fixture",
+                  "value": "true"
+                }
+              ]
+            },
+            "ownership": {
+              "owners": [
+                {
+                  "owner": {
+                    "urn": "urn:li:corpuser:customer-data"
+                  },
+                  "type": "TECHNICAL_OWNER",
+                  "ownershipType": {
+                    "urn": "urn:li:ownershipType:__system__technical_owner",
+                    "type": "CUSTOM_OWNERSHIP_TYPE",
+                    "info": {
+                      "name": "Technical Owner",
+                      "description": "Involved in the production, maintenance, or distribution of the asset(s)."
+                    }
+                  }
+                }
+              ]
+            },
+            "tags": {
+              "tags": [
+                {
+                  "tag": {
+                    "urn": "urn:li:tag:PII"
+                  }
+                },
+                {
+                  "tag": {
+                    "urn": "urn:li:tag:Tier1"
+                  }
+                }
+              ]
+            },
+            "structuredProperties": {
+              "properties": [
+                {
+                  "structuredProperty": {
+                    "urn": "urn:li:structuredProperty:io.contextseal.passportId",
+                    "definition": {
+                      "displayName": "ContextSeal Passport ID",
+                      "qualifiedName": "io.contextseal.passportId"
+                    }
+                  },
+                  "values": [
+                    {
+                      "stringValue": "csp_910a779e1ca2e29e9b88"
+                    }
+                  ]
+                },
+                {
+                  "structuredProperty": {
+                    "urn": "urn:li:structuredProperty:io.contextseal.validUntil",
+                    "definition": {
+                      "displayName": "ContextSeal Valid Until",
+                      "qualifiedName": "io.contextseal.validUntil"
+                    }
+                  },
+                  "values": [
+                    {
+                      "stringValue": "2026-07-15"
+                    }
+                  ]
+                },
+                {
+                  "structuredProperty": {
+                    "urn": "urn:li:structuredProperty:io.contextseal.status",
+                    "definition": {
+                      "displayName": "ContextSeal Status",
+                      "qualifiedName": "io.contextseal.status"
+                    }
+                  },
+                  "values": [
+                    {
+                      "stringValue": "CERTIFIED"
+                    }
+                  ]
+                },
+                {
+                  "structuredProperty": {
+                    "urn": "urn:li:structuredProperty:io.contextseal.riskScore",
+                    "definition": {
+                      "displayName": "ContextSeal Risk Score",
+                      "qualifiedName": "io.contextseal.riskScore"
+                    }
+                  },
+                  "values": [
+                    {
+                      "numberValue": 80
+                    }
+                  ]
+                }
+              ]
+            },
+            "health": [
+              {
+                "type": "INCIDENTS",
+                "status": "PASS"
+              }
+            ],
+            "schemaMetadata": {
+              "name": "",
+              "platformUrn": "urn:li:dataPlatform:snowflake",
+              "fields": [
+                {
+                  "fieldPath": "customer_email",
+                  "nativeDataType": "varchar",
+                  "description": "Personal email address",
+                  "nullable": false
+                },
+                {
+                  "fieldPath": "customer_id",
+                  "nativeDataType": "varchar",
+                  "description": "Stable customer identifier",
+                  "nullable": false
+                },
+                {
+                  "fieldPath": "updated_at",
+                  "nativeDataType": "timestamp",
+                  "description": "Last source update",
+                  "nullable": false
+                }
+              ]
+            },
+            "relatedDocuments": {
+              "start": 0,
+              "count": 10,
+              "total": 1,
+              "documents": [
+                {
+                  "urn": "urn:li:document:shared-34b7c961-38ff-4e50-b204-b090e1978fd6",
+                  "type": "DOCUMENT",
+                  "info": {
+                    "title": "Change Passport csp_910a779e1ca2e29e9b88"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "tool": "get_lineage",
+      "arguments": {
+        "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)",
+        "upstream": false,
+        "max_hops": 5,
+        "max_results": 100
+      },
+      "payload": {
+        "downstreams": {
+          "total": 5,
+          "facets": [
+            {
+              "field": "degree",
+              "displayName": "Degree of Dependencies",
+              "aggregations": [
+                {
+                  "value": "1",
+                  "count": 0
+                },
+                {
+                  "value": "2",
+                  "count": 0
+                },
+                {
+                  "value": "3+",
+                  "count": 0
+                }
+              ]
+            },
+            {
+              "field": "_entityType",
+              "displayName": "Type",
+              "aggregations": [
+                {
+                  "value": "DATASET",
+                  "count": 5
+                }
+              ]
+            },
+            {
+              "field": "platform",
+              "displayName": "Platform",
+              "aggregations": [
+                {
+                  "value": "urn:li:dataPlatform:mlflow",
+                  "count": 1,
+                  "entity": {
+                    "urn": "urn:li:dataPlatform:mlflow"
+                  }
+                },
+                {
+                  "value": "urn:li:dataPlatform:airflow",
+                  "count": 1,
+                  "entity": {
+                    "urn": "urn:li:dataPlatform:airflow"
+                  }
+                },
+                {
+                  "value": "urn:li:dataPlatform:looker",
+                  "count": 1,
+                  "entity": {
+                    "urn": "urn:li:dataPlatform:looker"
+                  }
+                }
+              ]
+            },
+            {
+              "field": "tags",
+              "displayName": "Tagged With",
+              "aggregations": [
+                {
+                  "value": "urn:li:tag:Tier1",
+                  "count": 2,
+                  "entity": {
+                    "urn": "urn:li:tag:Tier1"
+                  }
+                },
+                {
+                  "value": "urn:li:tag:Campaign",
+                  "count": 1,
+                  "entity": {
+                    "urn": "urn:li:tag:Campaign"
+                  }
+                },
+                {
+                  "value": "urn:li:tag:Executive",
+                  "count": 1,
+                  "entity": {
+                    "urn": "urn:li:tag:Executive"
+                  }
+                }
+              ]
+            },
+            {
+              "field": "owners",
+              "displayName": "Owned By",
+              "aggregations": [
+                {
+                  "value": "urn:li:corpuser:growth-data",
+                  "count": 2,
+                  "entity": {
+                    "urn": "urn:li:corpuser:growth-data"
+                  }
+                },
+                {
+                  "value": "urn:li:corpuser:marketing-analytics",
+                  "count": 1,
+                  "entity": {
+                    "urn": "urn:li:corpuser:marketing-analytics"
+                  }
+                },
+                {
+                  "value": "urn:li:corpuser:customer-success",
+                  "count": 1,
+                  "entity": {
+                    "urn": "urn:li:corpuser:customer-success"
+                  }
+                }
+              ]
+            },
+            {
+              "field": "origin",
+              "displayName": "Environment",
+              "aggregations": [
+                {
+                  "value": "PROD",
+                  "count": 5
+                }
+              ]
+            },
+            {
+              "field": "_entityType␞typeNames",
+              "displayName": "Type␞Sub Type",
+              "aggregations": [
+                {
+                  "value": "DATASET",
+                  "count": 5
+                }
+              ]
+            },
+            {
+              "field": "removed",
+              "displayName": "removed",
+              "aggregations": [
+                {
+                  "value": "true",
+                  "count": 0
+                }
+              ]
+            },
+            {
+              "field": "entity",
+              "displayName": "Type",
+              "aggregations": [
+                {
+                  "value": "DATASET",
+                  "count": 5
+                }
+              ]
+            }
+          ],
+          "searchResults": [
+            {
+              "entity": {
+                "urn": "urn:li:dataset:(urn:li:dataPlatform:airflow,customer_360.build_segments,PROD)",
+                "type": "DATASET",
+                "name": "build_segments",
+                "platform": {
+                  "urn": "urn:li:dataPlatform:airflow",
+                  "name": "airflow"
+                },
+                "editableProperties": {
+                  "description": "Airflow-produced segment build output."
+                },
+                "properties": {
+                  "name": "build_segments",
+                  "customProperties": [
+                    {
+                      "key": "evidence_boundary",
+                      "value": "synthetic-local"
+                    },
+                    {
+                      "key": "contextseal_fixture",
+                      "value": "true"
+                    }
+                  ]
+                },
+                "ownership": {
+                  "owners": [
+                    {
+                      "owner": {
+                        "urn": "urn:li:corpuser:growth-data"
+                      },
+                      "type": "TECHNICAL_OWNER",
+                      "ownershipType": {
+                        "urn": "urn:li:ownershipType:__system__technical_owner",
+                        "type": "CUSTOM_OWNERSHIP_TYPE",
+                        "info": {
+                          "name": "Technical Owner",
+                          "description": "Involved in the production, maintenance, or distribution of the asset(s)."
+                        }
+                      }
+                    }
+                  ]
+                },
+                "tags": {
+                  "tags": [
+                    {
+                      "tag": {
+                        "urn": "urn:li:tag:Tier1"
+                      }
+                    }
+                  ]
+                },
+                "health": [
+                  {
+                    "type": "INCIDENTS",
+                    "status": "PASS"
+                  }
+                ]
+              },
+              "degree": 1
+            },
+            {
+              "entity": {
+                "urn": "urn:li:dataset:(urn:li:dataPlatform:looker,executive_customer_health,PROD)",
+                "type": "DATASET",
+                "name": "Executive Customer Health",
+                "platform": {
+                  "urn": "urn:li:dataPlatform:looker",
+                  "name": "looker"
+                },
+                "editableProperties": {
+                  "description": "Executive customer-health reporting surface."
+                },
+                "properties": {
+                  "name": "Executive Customer Health",
+                  "customProperties": [
+                    {
+                      "key": "evidence_boundary",
+                      "value": "synthetic-local"
+                    },
+                    {
+                      "key": "contextseal_fixture",
+                      "value": "true"
+                    }
+                  ]
+                },
+                "ownership": {
+                  "owners": [
+                    {
+                      "owner": {
+                        "urn": "urn:li:corpuser:customer-success"
+                      },
+                      "type": "TECHNICAL_OWNER",
+                      "ownershipType": {
+                        "urn": "urn:li:ownershipType:__system__technical_owner",
+                        "type": "CUSTOM_OWNERSHIP_TYPE",
+                        "info": {
+                          "name": "Technical Owner",
+                          "description": "Involved in the production, maintenance, or distribution of the asset(s)."
+                        }
+                      }
+                    }
+                  ]
+                },
+                "tags": {
+                  "tags": [
+                    {
+                      "tag": {
+                        "urn": "urn:li:tag:Executive"
+                      }
+                    }
+                  ]
+                },
+                "health": [
+                  {
+                    "type": "INCIDENTS",
+                    "status": "PASS"
+                  }
+                ]
+              },
+              "degree": 3
+            },
+            {
+              "entity": {
+                "urn": "urn:li:dataset:(urn:li:dataPlatform:mlflow,churn_prediction,PROD)",
+                "type": "DATASET",
+                "name": "churn_prediction",
+                "platform": {
+                  "urn": "urn:li:dataPlatform:mlflow",
+                  "name": "mlflow"
+                },
+                "editableProperties": {
+                  "description": "Production churn prediction feature surface."
+                },
+                "properties": {
+                  "name": "churn_prediction",
+                  "customProperties": [
+                    {
+                      "key": "evidence_boundary",
+                      "value": "synthetic-local"
+                    },
+                    {
+                      "key": "contextseal_fixture",
+                      "value": "true"
+                    }
+                  ]
+                },
+                "ownership": {
+                  "owners": [
+                    {
+                      "owner": {
+                        "urn": "urn:li:corpuser:ml-platform"
+                      },
+                      "type": "TECHNICAL_OWNER",
+                      "ownershipType": {
+                        "urn": "urn:li:ownershipType:__system__technical_owner",
+                        "type": "CUSTOM_OWNERSHIP_TYPE",
+                        "info": {
+                          "name": "Technical Owner",
+                          "description": "Involved in the production, maintenance, or distribution of the asset(s)."
+                        }
+                      }
+                    }
+                  ]
+                },
+                "tags": {
+                  "tags": [
+                    {
+                      "tag": {
+                        "urn": "urn:li:tag:Production"
+                      }
+                    }
+                  ]
+                },
+                "health": [
+                  {
+                    "type": "INCIDENTS",
+                    "status": "PASS"
+                  }
+                ]
+              },
+              "degree": 3
+            },
+            {
+              "entity": {
+                "urn": "urn:li:dataset:(urn:li:dataPlatform:powerbi,retention_campaign,PROD)",
+                "type": "DATASET",
+                "name": "Retention Campaign",
+                "platform": {
+                  "urn": "urn:li:dataPlatform:powerbi",
+                  "name": "powerbi"
+                },
+                "editableProperties": {
+                  "description": "Retention campaign reporting surface powered by churn scores."
+                },
+                "properties": {
+                  "name": "Retention Campaign",
+                  "customProperties": [
+                    {
+                      "key": "evidence_boundary",
+                      "value": "synthetic-local"
+                    },
+                    {
+                      "key": "contextseal_fixture",
+                      "value": "true"
+                    }
+                  ]
+                },
+                "ownership": {
+                  "owners": [
+                    {
+                      "owner": {
+                        "urn": "urn:li:corpuser:marketing-analytics"
+                      },
+                      "type": "TECHNICAL_OWNER",
+                      "ownershipType": {
+                        "urn": "urn:li:ownershipType:__system__technical_owner",
+                        "type": "CUSTOM_OWNERSHIP_TYPE",
+                        "info": {
+                          "name": "Technical Owner",
+                          "description": "Involved in the production, maintenance, or distribution of the asset(s)."
+                        }
+                      }
+                    }
+                  ]
+                },
+                "tags": {
+                  "tags": [
+                    {
+                      "tag": {
+                        "urn": "urn:li:tag:Campaign"
+                      }
+                    }
+                  ]
+                },
+                "health": [
+                  {
+                    "type": "INCIDENTS",
+                    "status": "PASS"
+                  }
+                ]
+              },
+              "degree": 4
+            },
+            {
+              "entity": {
+                "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.analytics.customer_segments,PROD)",
+                "type": "DATASET",
+                "name": "customer_segments",
+                "platform": {
+                  "urn": "urn:li:dataPlatform:snowflake",
+                  "name": "snowflake"
+                },
+                "editableProperties": {
+                  "description": "Customer segments consumed by analytics and ML."
+                },
+                "properties": {
+                  "name": "customer_segments",
+                  "customProperties": [
+                    {
+                      "key": "evidence_boundary",
+                      "value": "synthetic-local"
+                    },
+                    {
+                      "key": "contextseal_fixture",
+                      "value": "true"
+                    }
+                  ]
+                },
+                "ownership": {
+                  "owners": [
+                    {
+                      "owner": {
+                        "urn": "urn:li:corpuser:growth-data"
+                      },
+                      "type": "TECHNICAL_OWNER",
+                      "ownershipType": {
+                        "urn": "urn:li:ownershipType:__system__technical_owner",
+                        "type": "CUSTOM_OWNERSHIP_TYPE",
+                        "info": {
+                          "name": "Technical Owner",
+                          "description": "Involved in the production, maintenance, or distribution of the asset(s)."
+                        }
+                      }
+                    }
+                  ]
+                },
+                "tags": {
+                  "tags": [
+                    {
+                      "tag": {
+                        "urn": "urn:li:tag:Tier1"
+                      }
+                    }
+                  ]
+                },
+                "health": [
+                  {
+                    "type": "INCIDENTS",
+                    "status": "PASS"
+                  }
+                ]
+              },
+              "degree": 2
+            }
+          ],
+          "offset": 0,
+          "returned": 5,
+          "hasMore": false
+        }
+      }
+    },
+    {
+      "tool": "get_dataset_queries",
+      "arguments": {
+        "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)"
+      },
+      "payload": {
+        "start": 0,
+        "total": 0,
+        "count": 10
+      }
+    }
+  ],
+  "evidenceBoundary": "Raw MCP evidence is preserved. Normalized impact requires an exported ContextSeal graph contract."
+}

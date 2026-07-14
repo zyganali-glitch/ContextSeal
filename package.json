@@ -1,0 +1,31 @@
+{
+  "name": "contextseal",
+  "version": "0.1.0",
+  "description": "Graph-backed certification for high-risk data changes",
+  "type": "module",
+  "private": true,
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "demo": "node scripts/run-demo.js",
+    "datahub:seed": "python scripts/seed-datahub.py",
+    "datahub:capture": "node scripts/capture-live-evidence.js",
+    "datahub:export": "node scripts/export-live-run.js",
+    "test": "node --test",
+    "test:coverage": "node --test --experimental-test-coverage",
+    "check": "node scripts/check-repository.js",
+    "validate": "npm run check && npm test && npm run demo"
+  },
+  "keywords": [
+    "datahub",
+    "mcp",
+    "data-lineage",
+    "data-governance",
+    "ai-agents",
+    "dbt"
+  ],
+  "license": "Apache-2.0"
+}

@@ -1,0 +1,8 @@
+version: 2
+models:
+  - name: gold_customers_contextseal
+    description: "ContextSeal migration candidate; strategy EXPAND_MIGRATE_CONTRACT."
+    columns:
+      - name: contact_email
+        tests:
+          - not_null

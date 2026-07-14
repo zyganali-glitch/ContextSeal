@@ -1,0 +1,108 @@
+{
+  "source": "DataHub-compatible fixture",
+  "observedAt": "2026-07-14T12:00:00.000Z",
+  "assets": [
+    {
+      "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)",
+      "name": "gold_customers",
+      "type": "DATASET",
+      "platform": "snowflake",
+      "criticality": "HIGH",
+      "owners": ["urn:li:corpgroup:customer-data"],
+      "tags": ["PII", "Tier1"],
+      "terms": ["Personal Email Address"],
+      "assertions": ["urn:li:assertion:customer-email-not-null"],
+      "incidents": []
+    },
+    {
+      "urn": "urn:li:dataJob:(urn:li:dataFlow:(airflow,customer_360,PROD),build_segments)",
+      "name": "build_segments",
+      "type": "DATA_JOB",
+      "criticality": "HIGH",
+      "owners": ["urn:li:corpgroup:growth-data"],
+      "tags": [],
+      "terms": [],
+      "assertions": [],
+      "incidents": []
+    },
+    {
+      "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.analytics.customer_segments,PROD)",
+      "name": "customer_segments",
+      "type": "DATASET",
+      "criticality": "HIGH",
+      "owners": ["urn:li:corpgroup:growth-data"],
+      "tags": ["Tier1"],
+      "terms": [],
+      "assertions": ["urn:li:assertion:segments-freshness"],
+      "incidents": []
+    },
+    {
+      "urn": "urn:li:dashboard:(looker,executive_customer_health)",
+      "name": "Executive Customer Health",
+      "type": "DASHBOARD",
+      "criticality": "HIGH",
+      "owners": ["urn:li:corpgroup:customer-success"],
+      "tags": [],
+      "terms": [],
+      "assertions": [],
+      "incidents": []
+    },
+    {
+      "urn": "urn:li:mlModel:(urn:li:dataPlatform:mlflow,churn_prediction,PROD)",
+      "name": "churn_prediction",
+      "type": "ML_MODEL",
+      "criticality": "HIGH",
+      "owners": ["urn:li:corpgroup:ml-platform"],
+      "tags": ["Production"],
+      "terms": [],
+      "assertions": [],
+      "incidents": []
+    },
+    {
+      "urn": "urn:li:dashboard:(powerbi,retention_campaign)",
+      "name": "Retention Campaign",
+      "type": "DASHBOARD",
+      "criticality": "MEDIUM",
+      "owners": ["urn:li:corpgroup:marketing-analytics"],
+      "tags": [],
+      "terms": [],
+      "assertions": [],
+      "incidents": []
+    }
+  ],
+  "edges": [
+    {
+      "from": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)",
+      "to": "urn:li:dataJob:(urn:li:dataFlow:(airflow,customer_360,PROD),build_segments)",
+      "field": "customer_email"
+    },
+    {
+      "from": "urn:li:dataJob:(urn:li:dataFlow:(airflow,customer_360,PROD),build_segments)",
+      "to": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.analytics.customer_segments,PROD)"
+    },
+    {
+      "from": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.analytics.customer_segments,PROD)",
+      "to": "urn:li:dashboard:(looker,executive_customer_health)"
+    },
+    {
+      "from": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.analytics.customer_segments,PROD)",
+      "to": "urn:li:mlModel:(urn:li:dataPlatform:mlflow,churn_prediction,PROD)"
+    },
+    {
+      "from": "urn:li:mlModel:(urn:li:dataPlatform:mlflow,churn_prediction,PROD)",
+      "to": "urn:li:dashboard:(powerbi,retention_campaign)"
+    }
+  ],
+  "queries": [
+    {
+      "id": "query-looker-customer-health",
+      "datasetUrn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)",
+      "sql": "select customer_id, customer_email from retail.gold.customers where customer_email is not null"
+    },
+    {
+      "id": "query-segment-export",
+      "datasetUrn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)",
+      "sql": "select customer_email, segment from retail.gold.customers join retail.analytics.customer_segments using (customer_id)"
+    }
+  ]
+}

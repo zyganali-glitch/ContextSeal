@@ -1,0 +1,30 @@
+{
+  "policyVersion": "2026-07-14",
+  "contextMaxAgeHours": 24,
+  "impactMaxHops": 5,
+  "approvalRequiredScore": 30,
+  "blockedScore": 70,
+  "supportedChanges": [
+    "rename_column",
+    "drop_column",
+    "type_change"
+  ],
+  "riskWeights": {
+    "activeIncident": 50,
+    "breakingDownstream": 35,
+    "sensitiveData": 25,
+    "queryUsage": 20,
+    "missingOwner": 15,
+    "missingAssertions": 10,
+    "staleContext": 30
+  },
+  "writeback": {
+    "structuredProperties": [
+      "io.contextseal.status",
+      "io.contextseal.riskScore",
+      "io.contextseal.passportId",
+      "io.contextseal.validUntil"
+    ],
+    "documentFolder": "ContextSeal Change Passports"
+  }
+}

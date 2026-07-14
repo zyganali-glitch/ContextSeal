@@ -1,0 +1,49 @@
+- id: io.contextseal.status
+  qualified_name: io.contextseal.status
+  type: string
+  cardinality: SINGLE
+  display_name: ContextSeal Status
+  description: Certification status of the latest bounded data change review.
+  entity_types:
+    - dataset
+    - dataFlow
+    - dataJob
+  allowed_values:
+    - value: CERTIFIED
+      description: A current passport exists for a scoped safe migration.
+    - value: REJECTED
+      description: The proposed change was rejected.
+    - value: EXPIRED
+      description: The underlying context is too old to trust.
+
+- id: io.contextseal.riskScore
+  qualified_name: io.contextseal.riskScore
+  type: number
+  cardinality: SINGLE
+  display_name: ContextSeal Risk Score
+  description: Deterministic risk score from 0 to 100.
+  entity_types:
+    - dataset
+    - dataFlow
+    - dataJob
+- id: io.contextseal.passportId
+  qualified_name: io.contextseal.passportId
+  type: string
+  cardinality: SINGLE
+  display_name: ContextSeal Passport ID
+  description: Identifier of the evidence manifest covering the approved change.
+  entity_types:
+    - dataset
+    - dataFlow
+    - dataJob
+
+- id: io.contextseal.validUntil
+  qualified_name: io.contextseal.validUntil
+  type: date
+  cardinality: SINGLE
+  display_name: ContextSeal Valid Until
+  description: Expiration time after which DataHub context must be collected again.
+  entity_types:
+    - dataset
+    - dataFlow
+    - dataJob

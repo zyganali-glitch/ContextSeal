@@ -1,0 +1,9 @@
+{
+  "targetUrn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)",
+  "entityName": "gold_customers",
+  "changeType": "rename_column",
+  "sourceField": "customer_email",
+  "destinationField": "contact_email",
+  "requestedBy": "retail-data-platform",
+  "rationale": "Standardize customer contact fields without breaking downstream consumers."
+}
