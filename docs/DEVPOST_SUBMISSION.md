@@ -20,6 +20,8 @@ AI coding agents can generate valid SQL and dbt code while missing the organizat
 
 ## What it does
 
+In the judge demo, ContextSeal spends about 100 seconds doing six things in order: block the risky rename, show the downstream blast radius, surface a bounded AI explanation, generate a safe migration package, record scoped approval, and end on the passport the next human or agent can inherit.
+
 ContextSeal accepts a proposed column rename, drop, or type change. It reads DataHub entity context, lineage, ownership, governance signals, quality evidence, incidents, and observed queries. A deterministic policy engine reconstructs downstream paths and explains every risk finding. Instead of producing a destructive operation, ContextSeal generates an expand–migrate–contract dbt model, schema tests, rollback, and owner briefing.
 
 After the deterministic verdict is fixed, an optional local Ollama layer can turn that grounded run into a non-authoritative owner alert, migration rationale, reviewer-note draft, and next-step guidance. If the runtime is unavailable, ContextSeal records `NOT_ENABLED` or `UNAVAILABLE` instead of fabricating confidence.
@@ -58,7 +60,7 @@ The hardest design problem was separating a risky original request from a safe g
 - Fail-closed DataHub write-back gates
 - A reproducible judge fixture and a completed disposable-local DataHub proof
 - A deterministic local sandbox harness that validates the generated artifact bundle against its manifest and grounding contract
-- A documented PR review packet contract that locks the reviewer-ready bundle shape and token boundary before GitHub automation
+- A reviewer-ready PR bundle plus an optional token-gated draft PR path that keep GitHub delivery separate from deterministic evidence authority
 - Five downstream dataset-shaped results retrieved through live MCP across seeded Airflow, Snowflake, Looker, MLflow, and Power BI platform metadata
 - Four certification properties, an appended passport description, and a standalone decision document written and read back
 - A reusable DataHub change-certification skill
@@ -72,7 +74,7 @@ Context is most valuable when it changes an action, not when it only improves an
 - Verify and contribute the ContextSeal skill upstream to DataHub Skills
 - Add target-derived normalization for more DataHub entity types
 - Add signed reviewer identities and replay protection
-- Generate and optionally post the already-defined GitHub PR review packet after explicit approval
+- Exercise the optional token-gated draft PR path against a real GitHub branch after explicit approval
 - Add warehouse-specific sandbox executors
 - Extend from column changes to dbt model and pipeline schedule changes
 

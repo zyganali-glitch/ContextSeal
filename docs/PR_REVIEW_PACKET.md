@@ -4,7 +4,7 @@ Updated: 2026-07-21 UTC
 
 ## Purpose
 
-ContextSeal does not auto-open or auto-merge GitHub pull requests by default. This contract locks the reviewer-ready handoff shape for an approved run before any PR automation is added.
+ContextSeal does not auto-open or auto-merge GitHub pull requests by default. This contract locks the reviewer-ready handoff shape for an approved run and keeps the offline packet authoritative even when optional PR automation is used.
 
 The default path must stay free, local, and token-free. Optional draft PR creation is an additive path for a later step and must never redefine the packet shape described here.
 
@@ -41,7 +41,7 @@ These files are the offline default review handoff. They must be usable without 
 
 ## Branch and title rules
 
-The future bundle generator must derive a deterministic branch name from the approved run:
+The bundle generator must derive a deterministic branch name from the approved run:
 
 `contextseal/<change-type>/<entity-name>-<run-id>`
 
@@ -194,7 +194,8 @@ Before a PR packet is claimed complete, the repo must pass this sequence:
 npm run demo
 npm run sandbox
 node scripts/build-pr-bundle.js
+npm run pr:draft -- --dry-run
 npm run validate
 ```
 
-Until `W-15A` lands, this document is the authoritative contract and no shipped automation may diverge from it without updating the plan first.
+This document is the authoritative contract for `scripts/build-pr-bundle.js` and `scripts/create-draft-pr.js`. Shipped automation may not diverge from it without updating the plan first.

@@ -13,6 +13,15 @@
 - MCP read/write boundaries are controlled by `DATAHUB_MCP_TRANSPORT`, `DATAHUB_MCP_COMMAND`, `DATAHUB_MCP_ARGS`, `DATAHUB_GMS_URL`, `DATAHUB_GMS_TOKEN`, and `DATAHUB_MCP_MUTATIONS_ENABLED`
 - Credentials, tokens, and source rows must never be logged, committed, or copied into docs
 
+## Optional GitHub PR path
+
+- Offline packet refresh command: `npm run pr:bundle`
+- Token-free request validation command: `npm run pr:draft -- --dry-run`
+- Live draft PR creation requires `GITHUB_TOKEN`
+- `GITHUB_REPO` is optional; when absent, `scripts/create-draft-pr.js` infers `owner/name` from `origin`
+- The source branch named in `examples/outputs/pr/pr-payload.json` must already exist on GitHub before a non-dry-run draft PR call
+- The draft PR path must remain additive; no token value may be written to repository artifacts or logs
+
 ## Current product constraints
 
 - The repo contains a deterministic fixture demo and separate disposable-local live proof artifacts

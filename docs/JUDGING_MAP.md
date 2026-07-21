@@ -11,6 +11,7 @@
 - Risk decisions use ownership, governance signals, quality, incidents, and lineage.
 - Approved outcomes write structured properties, description context, and a passport document back to DataHub.
 - The write-back makes the next agent inherit the decision rather than starting from an empty chat.
+- The first viewport now surfaces the read -> block -> package -> certify flow, and the next strip explicitly shows how write-back and inheritance fit without overstating fixture-mode behavior.
 - The judge-facing path view is fixture-backed unless a target-derived graph contract is exported separately.
 - Committed live-local evidence proves three reads, five downstream dataset-shaped results across seeded platforms, three bounded mutations, and post-write verification on synthetic metadata.
 
@@ -36,6 +37,7 @@ The target user is a data platform or analytics engineering team reviewing schem
 ## Submission quality
 
 - One-button fixture demo
+- First-viewport blocked-risk hero plus visible inheritance loop
 - Visible AI panel with honest unavailable fallback
 - Clear fixture/live labels
 - Under-three-minute shot plan

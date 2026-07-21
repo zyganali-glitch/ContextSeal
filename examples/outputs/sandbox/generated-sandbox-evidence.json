@@ -1,15 +1,15 @@
 {
   "status": "PASS",
-  "validatedAt": "2026-07-21T13:45:39Z",
+  "validatedAt": "2026-07-21T21:41:27Z",
   "evidenceBoundary": "Deterministic local conformance harness for generated ContextSeal artifacts; not warehouse execution.",
   "command": "python scripts/run-generated-sandbox.py --evidence-output examples/outputs/sandbox/generated-sandbox-evidence.json",
   "manifestPath": "examples/outputs/generated/ARTIFACT_MANIFEST.json",
   "manifestVersion": "1.0",
-  "generatedFromRunId": "csr_5a30f6773b3145ca",
+  "generatedFromRunId": "csr_6541faae806909b2",
   "passportContext": {
-    "passportId": "csp_87434040fc0f0fa5d35c",
-    "manifestHash": "87434040fc0f0fa5d35cef16448090b267aabbccd43da7475620d6f838913ef8",
-    "validUntil": "2026-07-22T13:45:38.678Z",
+    "passportId": "csp_a3f2019881651687ae76",
+    "manifestHash": "a3f2019881651687ae76007fe1132d3708d95173ee34a41a5cabe8be0d4c85d9",
+    "validUntil": "2026-07-22T21:41:27.366Z",
     "status": "CERTIFIED",
     "artifactGroundingContractVersion": "1.0",
     "artifactGroundingRuleId": "RENAME_COLUMN_REQUIRES_COMPATIBILITY_FIELD"

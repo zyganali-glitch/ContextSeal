@@ -5,6 +5,34 @@ const staticMode = location.hostname.endsWith("github.io") || location.protocol 
 
 function text(selector, value) { $(selector).textContent = String(value ?? "—"); }
 
+function formatChangeType(changeType) {
+  return String(changeType || "change")
+    .replaceAll("_", " ")
+    .replace(/\b\w/g, (letter) => letter.toUpperCase());
+}
+
+function formatStrategy(strategy) {
+  return String(strategy || "SAFE_PACKAGE").replaceAll("_", " ");
+}
+
+function formatWorkflowState(state) {
+  const normalized = String(state || "PENDING");
+  const labels = {
+    AWAITING_HUMAN: "AWAITING HUMAN",
+    APPROVED_FOR_WRITEBACK: "APPROVED FOR WRITE-BACK",
+    ANALYSIS_PENDING: "ANALYSIS PENDING"
+  };
+  return labels[normalized] || normalized.replaceAll("_", " ");
+}
+
+function evidenceState(run, claim) {
+  return run?.evidence?.find((item) => item.claim === claim)?.state || "NOT_RUN";
+}
+
+async function ensureDemoData() {
+  return staticDemo ||= await api("./demo-data.json");
+}
+
 async function api(url, options = {}) {
   const response = await fetch(url, { ...options, headers: { "content-type": "application/json", ...(options.headers || {}) } });
   const payload = await response.json();
@@ -29,6 +57,74 @@ function renderGraph(run) {
     node.append(type, name, detail);
     graph.append(node);
   }
+}
+
+function renderHeroSnapshot(run, approvedRun = null) {
+  if (!run) return;
+
+  const referenceRun = approvedRun?.passport ? approvedRun : run.passport ? run : null;
+  const passport = referenceRun?.passport || null;
+  const request = run.request || {};
+  const artifactCount = referenceRun?.artifacts?.manifest?.artifacts?.length ?? run.artifacts?.files?.length ?? 0;
+  const queryCount = run.context?.queries?.length ?? 0;
+  const impactCount = run.impact?.counts?.total ?? 0;
+  const criticalCount = run.impact?.counts?.highCriticality ?? 0;
+
+  text("#heroRiskPill", `${run.risk?.score ?? "—"}/100 ${run.risk?.verdict || "BLOCKED"}`);
+  text("#heroImpactPill", `${impactCount} downstream`);
+  text("#heroPackagePill", `${artifactCount} review files`);
+  const snapshotState = passport && !run.passport
+    ? `${run.risk?.verdict || "BLOCKED"} -> ${passport.status}`
+    : passport?.status || run.risk?.verdict || run.state || "BLOCKED";
+  text("#heroSnapshotState", snapshotState);
+  $("#heroSnapshotState").dataset.state = snapshotState.includes("CERTIFIED")
+    ? "BLOCKED_TO_CERTIFIED"
+    : (passport?.status || run.risk?.verdict || run.state || "BLOCKED");
+  text("#heroRequest", `${formatChangeType(request.changeType)} ${request.sourceField || "field"} -> ${request.destinationField || "safe target"}`);
+  text("#heroImpactSummary", `${impactCount} downstream assets, ${criticalCount} critical, ${queryCount} observed queries.`);
+  text("#heroPackageCount", `${artifactCount} review files`);
+  text("#heroStrategy", formatStrategy(run.artifacts?.strategy));
+
+  if (passport) {
+    text("#heroPassport", passport.passportId);
+    text("#heroPassportNote", "Scoped approval turns the safe package into a durable DataHub change passport.");
+  } else {
+    text("#heroPassport", "Pending approval");
+    text("#heroPassportNote", "A scoped human approval unlocks the durable change passport.");
+  }
+}
+
+function renderInheritanceLoop(run, approvedRun = null) {
+  if (!run) return;
+
+  const referenceRun = approvedRun?.passport ? approvedRun : run;
+  const artifactCount = referenceRun?.artifacts?.manifest?.artifacts?.length ?? run.artifacts?.files?.length ?? 0;
+  const readState = evidenceState(run, "DataHub context retrieved");
+  const actState = evidenceState(run, "Migration artifacts generated");
+  const writebackState = evidenceState(referenceRun, "DataHub write-back completed");
+  const inheritState = referenceRun?.passport?.status || "PENDING";
+
+  text("#loopReadState", readState);
+  $("#loopReadState").dataset.state = readState;
+  text("#loopReadCopy", readState === "FIXTURE"
+    ? "Fixture mode shows the public judge graph from DataHub-shaped context and query evidence."
+    : "Live MCP reads grounded the request before any safe package was proposed.");
+
+  text("#loopActState", actState);
+  $("#loopActState").dataset.state = actState;
+  text("#loopActCopy", `${artifactCount} review files and a safe staged migration replace the destructive request.`);
+
+  text("#loopWritebackState", writebackState);
+  $("#loopWritebackState").dataset.state = writebackState;
+  text("#loopWritebackCopy", writebackState === "PASS"
+    ? "Certified metadata was written back and read back successfully in the bounded live path."
+    : "Fixture mode keeps write-back NOT_RUN; separate live-local evidence proves the bounded mutation and read-back path.");
+
+  text("#loopInheritState", inheritState);
+  $("#loopInheritState").dataset.state = inheritState;
+  text("#loopInheritCopy", referenceRun?.passport
+    ? `The next human or agent can inherit passport ${referenceRun.passport.passportId} instead of starting from an empty chat.`
+    : "Inheritance starts only after scoped approval certifies the passport.");
 }
 
 function renderFindings(findings) {
@@ -151,11 +247,14 @@ function renderAi(run) {
 function renderRun(run) {
   currentRun = run;
   $("#workspace").classList.remove("hidden");
+  renderHeroSnapshot(run, run.passport ? run : staticDemo?.approved);
+  renderInheritanceLoop(run, run.passport ? run : staticDemo?.approved);
   text("#requestTitle", run.request.entityName);
   text("#sourceField", run.request.sourceField);
   text("#destinationField", run.request.destinationField || `${run.request.sourceField}_typed`);
   text("#requestRationale", run.request.rationale);
-  text("#requestState", run.state);
+  text("#requestState", formatWorkflowState(run.state));
+  $("#requestState").dataset.state = run.risk?.verdict || run.state;
   text("#riskScore", run.risk.score);
   text("#riskVerdict", run.risk.verdict);
   text("#impactCount", run.impact.counts.total);
@@ -175,6 +274,7 @@ function renderPassport(passport) {
   text("#passportTitle", passport.status === "CERTIFIED" ? "Certified safe migration" : "Rejected change");
   text("#passportStatus", passport.status);
   $("#passportStatus").className = `seal ${passport.status === "CERTIFIED" ? "certified" : "waiting"}`;
+  $("#passportStatus").dataset.state = passport.status;
   const values = $("#passportDetails").querySelectorAll("dd");
   values[0].textContent = passport.passportId;
   values[1].textContent = passport.manifestHash.slice(0, 24) + "…";
@@ -243,6 +343,14 @@ try {
   $("#modeBadge").className = `badge ${health.mode === "datahub" ? "badge-live" : "badge-fixture"}`;
 } catch {
   text("#modeBadge", "SERVER OFFLINE");
+}
+
+try {
+  const demo = await ensureDemoData();
+  renderHeroSnapshot(demo.analyzed, demo.approved);
+  renderInheritanceLoop(demo.analyzed, demo.approved);
+} catch {
+  // Keep the static fallback copy if the demo snapshot cannot be loaded.
 }
 
 $("#analyzeButton").addEventListener("click", analyze);

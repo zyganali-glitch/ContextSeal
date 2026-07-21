@@ -1,0 +1,20 @@
+{
+  "mode": "DRY_RUN",
+  "repo": "zyganali-glitch/ContextSeal",
+  "endpoint": "https://api.github.com/repos/zyganali-glitch/ContextSeal/pulls",
+  "payloadPath": "examples/outputs/pr/pr-payload.json",
+  "bodyPath": "examples/outputs/pr/pr-body.md",
+  "requestBody": {
+    "title": "ContextSeal: staged rename for gold_customers.customer_email -> contact_email",
+    "body": "## Summary\n\n- Run ID: csr_7fef13d943960c12\n- Passport ID: csp_3f0ff961b6752baf6861\n- Target entity: gold_customers\n- Change type: rename-column\n- PR title: ContextSeal: staged rename for gold_customers.customer_email -> contact_email\n- Branch name: contextseal/rename-column/gold-customers-csr_7fef13d943960c12\n- Safe staged strategy: Add contact_email, backfill from customer_email, migrate consumers, then deprecate customer_email.\n\n## Blocked original request\n\n- Requested operation: rename_column on gold_customers.customer_email -> contact_email\n- Deterministic verdict: BLOCKED\n- Risk score: 80\n- Finding codes: BREAKING_LINEAGE, SENSITIVE_DATA, LIVE_QUERY_USAGE\n\n## Safe generated plan\n\n- Migration rule ID: RENAME_COLUMN_REQUIRES_COMPATIBILITY_FIELD\n- Migration strategy: EXPAND_MIGRATE_CONTRACT\n- Strategy summary: Add contact_email, backfill from customer_email, migrate consumers, then deprecate customer_email.\n- Compatibility boundary: The generated change preserves compatibility until downstream consumers migrate.\n\n## Grounding from DataHub\n\n- Approved run record: examples/outputs/demo-certification.json (fixture mode)\n- Impacted asset count: 5\n- High-criticality assets: 4\n- Downstream owners: urn:li:corpgroup:growth-data, urn:li:corpgroup:customer-success, urn:li:corpgroup:ml-platform, urn:li:corpgroup:marketing-analytics\n- Representative grounded paths:\n  - build_segments: gold_customers -> build_segments\n  - customer_segments: gold_customers -> build_segments -> customer_segments\n  - Executive Customer Health: gold_customers -> build_segments -> customer_segments -> Executive Customer Health\n\n## Changed files\n\nThe generated compatibility bundle proposes these exact manifest-backed files for review:\n\n- generated/models/gold_customers_contextseal.sql\n- generated/models/gold_customers_contextseal.yml\n- generated/rollback/gold_customers.sql\n- generated/IMPACTED_OWNERS.md\n\n## Validation evidence\n\n- examples/outputs/demo-certification.json\n- examples/outputs/generated/ARTIFACT_MANIFEST.json\n- examples/outputs/sandbox/generated-sandbox-evidence.json\n- examples/outputs/generated/ai/contextseal-ai-output.md\n- Sandbox status: PASS\n- AI reviewer note artifact is included as optional non-authoritative context only.\n\n## Reviewer decision boundary\n\n- Approval covers only the safe generated compatibility change, not the blocked destructive request.\n- Deterministic evidence remains authoritative over any AI-generated explanation text.\n- Write-back and merge remain separate human-governed actions outside this packet.\n\n## Manual follow-up after merge\n\n- Migrate downstream consumers from the source field to the staged compatibility field.\n- Deprecate and remove the source field in a later separately approved change after consumer migration completes.\n- Rerun validation in the target repository before any deployment or write-back step.\n",
+    "head": "contextseal/rename-column/gold-customers-csr_7fef13d943960c12",
+    "base": "main",
+    "draft": true,
+    "maintainer_can_modify": false
+  },
+  "prerequisites": [
+    "The head branch must already exist on GitHub before a non-dry-run call.",
+    "Set GITHUB_TOKEN before creating a live draft PR.",
+    "Dry-run output is advisory; deterministic evidence artifacts remain authoritative."
+  ]
+}

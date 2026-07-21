@@ -1,4 +1,4 @@
-# Demo Script — 2:45 Target
+# Demo Script — 1:40 Target
 
 ## Story
 
@@ -6,45 +6,59 @@ A developer requests a direct rename of `customer_email` to `contact_email`. Con
 
 ## Shot plan
 
-### 00:00–00:15 — Problem
+### 00:00–00:08 — Problem
 
-Show the title and one sentence:
+- On screen: Title plus the first hero line.
+- Spoken beat: `A repository can see code. DataHub can see what the code will break.`
+- Subtitle: `A repository can see code. DataHub can see what the code will break.`
 
-> A repository can see code. DataHub can see what the code will break.
+### 00:08–00:20 — Blocked request
 
-### 00:15–00:30 — Request
+- On screen: Show `customer_email -> contact_email`, the blocked-risk hero, and click **Analyze the demo change**.
+- Spoken beat: `This rename looks small, but ContextSeal blocks it before it reaches GitHub.`
+- Subtitle: `ContextSeal blocks the risky rename before it reaches GitHub.`
 
-Show `customer_email → contact_email`. Click **Analyze the demo change**.
+### 00:20–00:34 — Blast radius
 
-### 00:30–00:58 — DataHub context
+- On screen: Hold on the context trace and downstream counts.
+- Spoken beat: `DataHub shows five downstream assets, and ContextSeal preserves the exact path that explains the blast radius.`
+- Subtitle: `DataHub shows five downstream assets and the exact path that explains the blast radius.`
 
-Point to five downstream assets, including the Airflow job, Snowflake dataset, dashboards, and ML model. State that every node includes its lineage path.
+### 00:34–00:46 — Deterministic block
 
-### 00:58–01:18 — Explainable block
+- On screen: Zoom the risk score and policy findings.
+- Spoken beat: `The verdict is deterministic: risk eighty, blocked, with breaking lineage, sensitive data, and live query usage.`
+- Subtitle: `Deterministic verdict: risk 80, BLOCKED, with breaking lineage, sensitive data, and live query usage.`
 
-Show risk 80 and `BLOCKED`. Highlight `BREAKING_LINEAGE`, `SENSITIVE_DATA`, and `LIVE_QUERY_USAGE`.
+### 00:46–00:56 — AI boundary
 
-### 01:18–01:32 — AI boundary
+- On screen: Show the Local AI Copilot panel.
+- Spoken beat: `The AI layer comes after the verdict and stays explanation-only. If the local runtime is unavailable, ContextSeal says so instead of inventing confidence.`
+- Subtitle: `AI is explanation-only and stays honest about runtime availability.`
 
-Show the Local AI Copilot panel. State that the deterministic verdict is already fixed. If Ollama is unavailable, the panel honestly shows `NOT ENABLED` or `UNAVAILABLE` instead of inventing analysis.
+### 00:56–01:10 — Safe package
 
-### 01:32–01:52 — Real work
+- On screen: Show generated delivery, review files, and the PR-ready handoff area.
+- Spoken beat: `Instead of a destructive rename, ContextSeal generates an expand-migrate-contract package: dbt model, tests, rollback, owner brief, and review bundle.`
+- Subtitle: `ContextSeal replaces the destructive rename with a staged migration package and review bundle.`
 
-Show the generated dbt model, schema tests, rollback, and owner briefing. Explain that ContextSeal refused the direct rename and generated an expand–migrate–contract alternative.
+### 01:10–01:22 — Human approval
 
-### 01:52–02:10 — Human decision
+- On screen: Show reviewer, note, and click **Approve safe plan**.
+- Spoken beat: `A human approves only the safe scope, never the original destructive request.`
+- Subtitle: `Human approval covers only the safe generated scope.`
 
-Show the exact reviewer and note. Click **Approve safe plan**.
+### 01:22–01:36 — Passport and inheritance
 
-### 02:10–02:28 — Passport
+- On screen: Hold on the passport ID, manifest hash, expiry, evidence states, and inheritance strip.
+- Spoken beat: `Now the change is certified. The passport binds the request, evidence, artifacts, and approval, while unexecuted checks stay clearly marked not run.`
+- Subtitle: `The passport binds request, evidence, artifacts, and approval. Unexecuted checks stay NOT_RUN.`
 
-Show the passport ID, manifest hash, expiry, and locked evidence states. Emphasize that unexecuted checks remain `NOT_RUN`.
+### 01:36–01:40 — Live-local close
 
-### 02:28–02:42 — DataHub write-back
-
-Cut to the already prepared local DataHub tab. Show the target asset's ContextSeal Status, Risk Score, Passport ID, Valid Until field, appended description, and saved decision document. State clearly that this is a live local DataHub instance containing synthetic metadata, not production data.
-
-### 02:42–02:45 — Close
+- On screen: Cut to the prepared local DataHub tab or the documented live-local evidence surface.
+- Spoken beat: `That certified decision can be written back to a disposable local DataHub so the next human and agent inherit it.`
+- Subtitle: `The certified decision is written back only to disposable local DataHub synthetic metadata.`
 
 > ContextSeal turns DataHub context into a safe decision the next human and agent can inherit.
 

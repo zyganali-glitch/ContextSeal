@@ -23,25 +23,116 @@
 
   <main>
     <section class="hero">
-      <div class="eyebrow">DATAHUB-NATIVE CHANGE CONTROL</div>
-      <h1>Every data change ships<br><span>with proof.</span></h1>
-      <p class="hero-copy">ContextSeal turns a risky schema request into a lineage-aware migration, a reviewable evidence trail, and a durable DataHub change passport.</p>
-      <div class="hero-actions">
-        <button id="analyzeButton" class="primary-button">Analyze the demo change</button>
-        <span class="microcopy">No catalog is modified in fixture mode.</span>
+      <div class="hero-shell">
+        <div class="hero-copy-block">
+          <div class="eyebrow">BLOCK RISK BEFORE MERGE</div>
+          <h1>Stop the breaking rename.<br><span>Ship the safe proof package.</span></h1>
+          <p class="hero-copy">ContextSeal reads DataHub context, blocks the risky field change, generates a staged migration bundle, and issues a durable passport only after a human approves the safe scope.</p>
+          <div class="hero-signals" aria-label="Judge snapshot summary">
+            <div class="hero-pill">
+              <strong id="heroRiskPill">BLOCKED</strong>
+              <span>deterministic verdict</span>
+            </div>
+            <div class="hero-pill">
+              <strong id="heroImpactPill">5 downstream</strong>
+              <span>reachable assets</span>
+            </div>
+            <div class="hero-pill">
+              <strong id="heroPackagePill">4 review files</strong>
+              <span>safe handoff</span>
+            </div>
+          </div>
+          <div class="hero-actions">
+            <button id="analyzeButton" class="primary-button">Analyze the demo change</button>
+            <span class="microcopy">Fixture mode proves the flow without mutating a live catalog.</span>
+          </div>
+        </div>
+
+        <aside class="hero-preview" aria-label="Blocked change preview">
+          <div class="hero-preview-header">
+            <div>
+              <p class="kicker">FIXTURE JUDGE SNAPSHOT</p>
+              <h2>What judges should see first</h2>
+            </div>
+            <span id="heroSnapshotState" class="status-pill" aria-label="Snapshot state">BLOCKED</span>
+          </div>
+
+          <div class="hero-preview-block">
+            <span>Blocked request</span>
+            <strong id="heroRequest">Rename customer_email -> contact_email</strong>
+            <p id="heroImpactSummary">5 downstream assets, 4 critical, 2 observed queries.</p>
+          </div>
+
+          <div class="hero-preview-grid">
+            <div class="hero-preview-stat">
+              <span>Safe package</span>
+              <strong id="heroPackageCount">4 review files</strong>
+              <p id="heroStrategy">EXPAND_MIGRATE_CONTRACT</p>
+            </div>
+            <div class="hero-preview-stat hero-preview-passport">
+              <span>Passport payoff</span>
+              <strong id="heroPassport">Pending approval</strong>
+              <p id="heroPassportNote">A scoped human approval unlocks the durable change passport.</p>
+            </div>
+          </div>
+        </aside>
       </div>
     </section>
 
     <section class="workflow-strip" aria-label="ContextSeal workflow">
-      <div class="workflow-step active"><span>01</span>Request</div>
+      <div class="workflow-step active"><span>01</span>Read DataHub</div>
       <div class="workflow-line"></div>
-      <div class="workflow-step"><span>02</span>Context</div>
+      <div class="workflow-step"><span>02</span>Block risk</div>
       <div class="workflow-line"></div>
-      <div class="workflow-step"><span>03</span>Proof</div>
+      <div class="workflow-step"><span>03</span>Generate package</div>
       <div class="workflow-line"></div>
-      <div class="workflow-step"><span>04</span>Decision</div>
+      <div class="workflow-step"><span>04</span>Approve scope</div>
       <div class="workflow-line"></div>
-      <div class="workflow-step"><span>05</span>Write-back</div>
+      <div class="workflow-step"><span>05</span>Certify passport</div>
+    </section>
+
+    <section class="inheritance-strip" aria-label="Context inheritance loop">
+      <div class="inheritance-heading">
+        <div>
+          <p class="kicker">READ -> ACT -> WRITE-BACK -> INHERIT</p>
+          <h2>Make the next human or agent start from recorded evidence</h2>
+        </div>
+        <p class="muted">Fixture mode keeps the judge path honest while the separate live-local proof demonstrates bounded mutation and read-back on synthetic metadata.</p>
+      </div>
+
+      <div class="inheritance-grid">
+        <article class="inheritance-card">
+          <div class="inheritance-top">
+            <span id="loopReadState" class="loop-state" data-state="FIXTURE">FIXTURE</span>
+            <strong>Read context</strong>
+          </div>
+          <p id="loopReadCopy">DataHub-shaped lineage, ownership, and query evidence ground the request before any package is proposed.</p>
+        </article>
+
+        <article class="inheritance-card">
+          <div class="inheritance-top">
+            <span id="loopActState" class="loop-state" data-state="PASS">PASS</span>
+            <strong>Act safely</strong>
+          </div>
+          <p id="loopActCopy">The destructive rename is replaced with a safe staged migration and a reviewable PR handoff bundle.</p>
+        </article>
+
+        <article class="inheritance-card">
+          <div class="inheritance-top">
+            <span id="loopWritebackState" class="loop-state" data-state="NOT_RUN">NOT_RUN</span>
+            <strong>Gate write-back</strong>
+          </div>
+          <p id="loopWritebackCopy">Fixture mode keeps write-back closed; the live-local proof separately demonstrates the bounded mutation path.</p>
+        </article>
+
+        <article class="inheritance-card">
+          <div class="inheritance-top">
+            <span id="loopInheritState" class="loop-state" data-state="CERTIFIED">CERTIFIED</span>
+            <strong>Inherit the decision</strong>
+          </div>
+          <p id="loopInheritCopy">The next human or agent inherits the passport and decision context instead of starting from an empty chat.</p>
+        </article>
+      </div>
     </section>
 
     <section id="workspace" class="workspace hidden" aria-live="polite">
@@ -51,7 +142,7 @@
             <p class="kicker">CHANGE REQUEST</p>
             <h2 id="requestTitle">—</h2>
           </div>
-          <span id="requestState" class="status-pill">ANALYZING</span>
+          <span id="requestState" class="status-pill" aria-label="Workflow state">ANALYSIS PENDING</span>
         </div>
         <div class="code-change">
           <div><span class="minus">−</span><code id="sourceField">—</code></div>
@@ -66,24 +157,24 @@
           <strong id="riskScore">—</strong>
           <span id="riskVerdict">—</span>
         </article>
-        <article class="metric-card">
+        <article class="metric-card impact-card">
           <p>Downstream assets</p>
           <strong id="impactCount">—</strong>
           <span id="criticalCount">— critical</span>
         </article>
-        <article class="metric-card">
+        <article class="metric-card query-card">
           <p>Observed queries</p>
           <strong id="queryCount">—</strong>
           <span>query evidence collected</span>
         </article>
-        <article class="metric-card">
+        <article class="metric-card strategy-card">
           <p>Migration</p>
           <strong class="metric-word" id="strategy">—</strong>
           <span>safe alternative</span>
         </article>
       </section>
 
-      <article class="panel wide-panel">
+      <article class="panel wide-panel context-panel">
         <div class="panel-heading">
           <div>
             <p class="kicker">CONTEXT TRACE</p>
@@ -108,7 +199,7 @@
       </article>
 
       <div class="two-column">
-        <article class="panel">
+        <article class="panel findings-panel">
           <div class="panel-heading">
             <div>
               <p class="kicker">POLICY FINDINGS</p>
@@ -118,7 +209,7 @@
           <div id="findings" class="finding-list"></div>
         </article>
 
-        <article class="panel">
+        <article class="panel delivery-panel">
           <div class="panel-heading">
             <div>
               <p class="kicker">GENERATED DELIVERY</p>

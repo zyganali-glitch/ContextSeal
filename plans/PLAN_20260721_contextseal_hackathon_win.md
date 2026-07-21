@@ -139,10 +139,10 @@ The winning path is not considered ready until these artifacts exist or are expl
 | `O-01` | Make the product unambiguously agentic without weakening deterministic authority | A free/local AI copilot visibly reads grounded ContextSeal evidence and emits owner alert, migration rationale, reviewer-note draft, and next-step guidance inside the default winning demo path | `MUST` | `IN_PROGRESS` |
 | `O-02` | Remove or repair fragile technical claims | README, UI, and evidence docs are truthful about asset-level vs field-level and fixture vs live | `MUST` | `DONE` |
 | `O-03` | Reposition the story around the passport artifact | Top-of-fold copy, Devpost, and video all make the passport the hero | `MUST` | `PENDING` |
-| `O-04` | Compress the demo into a memorable 90-110 second flow | Updated demo script and UI show blocked risk, AI explanation, and passport payoff in under two minutes | `MUST` | `PENDING` |
-| `O-04A` | Upgrade the UI into a professional, corporate, modern product surface | Hero, AI output area, risk proof, passport, and PR handoff read as boardroom-ready on desktop and mobile | `MUST` | `PENDING` |
+| `O-04` | Compress the demo into a memorable 90-110 second flow | Updated demo script and UI show blocked risk, AI explanation, and passport payoff in under two minutes | `MUST` | `DONE` |
+| `O-04A` | Upgrade the UI into a professional, corporate, modern product surface | Hero, AI output area, risk proof, passport, and PR handoff read as boardroom-ready on desktop and mobile | `MUST` | `DONE` |
 | `O-05` | Prove the generated data code works in a local deterministic sandbox | Generated dbt/SQL artifacts run or validate in a reproducible local execution path and produce named evidence | `MUST` | `DONE` |
-| `O-06` | Deliver the generated result into repo-native and PR-native review surfaces | Repo-committed artifacts exist and a free GitHub PR path is implemented: PR-ready bundle by default, optional draft PR creation with token | `MUST` | `IN_PROGRESS` |
+| `O-06` | Deliver the generated result into repo-native and PR-native review surfaces | Repo-committed artifacts exist and a free GitHub PR path is implemented: PR-ready bundle by default, optional draft PR creation with token | `MUST` | `DONE` |
 | `O-07` | Preserve or strengthen live DataHub credibility | Live proof path and wording survive technical scrutiny | `SHOULD` | `PENDING` |
 | `O-08` | Earn upstream or community traction | PR #35 gets an update comment and at least one outreach attempt is documented | `SHOULD` | `PENDING` |
 | `O-09` | Add one defensible stretch proof beyond the core challenge contract | One extra upgrade lands without harming core truth or schedule | `STRETCH` | `PENDING` |
@@ -163,8 +163,8 @@ The winning path is not considered ready until these artifacts exist or are expl
 | `P2` | Add a free/local AI copilot that is impossible to miss in the demo | `PENDING` | `P1` | AI output artifact, UI surface, example output, grounded input bundle, and safe tests exist |
 | `P3` | Strengthen live DataHub credibility, MCP/Skills visibility, and inheritance loop clarity | `PENDING` | `P1` | Live path states are truthful, visible, and technically defensible |
 | `P4` | Prove grounded code generation and local working-code execution | `DONE` | `P1`, `P2`, `P3` | Generated artifacts are tied to DataHub facts and validated through a reproducible local sandbox |
-| `P5` | Deliver a free GitHub PR path and repo-native review package | `IN_PROGRESS` | `P4` | PR-ready bundle exists and optional draft PR creation works when a token is available |
-| `P6` | Rebuild the demo around blocked risk, AI action, passport payoff, PR handoff, and a professional modern UI | `PENDING` | `P2`, `P3`, `P4`, `P5` | 90-110 second judge flow with updated UI cues, visual hierarchy, and script |
+| `P5` | Deliver a free GitHub PR path and repo-native review package | `DONE` | `P4` | PR-ready bundle exists, repo validation refreshes it, and the optional token-gated draft PR path now passes dry-run validation |
+| `P6` | Rebuild the demo around blocked risk, AI action, passport payoff, PR handoff, and a professional modern UI | `DONE` | `P2`, `P3`, `P4`, `P5` | 90-110 second judge flow with updated UI cues, visual hierarchy, and script |
 | `P7` | Rewrite submission surfaces as a sales pitch with honest authority | `PENDING` | `P1`, `P2`, `P3`, `P4`, `P5`, `P6` | README, Devpost draft, judging map, and Turkish helpers aligned |
 | `P8` | Pursue upstream/social proof with minimal time burn | `PENDING` | `P7` | PR update + outreach log |
 | `P9` | Land one stretch upgrade if core waves are closed | `PENDING` | `P7` | One bounded stretch item validates without hurting core truth |
@@ -297,17 +297,17 @@ These rows are binding execution specs. If implementation diverges, the plan mus
 | `W-14D` | Persist one sandbox execution evidence artifact under `examples/outputs/` | `DONE` | `main-agent` | `2026-07-21` | `examples/outputs/sandbox/generated-sandbox-evidence.json` is now regenerated by `npm run sandbox` and records manifest-linked deterministic conformance proof |
 | `W-14E` | Refresh committed generated artifacts after the sandbox path is settled | `DONE` | `main-agent` | `2026-07-21` | `npm run demo` plus `npm run sandbox` now keep the committed generated bundle and sandbox proof aligned |
 | `W-15` | Define the free GitHub PR delivery contract and required inputs | `DONE` | `main-agent` | `2026-07-21` | `docs/PR_REVIEW_PACKET.md` now locks the branch, title, body, checklist, artifact attachment shape, evidence links, and token boundary for reviewer handoff |
-| `W-15A` | Implement a PR-ready bundle generator for the generated change | `PENDING` | `main-agent` | `2026-07-21` | Must work without any paid service |
-| `W-15B` | Implement optional draft PR creation when a GitHub token is present | `PENDING` | `main-agent` | `2026-07-21` | Free path, but token-dependent |
-| `W-15C` | Persist one PR-ready example artifact or API transcript for judges | `PENDING` | `main-agent` | `2026-07-21` | Makes PR delivery inspectable even offline |
-| `W-16` | Reframe home-page hero around blocked risk and passport payoff | `PENDING` | `main-agent` | `2026-07-21` | Stronger first impression for judges |
-| `W-16A` | Add a visible live-evidence and inheritance stage cue to the product surface | `PENDING` | `main-agent` | `2026-07-21` | Makes read/act/write-back loop visible |
-| `W-16B` | Define the professional corporate visual direction for the upgraded UI | `PENDING` | `main-agent` | `2026-07-21` | Typography, color, layout, motion, and hierarchy are locked before implementation |
-| `W-16C` | Implement the visual system refresh across hero, AI, risk, passport, and PR surfaces | `PENDING` | `main-agent` | `2026-07-21` | UI must stop reading like a hackathon dashboard |
-| `W-16D` | Review the refreshed UI at desktop and mobile widths and record the audit | `PENDING` | `main-agent` | `2026-07-21` | Professional polish must be evidenced, not assumed |
-| `W-17` | Rewrite demo script to 90-110 seconds | `PENDING` | `main-agent` | `2026-07-21` | Remove low-yield explanation time |
-| `W-17A` | Produce exact shot order, subtitle copy, and spoken beats for the new demo | `PENDING` | `main-agent` | `2026-07-21` | No improvisation during recording |
-| `W-18` | Rewrite README top fold and product positioning | `PENDING` | `main-agent` | `2026-07-21` | Strengths first, constraints later |
+| `W-15A` | Implement a PR-ready bundle generator for the generated change | `DONE` | `main-agent` | `2026-07-21` | `scripts/build-pr-bundle.js` now emits `examples/outputs/pr/pr-body.md`, `pr-payload.json`, and `pr-checklist.md`; validated by `npm run pr:bundle` and `npm run validate` |
+| `W-15B` | Implement optional draft PR creation when a GitHub token is present | `DONE` | `main-agent` | `2026-07-21` | `scripts/create-draft-pr.js` now infers `owner/name` from `origin`, enforces `GITHUB_TOKEN` only for live calls, and passes `--dry-run` validation |
+| `W-15C` | Persist one PR-ready example artifact or API transcript for judges | `DONE` | `main-agent` | `2026-07-21` | The committed PR bundle is refreshed by `npm run pr:bundle`; `examples/outputs/pr/draft-pr-dry-run.json` persists the token-free GitHub request transcript |
+| `W-16` | Reframe home-page hero around blocked risk and passport payoff | `DONE` | `main-agent` | `2026-07-21` | Browser review at `http://127.0.0.1:4173` plus `npm run validate` confirmed the first viewport now leads with blocked risk, safe package, and passport payoff |
+| `W-16A` | Add a visible live-evidence and inheritance stage cue to the product surface | `DONE` | `main-agent` | `2026-07-21` | Browser review plus `npm run validate` confirmed the visible read -> act -> write-back -> inherit strip and honest fixture/live inheritance copy |
+| `W-16B` | Define the professional corporate visual direction for the upgraded UI | `DONE` | `main-agent` | `2026-07-21` | `docs/VISUAL_DIRECTION.md`, `AGENT_USER_PREFERENCES.md`, browser review at `http://127.0.0.1:4173`, and `npm run validate` now lock the typography, color, spacing, hierarchy, and motion contract |
+| `W-16C` | Implement the visual system refresh across hero, AI, risk, passport, and PR surfaces | `DONE` | `main-agent` | `2026-07-21` | Browser review covered the analyzed and approved states at `http://127.0.0.1:4173`; `npm run validate` passed after the workspace hierarchy, semantic panel tones, and state-aware pills were refreshed |
+| `W-16D` | Review the refreshed UI at desktop and mobile widths and record the audit | `DONE` | `main-agent` | `2026-07-21` | `docs/UI_REVIEW.md`, browser audit at `1440px` and `390px`, no horizontal overflow, and `npm run validate` close the desktop/mobile review with the workflow-state readability fix included |
+| `W-17` | Rewrite demo script to 90-110 seconds | `DONE` | `main-agent` | `2026-07-21` | `docs/DEMO_SCRIPT.md` now totals 100 seconds across 9 timestamped segments; README and Devpost copy are synced; `npm run validate` passed |
+| `W-17A` | Produce exact shot order, subtitle copy, and spoken beats for the new demo | `DONE` | `main-agent` | `2026-07-21` | `docs/DEMO_SCRIPT.md` now provides exact on-screen actions, spoken beats, and subtitle copy for all 9 timed segments; `npm run validate` passed |
+| `W-18` | Rewrite README top fold and product positioning | `DONE` | `main-agent` | `2026-07-21` | `README.md` and `README.tr.md` now lead with blocked risk, AI boundary, safe package, PR handoff, and passport payoff before longer limitations/problem framing; `npm run validate` passed |
 | `W-18A` | Rewrite Devpost draft around passport, AI action, sandbox proof, PR path, and safe write-back | `PENDING` | `main-agent` | `2026-07-21` | Primary track and hero narrative locked |
 | `W-18B` | Update judging map and evidence boundary docs to reflect final truth and challenge coverage | `PENDING` | `main-agent` | `2026-07-21` | No cross-surface contradictions |
 | `W-18C` | Update Turkish guides for the new story if English surfaces change materially | `PENDING` | `main-agent` | `2026-07-21` | Keep beginner-safe guidance aligned |
@@ -348,12 +348,12 @@ These rows are binding execution specs. If implementation diverges, the plan mus
 | `5.3` | Add local sandbox execution or equivalent deterministic code validation | `DONE` | `W-14C` | `main-agent` | `2026-07-21` | `2026-07-21` | Python sandbox harness and focused test now provide executable conformance proof for the generated bundle |
 | `5.4` | Save sandbox evidence and refresh committed generated outputs | `DONE` | `W-14D`, `W-14E` | `main-agent` | `2026-07-21` | `2026-07-21` | Sandbox proof artifact is committed and regenerated after demo output refresh |
 | `6.1` | Define the free GitHub PR delivery contract | `DONE` | `W-15` | `main-agent` | `2026-07-21` | `2026-07-21` | Reviewer-ready handoff path is codified in `docs/PR_REVIEW_PACKET.md` and anchored to repo integrity checks |
-| `6.2` | Implement PR-ready bundle generator | `PENDING` | `W-15A` | `main-agent` | `-` | `-` | Works without paid services |
-| `6.3` | Implement optional draft PR creation with token and save PR example artifact | `PENDING` | `W-15B`, `W-15C` | `main-agent` | `-` | `-` | Makes the PR clause concretely testable |
-| `7.1` | Reframe home-page hero and add visible live-evidence/inheritance cue | `PENDING` | `W-16`, `W-16A` | `main-agent` | `-` | `-` | Makes read/act/write-back visible |
-| `7.2` | Define and implement the professional visual direction and UI audit | `PENDING` | `W-16B`, `W-16C`, `W-16D` | `main-agent` | `-` | `-` | UI must feel like a product, not a project |
-| `7.3` | Rewrite the demo script, shot order, and subtitle beats | `PENDING` | `W-17`, `W-17A` | `main-agent` | `-` | `-` | 90-110 second path with AI before passport payoff |
-| `8.1` | Rewrite README and Devpost draft for the chosen challenge contract | `PENDING` | `W-18`, `W-18A` | `main-agent` | `-` | `-` | Passport-first, challenge-aware story |
+| `6.2` | Implement PR-ready bundle generator | `DONE` | `W-15A` | `main-agent` | `2026-07-21` | `2026-07-21` | `node scripts/build-pr-bundle.js` and `npm run validate` both regenerate the offline PR packet from the approved run, manifest, and sandbox evidence |
+| `6.3` | Implement optional draft PR creation with token and save PR example artifact | `DONE` | `W-15B`, `W-15C` | `main-agent` | `2026-07-21` | `2026-07-21` | `node scripts/create-draft-pr.js --dry-run` succeeds without a token; the live API call remains explicit and token-gated |
+| `7.1` | Reframe home-page hero and add visible live-evidence/inheritance cue | `DONE` | `W-16`, `W-16A` | `main-agent` | `2026-07-21` | `2026-07-21` | Browser review at `http://127.0.0.1:4173`, refreshed `public/demo-data.json`, and `npm run validate` confirm the new hero order and inheritance loop |
+| `7.2` | Define and implement the professional visual direction and UI audit | `DONE` | `W-16B`, `W-16C`, `W-16D` | `main-agent` | `2026-07-21` | `2026-07-21` | `docs/VISUAL_DIRECTION.md`, `docs/UI_REVIEW.md`, browser audits at `1440px` and `390px`, and `npm run validate` close the visual professionalism wave |
+| `7.3` | Rewrite the demo script, shot order, and subtitle beats | `DONE` | `W-17`, `W-17A` | `main-agent` | `2026-07-21` | `2026-07-21` | The demo script now totals 100 seconds and includes exact shot order, subtitle copy, and spoken beats; `npm run validate` passed |
+| `8.1` | Rewrite README and Devpost draft for the chosen challenge contract | `IN_PROGRESS` | `W-18`, `W-18A` | `main-agent` | `2026-07-21` | `-` | README top-fold positioning is complete; Devpost copy alignment remains open in `W-18A` |
 | `8.2` | Update judging docs and Turkish support surfaces | `PENDING` | `W-18B`, `W-18C` | `main-agent` | `-` | `-` | Global story parity |
 | `9.1` | Post PR #35 update and prepare community outreach note | `PENDING` | `W-19`, `W-19A` | `main-agent` | `-` | `-` | Traction attempt artifacts |
 | `10.1` | Choose and implement one stretch upgrade after core closure | `PENDING` | `W-20`, `W-20A` | `main-agent` | `-` | `-` | No stretch before core gates are green |
@@ -369,14 +369,14 @@ These rows are binding execution specs. If implementation diverges, the plan mus
 | `DataHub Read Grounding Gate` | DataHub facts are the explicit basis for generation and AI explanation | Grounded input artifact plus MCP/Skills trace review | `PASS` | `PASS` | AI grounding input and code-generation grounding contract now explicitly name the deterministic facts used by both explanation and generation paths |
 | `Generated Artifact Gate` | Generated migration outputs remain concrete, committed, and reviewable | Artifact diff review plus example output refresh | `PASS` | `PASS` | Generated outputs now ship with grounding metadata, manifest linkage, and a committed sandbox evidence artifact tied to the refreshed bundle |
 | `Sandbox Execution Gate` | Generated code works in a local deterministic path | Focused sandbox command or deterministic executor | `PASS` | `PASS` | `npm run sandbox` regenerates `examples/outputs/sandbox/generated-sandbox-evidence.json` after validating the committed bundle |
-| `PR Delivery Gate` | Generated result is attachable to PR review | PR bundle generation and optional draft PR creation | `PASS` | `WARN` | The PR packet contract is now defined, but `W-15A` to `W-15C` must still generate the bundle and optional draft PR path |
-| `Write-Back Inheritance Gate` | The next human or agent can inherit the result through DataHub write-back | Live proof review plus UI/doc surfacing | `PASS` | `WARN` | Core write-back exists, but the inheritance story is not yet visible enough |
+| `PR Delivery Gate` | Generated result is attachable to PR review | PR bundle generation and optional draft PR creation | `PASS` | `PASS` | `npm run pr:bundle`; `npm run pr:draft -- --dry-run`; `examples/outputs/pr/*`; live API creation remains optional and token-gated |
+| `Write-Back Inheritance Gate` | The next human or agent can inherit the result through DataHub write-back | Live proof review plus UI/doc surfacing | `PASS` | `PASS` | Live proof artifacts already existed; `public/index.html`, `public/app.js`, and `docs/JUDGING_MAP.md` now surface the inheritance loop explicitly |
 | `Integrity Lock Gate` | Governance surfaces | Manual parity check across `AGENTS.md`, root governance files, and active plan | `PASS` | `PASS` | Root governance spine and active plan created together |
 | `Evidence Boundary Gate` | Claims around live, fixture, field-level, and queries | Doc/UI/code audit | `PASS` | `PASS` | `docs/CLAIM_AUDIT.md`; docs/UI/skill/workflow wording synchronized on 2026-07-21 |
 | `AI Hero Gate` | Winning demo path AI presence | Local model run + saved artifact + visible UI proof | `PASS` | `WARN` | Visible AI panel plus committed input/output artifacts now exist, but a local-model-backed `PASS` artifact is still pending runtime availability |
 | `Agentic Boundary Gate` | Safe non-authoritative AI behavior | Tests + fallback verification + boundary review | `PASS` | `PASS` | Adapter tests cover disabled, unavailable, and bounded-success paths; UI and docs label AI as explanation-only |
-| `Visual Professionalism Gate` | Judge-facing UI quality | Desktop and mobile review against `docs/VISUAL_DIRECTION.md` | `PASS` | `NOT_RUN` | Pending `W-16B` to `W-16D` |
-| `Demo Compression Gate` | Judge story | Updated script + timed dry run | `PASS` | `NOT_RUN` | Pending `W-15` to `W-17` |
+| `Visual Professionalism Gate` | Judge-facing UI quality | Desktop and mobile review against `docs/VISUAL_DIRECTION.md` | `PASS` | `PASS` | `docs/VISUAL_DIRECTION.md`; `docs/UI_REVIEW.md`; browser review at `1440px` and `390px`; workflow-state readability fix landed without introducing overflow |
+| `Demo Compression Gate` | Judge story | Updated script + timed dry run | `PASS` | `PASS` | `docs/DEMO_SCRIPT.md` totals 100 seconds across 9 segments and now includes exact shot order, subtitle copy, and spoken beats |
 | `No-Paid-Dependency Gate` | New roadmap work | Dependency and tool review | `PASS` | `PASS` | Roadmap constrained to free/open-source/local-first paths |
 | `Submission Surface Parity Gate` | README, Devpost, judging docs, UI copy | Cross-surface diff review | `PASS` | `NOT_RUN` | Pending `W-18` to `W-21` |
 | `Maintainer Traction Gate` | PR and outreach surfaces | Public comment/outreach evidence | `PASS` | `NOT_RUN` | Pending `W-19` and `W-19A` |
@@ -394,13 +394,13 @@ These rows are binding execution specs. If implementation diverges, the plan mus
 | `R-01A` | The AI layer lands but still feels cosmetic to judges | `M` | `H` | Force four concrete outputs and make AI visible in the first minute of the demo | `OPEN` |
 | `R-02` | Field-level lineage is too large to implement cleanly before submission | `H` | `H` | Downgrade the claim fast, then optionally add field-aware filtering as stretch work | `MITIGATED` |
 | `R-02A` | The generated code still lacks a convincing first-time-working proof | `M` | `H` | Promote sandbox execution into the core plan instead of stretch work | `OPEN` |
-| `R-02B` | PR delivery remains hand-wavy and fails the chosen primary challenge | `M` | `H` | Promote PR bundle generation and optional draft PR creation into the core plan | `OPEN` |
+| `R-02B` | PR delivery remains hand-wavy and fails the chosen primary challenge | `M` | `H` | Promote PR bundle generation and optional draft PR creation into the core plan | `MITIGATED` |
 | `R-03` | README/Devpost/UI drift creates a credibility leak | `M` | `H` | Enforce live-doc sync and close `W-20` before claiming polish | `OPEN` |
 | `R-04` | Maintainers do not respond before deadline | `H` | `M` | Treat outreach as upside, not a dependency for the main story | `OPEN` |
 | `R-05` | Time gets consumed by stretch work before must-have fixes land | `M` | `H` | Hard cut line: no stretch work before `O-01` to `O-06` close | `OPEN` |
 | `R-06` | Over-defensive language remains and weakens first impressions | `M` | `M` | Rewrite top folds after truth reset, not before | `OPEN` |
 | `R-07` | An actual third-party PR merge cannot be obtained before deadline | `H` | `M` | Commit to PR-ready delivery and optional draft PR creation; never pre-claim external review or merge | `OPEN` |
-| `R-08` | The UI remains technically correct but still looks like a polished internal dashboard rather than a premium submission | `M` | `M` | Lock visual direction before implementation and review both desktop and mobile states | `OPEN` |
+| `R-08` | The UI remains technically correct but still looks like a polished internal dashboard rather than a premium submission | `M` | `M` | Lock visual direction before implementation and review both desktop and mobile states | `MITIGATED` |
 
 ### 8.2 Decision log
 
@@ -422,8 +422,8 @@ These rows are binding execution specs. If implementation diverges, the plan mus
 
 ```markdown
 ## CHECKPOINT - HANDOFF
-- Last Concluded Micro-Step: 6.1
+- Last Concluded Micro-Step: 8.1
 - Status: IN_PROGRESS
-- Next Micro-Step: 6.2
-- Critical Gate Status: PASS for repository validation, working app, DataHub grounding, generated artifact proof, sandbox execution, evidence-boundary truth reset, and agentic-boundary safety; WARN for PR delivery readiness, AI hero proof, and write-back inheritance; NOT_RUN for visual professionalism, demo compression, and submission parity gates
+- Next Micro-Step: W-18A
+- Critical Gate Status: PASS for repository validation, working app, DataHub grounding, generated artifact proof, sandbox execution, PR delivery, write-back inheritance, evidence-boundary truth reset, agentic-boundary safety, visual professionalism, and demo compression; WARN for AI hero proof; NOT_RUN for submission parity gates
 ```

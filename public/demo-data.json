@@ -1,9 +1,9 @@
 {
   "analyzed": {
-    "runId": "csr_5a30f6773b3145ca",
+    "runId": "csr_6541faae806909b2",
     "state": "AWAITING_HUMAN",
     "mode": "fixture",
-    "createdAt": "2026-07-21T13:45:38.673Z",
+    "createdAt": "2026-07-21T21:41:27.362Z",
     "request": {
       "targetUrn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)",
       "entityName": "gold_customers",
@@ -16,7 +16,7 @@
     },
     "context": {
       "source": "DataHub-compatible fixture",
-      "observedAt": "2026-07-21T13:45:38.672Z",
+      "observedAt": "2026-07-21T21:41:27.361Z",
       "assets": [
         {
           "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)",
@@ -473,7 +473,7 @@
     "aiGroundingInput": {
       "schemaVersion": "1.0",
       "product": "ContextSeal",
-      "generatedFromRunId": "csr_5a30f6773b3145ca",
+      "generatedFromRunId": "csr_6541faae806909b2",
       "mode": "fixture",
       "runState": "AWAITING_HUMAN",
       "evidenceBoundary": {
@@ -737,10 +737,10 @@
     }
   },
   "approved": {
-    "runId": "csr_5a30f6773b3145ca",
+    "runId": "csr_6541faae806909b2",
     "state": "APPROVED_FOR_WRITEBACK",
     "mode": "fixture",
-    "createdAt": "2026-07-21T13:45:38.673Z",
+    "createdAt": "2026-07-21T21:41:27.362Z",
     "request": {
       "targetUrn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)",
       "entityName": "gold_customers",
@@ -753,7 +753,7 @@
     },
     "context": {
       "source": "DataHub-compatible fixture",
-      "observedAt": "2026-07-21T13:45:38.672Z",
+      "observedAt": "2026-07-21T21:41:27.361Z",
       "assets": [
         {
           "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)",
@@ -1176,11 +1176,11 @@
       ],
       "manifest": {
         "manifestVersion": "1.0",
-        "generatedFromRunId": "csr_5a30f6773b3145ca",
+        "generatedFromRunId": "csr_6541faae806909b2",
         "passportContext": {
-          "passportId": "csp_87434040fc0f0fa5d35c",
-          "manifestHash": "87434040fc0f0fa5d35cef16448090b267aabbccd43da7475620d6f838913ef8",
-          "validUntil": "2026-07-22T13:45:38.678Z",
+          "passportId": "csp_a3f2019881651687ae76",
+          "manifestHash": "a3f2019881651687ae76007fe1132d3708d95173ee34a41a5cabe8be0d4c85d9",
+          "validUntil": "2026-07-22T21:41:27.366Z",
           "status": "CERTIFIED",
           "artifactGroundingContractVersion": "1.0",
           "artifactGroundingRuleId": "RENAME_COLUMN_REQUIRES_COMPATIBILITY_FIELD"
@@ -1351,7 +1351,7 @@
     "aiGroundingInput": {
       "schemaVersion": "1.0",
       "product": "ContextSeal",
-      "generatedFromRunId": "csr_5a30f6773b3145ca",
+      "generatedFromRunId": "csr_6541faae806909b2",
       "mode": "fixture",
       "runState": "AWAITING_HUMAN",
       "evidenceBoundary": {
@@ -1621,12 +1621,12 @@
     },
     "passport": {
       "passportVersion": "1.0",
-      "runId": "csr_5a30f6773b3145ca",
+      "runId": "csr_6541faae806909b2",
       "status": "CERTIFIED",
       "mode": "fixture",
       "targetUrn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)",
       "requestHash": "a0bd0168caa39e82d232eac2a3a9f3ebeeaf9a0b7dc3dac7ef84e05d6bb281f9",
-      "contextHash": "f7b1a83fcf721ec7a1cc8b45fb59f16bd23b5951141ab54024186836384c43ac",
+      "contextHash": "16b4fe2ef05294bfc4a23bfdde948c57b6bb7a056d3e7747f80c7d6a13850ee2",
       "risk": {
         "verdict": "BLOCKED",
         "score": 80,
@@ -1703,17 +1703,17 @@
         "reviewer": "demo-reviewer",
         "note": "Approved safe expand-migrate-contract scope only.",
         "decision": "APPROVE",
-        "decidedAt": "2026-07-21T13:45:38.678Z"
+        "decidedAt": "2026-07-21T21:41:27.366Z"
       },
-      "validUntil": "2026-07-22T13:45:38.678Z",
-      "passportId": "csp_87434040fc0f0fa5d35c",
-      "manifestHash": "87434040fc0f0fa5d35cef16448090b267aabbccd43da7475620d6f838913ef8"
+      "validUntil": "2026-07-22T21:41:27.366Z",
+      "passportId": "csp_a3f2019881651687ae76",
+      "manifestHash": "a3f2019881651687ae76007fe1132d3708d95173ee34a41a5cabe8be0d4c85d9"
     }
   },
   "aiGroundingInput": {
     "schemaVersion": "1.0",
     "product": "ContextSeal",
-    "generatedFromRunId": "csr_5a30f6773b3145ca",
+    "generatedFromRunId": "csr_6541faae806909b2",
     "mode": "fixture",
     "runState": "AWAITING_HUMAN",
     "evidenceBoundary": {

@@ -2,7 +2,11 @@
 
 > **Every data change ships with proof, not confidence.**
 
-ContextSeal is a DataHub-native certification agent for risky schema changes. It turns a proposed column rename, drop, or type change into a lineage-aware impact trace, an explainable policy verdict, a staged dbt migration, a scoped human decision, and a durable change passport written back to DataHub.
+ContextSeal is a DataHub-native certification agent for risky schema changes. It blocks a breaking rename before it reaches GitHub, turns the request into a safe staged migration package, and issues a durable change passport only after a human approves the safe scope.
+
+In the judge path, the first thing you see is the blocked request, the downstream blast radius, the safe review bundle, and the passport payoff. The rest of the product explains why that verdict is grounded.
+
+The demo story is now intentionally compressed to about 100 seconds: block the rename, show the blast radius, show the AI boundary, show the safe package, approve the safe scope, and end on the passport plus inherited decision.
 
 [![CI](https://github.com/zyganali-glitch/ContextSeal/actions/workflows/ci.yml/badge.svg)](https://github.com/zyganali-glitch/ContextSeal/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-Apache--2.0-green.svg)](LICENSE)
@@ -11,6 +15,22 @@ ContextSeal is a DataHub-native certification agent for risky schema changes. It
 **[Open the judge-ready fixture demo](https://zyganali-glitch.github.io/ContextSeal/)** · [Türkçe README](README.tr.md)
 
 Built as a clean-room entry for **Build with DataHub: The Agent Hackathon**. No pre-existing personal-project code is included.
+
+## Why the judge path lands
+
+- A risky rename is blocked before merge, not after damage.
+- DataHub context shows the exact downstream blast radius and named risk findings.
+- The optional AI panel is visible, bounded, and honest about runtime availability.
+- ContextSeal generates a safe migration package and a reviewer-ready PR bundle instead of a destructive change.
+- Human approval produces a durable passport that the next human or agent can inherit.
+
+## What ships in the first minute
+
+1. The blocked request and downstream blast radius.
+2. The deterministic `80 / BLOCKED` verdict and named findings.
+3. The explanation-only AI boundary.
+4. The generated safe package and review handoff.
+5. The passport and inherited decision loop.
 
 ## The problem
 
@@ -186,7 +206,14 @@ Committed AI artifacts:
 
 ## PR review handoff contract
 
-ContextSeal now includes a reviewer-ready PR handoff contract in [PR Review Packet](docs/PR_REVIEW_PACKET.md). The default path stays offline and token-free: the next generator step will emit a PR body, checklist, payload, and links to the approved run, artifact manifest, sandbox evidence, and generated files. Actual draft PR creation remains optional and will require an explicit `GITHUB_TOKEN`.
+ContextSeal now includes a reviewer-ready PR handoff contract in [PR Review Packet](docs/PR_REVIEW_PACKET.md). The default path stays offline and token-free: `npm run pr:bundle` refreshes the committed PR body, checklist, and payload under `examples/outputs/pr/`.
+
+```bash
+npm run pr:bundle
+npm run pr:draft -- --dry-run
+```
+
+`npm run pr:draft -- --dry-run` prepares the exact GitHub draft-PR request without using a token. A live draft PR call remains optional and explicit: the branch named in `examples/outputs/pr/pr-payload.json` must already exist on GitHub, and `GITHUB_TOKEN` is required before running `npm run pr:draft` without `--dry-run`.
 
 This runs repository-integrity checks, the deterministic Node test suite, and a fresh end-to-end fixture certification. CI also builds the container.
 

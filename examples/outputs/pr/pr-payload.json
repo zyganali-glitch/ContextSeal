@@ -1,0 +1,33 @@
+{
+  "runId": "csr_6541faae806909b2",
+  "passportId": "csp_a3f2019881651687ae76",
+  "baseBranch": "main",
+  "branchName": "contextseal/rename-column/gold-customers-csr_6541faae806909b2",
+  "title": "ContextSeal: staged rename for gold_customers.customer_email -> contact_email",
+  "bodyPath": "examples/outputs/pr/pr-body.md",
+  "checklistPath": "examples/outputs/pr/pr-checklist.md",
+  "changeType": "rename_column",
+  "entityName": "gold_customers",
+  "sourceField": "customer_email",
+  "destinationField": "contact_email",
+  "generatedFiles": [
+    "generated/models/gold_customers_contextseal.sql",
+    "generated/models/gold_customers_contextseal.yml",
+    "generated/rollback/gold_customers.sql",
+    "generated/IMPACTED_OWNERS.md"
+  ],
+  "evidenceFiles": [
+    "examples/outputs/demo-certification.json",
+    "examples/outputs/generated/ARTIFACT_MANIFEST.json",
+    "examples/outputs/sandbox/generated-sandbox-evidence.json",
+    "examples/outputs/generated/ai/contextseal-ai-output.md"
+  ],
+  "sandboxStatus": "PASS",
+  "draftPrSupported": true,
+  "requiresTokenForDraftCreation": true,
+  "manualReviewerActions": [
+    "Review the safe generated compatibility change against the approved run record.",
+    "Open a human-governed PR using the generated title, branch name, body, and checklist.",
+    "Keep downstream migration and eventual source-field removal outside this PR."
+  ]
+}

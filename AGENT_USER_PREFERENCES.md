@@ -12,3 +12,9 @@
 1. Assume zero paid new tooling or services unless the user explicitly approves an exception.
 2. Free, open-source, or local-first paths are preferred for demo, model, diagram, and video workflows.
 3. A living plan with micro-phases is required; vague high-level suggestions are not enough.
+
+## Visual product preferences
+
+1. Bias toward boardroom-grade corporate polish, not hacker neon or generic startup filler.
+2. Keep blocked risk, safe package, AI explanation, and passport payoff legible within the judge path without hunting.
+3. Use restrained motion, local-first font stacks, and semantic colors that map cleanly to evidence states.

@@ -6,6 +6,22 @@ ContextSeal; riskli bir kolon değişikliğini DataHub bağlamıyla inceleyen, e
 
 **[Kurulum gerektirmeyen güvenli gösterimi aç](https://zyganali-glitch.github.io/ContextSeal/)** · [English README](README.md)
 
+## Neden güçlü görünüyor?
+
+- Küçük görünen riskli bir yeniden adlandırma merge olmadan önce durduruluyor.
+- DataHub bağlamı aşağı yöndeki etkiyi ve isimlendirilmiş risk bulgularını açıkça gösteriyor.
+- İsteğe bağlı AI paneli görünür, sınırlı ve runtime yoksa bunu dürüstçe söylüyor.
+- ContextSeal yıkıcı değişikliği değil, güvenli geçiş paketi ve reviewer-ready PR handoff üretir.
+- İnsan onayı sonucunda oluşan pasaport, sonraki insan veya ajan tarafından miras alınabilir.
+
+## İlk dakikada ne görülüyor?
+
+1. Bloke edilen istek ve aşağı yöndeki etki alanı.
+2. Deterministik `80 / BLOCKED` kararı ve isimli bulgular.
+3. Açıklama amaçlı AI sınırı.
+4. Üretilen güvenli geçiş paketi ve inceleme handoff'u.
+5. Pasaport ve miras alınan karar döngüsü.
+
 ## Ne problemi çözüyor?
 
 Bir veri tablosundaki kolon yeniden adlandırıldığında yalnızca o tablo etkilenmez. Uzak bir gösterge paneli, başka ekibin veri hattı veya çalışan bir makine öğrenmesi modeli kırılabilir. Normal kod kontrolleri bu bağlantıların tamamını göremez.
