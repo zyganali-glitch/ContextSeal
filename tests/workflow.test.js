@@ -42,6 +42,11 @@ test("workflow generates a staged migration and keeps unexecuted claims NOT_RUN"
   assert.equal(run.state, "AWAITING_HUMAN");
   assert.equal(run.artifacts.strategy, "EXPAND_MIGRATE_CONTRACT");
   assert.match(run.artifacts.files[0].content, /customer_email as contact_email/);
+  assert.equal(run.artifacts.grounding.contractVersion, "1.0");
+  assert.equal(run.artifacts.grounding.migrationRule.ruleId, "RENAME_COLUMN_REQUIRES_COMPATIBILITY_FIELD");
+  assert.deepEqual(run.artifacts.grounding.policyInputs.findingCodes, ["BREAKING_LINEAGE", "SENSITIVE_DATA", "LIVE_QUERY_USAGE"]);
+  assert.equal(run.artifacts.grounding.lineageInputs.representativePaths[0].assetUrn, "urn:li:dataJob:(urn:li:dataFlow:(airflow,customer_360,PROD),build_segments)");
+  assert.match(run.evidence.find((item) => item.claim === "Migration artifacts generated").artifact, /grounding contract 1.0/);
   assert.equal(run.evidence.find((item) => item.claim.includes("warehouse")).state, "NOT_RUN");
   assert.equal(run.evidence[0].state, "FIXTURE");
 });
@@ -49,7 +54,7 @@ test("workflow generates a staged migration and keeps unexecuted claims NOT_RUN"
 test("datahub mode cannot claim live context before MCP evidence arrives", () => {
   const run = analyzeChange({ request: fixtureRequest, context: fixtureContext, policy, mode: "datahub", now: new Date(fixtureContext.observedAt) });
   assert.equal(run.evidence.find((item) => item.claim === "DataHub context retrieved").state, "NOT_RUN");
-  assert.equal(run.evidence.find((item) => item.claim === "Column-level impact traced").state, "FIXTURE");
+  assert.equal(run.evidence.find((item) => item.claim === "Downstream impact paths traced").state, "FIXTURE");
 });
 
 test("approval creates a hashed passport without rewriting deterministic risk", () => {
@@ -65,6 +70,12 @@ test("approval creates a hashed passport without rewriting deterministic risk", 
   assert.equal(approved.passport.status, "CERTIFIED");
   assert.match(approved.passport.passportId, /^csp_[a-f0-9]{20}$/);
   assert.equal(approved.passport.artifactHashes.length, 4);
+  assert.equal(approved.passport.artifactGroundingContractVersion, "1.0");
+  assert.equal(approved.passport.artifactGroundingRuleId, "RENAME_COLUMN_REQUIRES_COMPATIBILITY_FIELD");
+  assert.equal(approved.artifacts.manifest.manifestVersion, "1.0");
+  assert.equal(approved.artifacts.manifest.passportContext.passportId, approved.passport.passportId);
+  assert.equal(approved.artifacts.manifest.artifacts.length, 4);
+  assert.deepEqual(approved.artifacts.manifest.artifacts[0].groundingRefs, ["target", "schemaInputs", "policyInputs", "migrationRule"]);
 });
 
 test("write-back operations cannot be built before scoped approval", () => {

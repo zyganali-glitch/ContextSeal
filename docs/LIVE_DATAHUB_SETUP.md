@@ -78,6 +78,8 @@ datahub properties upsert -f config/contextseal-structured-properties.yml
 5. Confirm three raw MCP evidence entries exist.
 6. Keep all mutation evidence `NOT_RUN`.
 
+This read-only check proves raw MCP access. It does not, by itself, upgrade the dashboard's path visualization to live-normalized impact.
+
 ## Mutation verification
 
 Only after read-only verification:
@@ -97,8 +99,8 @@ Only after read-only verification:
 
 A disposable local DataHub run has completed successfully with synthetic metadata:
 
-- six seeded catalog assets and five downstream lineage results,
-- three read-only MCP calls,
+- six seeded catalog assets and five downstream dataset-shaped lineage results across seeded platforms,
+- three read-only MCP calls, including a saved query read whose exported example currently returns zero observed dataset queries for the target,
 - a fail-closed pre-evidence mutation gate,
 - four structured properties written and read back,
 - a passport description appended and read back,

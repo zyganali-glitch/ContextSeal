@@ -193,7 +193,7 @@ Başarılı olursa ContextSeal Status, Risk Score, Passport ID ve Valid Until al
 
 - hedef varlık okunuyor,
 - bağlantılar okunuyor,
-- gerçek sorgu bilgisi okunuyor,
+ - sorgu kanıtı okunuyor,
 - gizli anahtar hiçbir çıktıda görünmüyor.
 
 ## Aşama 9 — Yazma kapısını aç

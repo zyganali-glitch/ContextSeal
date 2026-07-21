@@ -74,7 +74,7 @@
         <article class="metric-card">
           <p>Observed queries</p>
           <strong id="queryCount">—</strong>
-          <span>real usage signals</span>
+          <span>query evidence collected</span>
         </article>
         <article class="metric-card">
           <p>Migration</p>
@@ -89,9 +89,22 @@
             <p class="kicker">CONTEXT TRACE</p>
             <h2>Why this change is risky</h2>
           </div>
-          <span class="datahub-chip">Grounded by DataHub</span>
+          <span class="datahub-chip">Fixture view grounded in DataHub-shaped evidence</span>
         </div>
         <div id="impactGraph" class="impact-graph"></div>
+      </article>
+
+      <article class="panel wide-panel ai-panel">
+        <div class="panel-heading">
+          <div>
+            <p class="kicker">LOCAL AI COPILOT</p>
+            <h2>Grounded explanation layer</h2>
+          </div>
+          <span id="aiStatus" class="status-pill">NOT_RUN</span>
+        </div>
+        <p id="aiReason" class="muted">The local AI layer has not produced an explanation yet.</p>
+        <p class="microcopy">Explanation only. Deterministic ContextSeal evidence remains authoritative.</p>
+        <div id="aiCompanion" class="ai-companion"></div>
       </article>
 
       <div class="two-column">
@@ -160,7 +173,7 @@
     </section>
 
     <section class="principles">
-      <div><strong>Graph first</strong><span>Lineage, ownership, terms, quality, and real queries shape the decision.</span></div>
+      <div><strong>Graph first</strong><span>Lineage, ownership, terms, quality, and query evidence shape the decision.</span></div>
       <div><strong>Evidence locked</strong><span>PASS, FAIL, NOT_RUN, STALE, and FIXTURE never collapse into a confident summary.</span></div>
       <div><strong>Human accountable</strong><span>Risky mutations require an explicit, scoped decision.</span></div>
     </section>

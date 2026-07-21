@@ -86,6 +86,9 @@ button:disabled { cursor: not-allowed; opacity: .42; }
 .status-pill, .datahub-chip { border-radius: 999px; padding: 6px 10px; font: 700 10px/1 ui-monospace, monospace; }
 .status-pill { color: var(--amber); background: rgba(255,200,97,.09); border: 1px solid rgba(255,200,97,.24); }
 .datahub-chip { color: var(--blue); background: rgba(90,167,255,.08); border: 1px solid rgba(90,167,255,.23); }
+.status-pill[data-ai-state="PASS"] { color: var(--cyan); background: rgba(85,230,193,.09); border: 1px solid rgba(85,230,193,.24); }
+.status-pill[data-ai-state="FAIL"], .status-pill[data-ai-state="UNAVAILABLE"] { color: var(--amber); background: rgba(255,200,97,.09); border: 1px solid rgba(255,200,97,.24); }
+.status-pill[data-ai-state="NOT_ENABLED"], .status-pill[data-ai-state="NOT_RUN"] { color: var(--muted); background: rgba(147,164,190,.09); border: 1px solid rgba(147,164,190,.24); }
 .code-change { background: #080d16; border: 1px solid var(--line); border-radius: 13px; padding: 14px 18px; font-size: 14px; }
 .code-change > div { padding: 5px 0; }
 .code-change span { display: inline-block; width: 22px; font-weight: 800; }
@@ -116,6 +119,11 @@ button:disabled { cursor: not-allowed; opacity: .42; }
 .finding code { color: var(--amber); font-size: 10px; }
 .artifact { display: flex; align-items: center; gap: 12px; }
 .artifact-icon { display: grid; place-items: center; flex: 0 0 34px; height: 34px; border-radius: 9px; color: var(--cyan); background: rgba(85,230,193,.08); font-size: 12px; font-weight: 800; }
+.ai-companion { display: grid; gap: 12px; margin-top: 18px; }
+.ai-block { border: 1px solid var(--line); background: #0a101b; border-radius: 12px; padding: 14px; display: grid; gap: 8px; }
+.ai-block strong { font-size: 12px; }
+.ai-block p { margin: 0; color: var(--muted); font-size: 12px; }
+.ai-bullets { margin: 0; padding-left: 18px; color: var(--muted); font-size: 12px; display: grid; gap: 6px; }
 .decision-panel { display: grid; grid-template-columns: .8fr 1.2fr; align-items: end; gap: 32px; border-color: rgba(169,140,255,.25); }
 .decision-form { display: grid; grid-template-columns: 1fr 1.5fr auto; gap: 12px; align-items: end; }
 label { color: var(--muted); font-size: 11px; }

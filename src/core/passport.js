@@ -14,6 +14,8 @@ export function buildPassport(run, approval, now = new Date()) {
     risk: { verdict: run.risk.verdict, score: run.risk.score, findingCodes: run.risk.findings.map((item) => item.code) },
     impact: run.impact.counts,
     migrationStrategy: run.artifacts.strategy,
+    artifactGroundingContractVersion: run.artifacts.grounding?.contractVersion || null,
+    artifactGroundingRuleId: run.artifacts.grounding?.migrationRule?.ruleId || null,
     artifactHashes,
     evidence: run.evidence,
     approval: { reviewer: approval.reviewer, note: approval.note, decision: approval.decision, decidedAt: now.toISOString() },

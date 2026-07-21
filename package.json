@@ -11,13 +11,15 @@
     "start": "node src/server.js",
     "dev": "node --watch src/server.js",
     "demo": "node scripts/run-demo.js",
+    "sandbox": "python scripts/run-generated-sandbox.py --evidence-output examples/outputs/sandbox/generated-sandbox-evidence.json",
+    "ai:probe": "node --input-type=module -e \"import { spawnSync } from 'node:child_process'; const version = spawnSync('ollama', ['--version'], { encoding: 'utf8' }); if (version.error) { console.log('WARN local AI runtime unavailable: ollama not found on PATH'); process.exit(0); } const list = spawnSync('ollama', ['list'], { encoding: 'utf8' }); const versionText = (version.stdout || version.stderr || '').trim(); if (versionText) console.log(versionText); if (list.status === 0) { const listText = (list.stdout || '').trim(); console.log(listText || 'No local models listed.'); console.log('PASS local AI runtime available'); process.exit(0); } console.log(`WARN local AI runtime installed but not ready: ${((list.stderr || list.stdout || '').trim() || `ollama list exit ${list.status ?? 'unknown'}`)}`); process.exit(0);\"",
     "datahub:seed": "python scripts/seed-datahub.py",
     "datahub:capture": "node scripts/capture-live-evidence.js",
     "datahub:export": "node scripts/export-live-run.js",
     "test": "node --test",
     "test:coverage": "node --test --experimental-test-coverage",
     "check": "node scripts/check-repository.js",
-    "validate": "npm run check && npm test && npm run demo"
+    "validate": "npm run check && npm test && npm run demo && npm run sandbox"
   },
   "keywords": [
     "datahub",

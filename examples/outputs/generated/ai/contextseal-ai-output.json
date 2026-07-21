@@ -1,0 +1,8 @@
+{
+  "status": "NOT_ENABLED",
+  "runtime": "ollama",
+  "model": "qwen2.5:7b",
+  "disclaimer": "Explanation only. Deterministic ContextSeal evidence remains authoritative.",
+  "reason": "AI runtime disabled by environment.",
+  "output": null
+}

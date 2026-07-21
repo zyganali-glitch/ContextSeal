@@ -90,6 +90,64 @@ function renderEvidence(evidence) {
   }
 }
 
+function renderAi(run) {
+  const statusEl = $("#aiStatus");
+  const reasonEl = $("#aiReason");
+  const container = $("#aiCompanion");
+  container.replaceChildren();
+
+  const ai = run.ai;
+  const aiStatus = ai?.status || "NOT_RUN";
+  text("#aiStatus", aiStatus.replaceAll("_", " "));
+  statusEl.dataset.aiState = aiStatus;
+
+  if (!ai) {
+    reasonEl.textContent = "The local AI layer has not been attached to this run.";
+    return;
+  }
+
+  reasonEl.textContent = ai.reason || ai.disclaimer || "The local AI layer produced a bounded explanation.";
+
+  if (!ai.output) return;
+
+  const sections = [
+    [ai.output.ownerAlert?.title || "Owner alert", ai.output.ownerAlert?.summary, ai.output.ownerAlert?.bullets || []],
+    ["Migration rationale", ai.output.migrationRationale?.summary, ai.output.migrationRationale?.safeguards || []],
+    [ai.output.reviewerNoteDraft?.subject || "Reviewer note draft", ai.output.reviewerNoteDraft?.body, []],
+    ["Next step guidance", null, [
+      ...(ai.output.nextStepGuidance?.immediateActions || []),
+      ...(ai.output.nextStepGuidance?.afterApproval || [])
+    ]]
+  ];
+
+  for (const [titleText, bodyText, bullets] of sections) {
+    const block = document.createElement("section");
+    block.className = "ai-block";
+    const title = document.createElement("strong");
+    title.textContent = titleText;
+    block.append(title);
+
+    if (bodyText) {
+      const body = document.createElement("p");
+      body.textContent = bodyText;
+      block.append(body);
+    }
+
+    if (bullets.length) {
+      const list = document.createElement("ul");
+      list.className = "ai-bullets";
+      for (const item of bullets) {
+        const li = document.createElement("li");
+        li.textContent = item;
+        list.append(li);
+      }
+      block.append(list);
+    }
+
+    container.append(block);
+  }
+}
+
 function renderRun(run) {
   currentRun = run;
   $("#workspace").classList.remove("hidden");
@@ -107,6 +165,7 @@ function renderRun(run) {
   renderGraph(run);
   renderFindings(run.risk.findings);
   renderArtifacts(run.artifacts.files);
+  renderAi(run);
   renderEvidence(run.evidence);
   if (run.passport) renderPassport(run.passport);
   $("#workspace").scrollIntoView({ behavior: "smooth", block: "start" });

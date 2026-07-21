@@ -18,7 +18,7 @@ ContextSeal DataHub’dan şu bilgileri toplar:
 - gizlilik ve hassas veri işaretlerini,
 - kalite kontrollerini,
 - açık olay kayıtlarını,
-- kolonu kullanan gerçek sorguları.
+- kolonla ilgili gözlemlenen sorgu kanıtlarını.
 
 Sonra değişikliği doğrudan yapmak yerine güvenli bir geçiş planı üretir. Örneğin eski kolonu hemen silmek yerine yeni kolonu ekler, veriyi taşır, kullanan sistemlerin geçmesini bekler ve eski kolonu daha sonraki ayrı bir değişiklikte kaldırır.
 
@@ -42,12 +42,28 @@ http://127.0.0.1:4173
 Ardından sırasıyla:
 
 1. **Analyze the demo change** düğmesine bas.
-2. Risk puanı ve etkilenen varlıkları incele.
+2. Risk puanı, etkilenen varlıkları ve güvenli gösterimdeki etki yollarını incele.
 3. **Approve safe plan** düğmesine bas.
 4. Oluşan pasaport numarasını gör.
 5. **Prepare DataHub write-back** düğmesine bas.
 
-Bu güvenli deneme modunda gerçek DataHub değiştirilmez. Ekranda bunun açıkça yazması bilinçli bir güvenlik özelliğidir.
+Bu güvenli deneme modunda gerçek DataHub değiştirilmez. Varsayılan ekran DataHub biçimine uyarlanmış sentetik bağlam kullanır; canlı MCP kanıtı ayrı rehberde gösterilir. Ekranda bunun açıkça yazması bilinçli bir güvenlik özelliğidir.
+
+## Istege bagli yerel AI yardimcisi
+
+Repo artik istege bagli bir yerel Ollama bagdastiricisi, gorunur bir Local AI Copilot paneli ve incelenebilir AI girdi/cikti artefaktlari iceriyor. Deterministik verdict once hesaplanir. AI kapaliysa veya Ollama yoksa, ContextSeal uydurma metin uretmek yerine `NOT_ENABLED` ya da `UNAVAILABLE` durumu kaydeder.
+
+```powershell
+npm run ai:probe
+```
+
+Tam sozlesme icin [AI Runtime Decision](docs/AI_RUNTIME_DECISION.md) dosyasina bak.
+
+Kayitli AI artefaktlari:
+
+- `examples/outputs/generated/ai/contextseal-ai-input.json`
+- `examples/outputs/generated/ai/contextseal-ai-output.json`
+- `examples/outputs/generated/ai/contextseal-ai-output.md`
 
 ## Senin için hazırlanmış ayrıntılı rehberler
 

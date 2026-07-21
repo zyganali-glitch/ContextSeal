@@ -8,7 +8,7 @@ ContextSeal separates deterministic authority from external context and human ju
 2. **DataHub context adapter** — uses MCP to collect entity, lineage, and observed-query evidence. Raw live evidence is preserved separately from normalized graph fixtures.
 3. **Impact engine** — performs bounded breadth-first traversal and records the full path to every downstream asset.
 4. **Policy engine** — calculates named findings and a score from versioned `config/policy.json` rules.
-5. **Artifact generator** — produces a staged dbt model, schema tests, rollback, and owner briefing. It does not issue a direct destructive rename/drop.
+5. **Artifact generator** — produces a staged dbt model, schema tests, rollback, and owner briefing. It does not issue a direct destructive rename/drop, and it records the deterministic request, lineage, policy, owner, and migration-rule inputs that grounded the generated artifacts.
 6. **Human gate** — records decision, reviewer, note, time, and accepted scope.
 7. **Passport engine** — hashes the request, context, every artifact, approval, and evidence manifest.
 8. **Write-back adapter** — prepares and, only when enabled, invokes DataHub mutation tools.

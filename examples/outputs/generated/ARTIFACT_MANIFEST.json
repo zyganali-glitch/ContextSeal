@@ -1,0 +1,141 @@
+{
+  "manifestVersion": "1.0",
+  "generatedFromRunId": "csr_5a30f6773b3145ca",
+  "passportContext": {
+    "passportId": "csp_87434040fc0f0fa5d35c",
+    "manifestHash": "87434040fc0f0fa5d35cef16448090b267aabbccd43da7475620d6f838913ef8",
+    "validUntil": "2026-07-22T13:45:38.678Z",
+    "status": "CERTIFIED",
+    "artifactGroundingContractVersion": "1.0",
+    "artifactGroundingRuleId": "RENAME_COLUMN_REQUIRES_COMPATIBILITY_FIELD"
+  },
+  "grounding": {
+    "contractVersion": "1.0",
+    "target": {
+      "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)",
+      "entityName": "gold_customers",
+      "type": "DATASET",
+      "platform": "snowflake"
+    },
+    "schemaInputs": {
+      "sourceField": "customer_email",
+      "destinationField": "contact_email",
+      "destinationType": null,
+      "safeClaim": "Generated code currently uses the requested field names and target model identity. It does not yet ingest a full DataHub field-schema snapshot into the generator."
+    },
+    "lineageInputs": {
+      "impactedAssetCount": 5,
+      "highCriticalityAssetCount": 4,
+      "impactedAssetTypes": {
+        "DATA_JOB": 1,
+        "DATASET": 1,
+        "DASHBOARD": 2,
+        "ML_MODEL": 1
+      },
+      "downstreamOwners": [
+        "urn:li:corpgroup:growth-data",
+        "urn:li:corpgroup:customer-success",
+        "urn:li:corpgroup:ml-platform",
+        "urn:li:corpgroup:marketing-analytics"
+      ],
+      "representativePaths": [
+        {
+          "assetUrn": "urn:li:dataJob:(urn:li:dataFlow:(airflow,customer_360,PROD),build_segments)",
+          "assetName": "build_segments",
+          "assetType": "DATA_JOB",
+          "hops": 1,
+          "path": [
+            "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)",
+            "urn:li:dataJob:(urn:li:dataFlow:(airflow,customer_360,PROD),build_segments)"
+          ]
+        },
+        {
+          "assetUrn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.analytics.customer_segments,PROD)",
+          "assetName": "customer_segments",
+          "assetType": "DATASET",
+          "hops": 2,
+          "path": [
+            "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)",
+            "urn:li:dataJob:(urn:li:dataFlow:(airflow,customer_360,PROD),build_segments)",
+            "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.analytics.customer_segments,PROD)"
+          ]
+        },
+        {
+          "assetUrn": "urn:li:dashboard:(looker,executive_customer_health)",
+          "assetName": "Executive Customer Health",
+          "assetType": "DASHBOARD",
+          "hops": 3,
+          "path": [
+            "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)",
+            "urn:li:dataJob:(urn:li:dataFlow:(airflow,customer_360,PROD),build_segments)",
+            "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.analytics.customer_segments,PROD)",
+            "urn:li:dashboard:(looker,executive_customer_health)"
+          ]
+        }
+      ]
+    },
+    "policyInputs": {
+      "verdict": "BLOCKED",
+      "score": 80,
+      "findingCodes": [
+        "BREAKING_LINEAGE",
+        "SENSITIVE_DATA",
+        "LIVE_QUERY_USAGE"
+      ]
+    },
+    "migrationRule": {
+      "ruleId": "RENAME_COLUMN_REQUIRES_COMPATIBILITY_FIELD",
+      "strategy": "EXPAND_MIGRATE_CONTRACT",
+      "summary": "Add contact_email, backfill from customer_email, migrate consumers, then deprecate customer_email.",
+      "safeClaim": "Direct rename requests are converted into a compatibility-field migration so downstream consumers can move before removal."
+    },
+    "nonInputs": [
+      "AI output does not generate or rewrite the dbt, rollback, or owner-brief artifacts.",
+      "Warehouse execution state does not alter generated content before approval.",
+      "Live query proof can raise deterministic risk, but it does not directly rewrite the staged migration rule."
+    ]
+  },
+  "artifacts": [
+    {
+      "path": "generated/models/gold_customers_contextseal.sql",
+      "kind": "DBT_MODEL",
+      "sha256": "58ebc7618645c7fcbcf98ecf975c40364b93c2f20a7c340f98b5f9dceabb8f81",
+      "groundingRefs": [
+        "target",
+        "schemaInputs",
+        "policyInputs",
+        "migrationRule"
+      ]
+    },
+    {
+      "path": "generated/models/gold_customers_contextseal.yml",
+      "kind": "DBT_TESTS",
+      "sha256": "e8efd6111df11548bd6890f2225ea3ebc5dc217f34c35b4a204a41db48d17a65",
+      "groundingRefs": [
+        "target",
+        "schemaInputs",
+        "migrationRule"
+      ]
+    },
+    {
+      "path": "generated/rollback/gold_customers.sql",
+      "kind": "ROLLBACK",
+      "sha256": "8b9cdd8d9e3a02e9a18382fa2bf6f9bcaf15ba587a03a5b9dc8bbd10f0a8eb17",
+      "groundingRefs": [
+        "target",
+        "schemaInputs",
+        "migrationRule"
+      ]
+    },
+    {
+      "path": "generated/IMPACTED_OWNERS.md",
+      "kind": "OWNER_BRIEF",
+      "sha256": "bd44e015d978bb77264bcc3cacf7de479f7854cb937c5d6ae492178425555ea1",
+      "groundingRefs": [
+        "lineageInputs",
+        "policyInputs",
+        "migrationRule"
+      ]
+    }
+  ]
+}

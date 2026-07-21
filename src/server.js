@@ -5,6 +5,7 @@ import { fileURLToPath } from "node:url";
 import { loadEnvFile } from "./env.js";
 import { analyzeChange, decideRun } from "./core/workflow.js";
 import { ContractError } from "./core/contracts.js";
+import { enrichRunWithAi } from "./ai/adapter.js";
 import { createDataHubMcpClient } from "./datahub/mcp-client.js";
 import { buildWritebackOperations, executeWriteback, WritebackError } from "./datahub/writeback.js";
 import { collectLiveEvidence } from "./datahub/live-context.js";
@@ -72,7 +73,9 @@ async function handler(request, response) {
     if (request.method === "POST" && url.pathname === "/api/analyze") {
       const input = await body(request);
       const context = input.context || { ...fixtureContext, observedAt: new Date().toISOString() };
-      const run = analyzeChange({ request: input.request || fixtureRequest, context, policy, mode });
+      const run = await enrichRunWithAi(
+        analyzeChange({ request: input.request || fixtureRequest, context, policy, mode })
+      );
       await store.save(run, "ANALYSIS_COMPLETED");
       return json(response, 201, run);
     }

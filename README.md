@@ -16,7 +16,7 @@ Built as a clean-room entry for **Build with DataHub: The Agent Hackathon**. No 
 
 Code review and CI can inspect a repository. They usually cannot see that a field feeds a Looker dashboard three hops away, appears in observed production queries, carries a PII glossary term, powers an ML model, or belongs to another team. An AI coding agent can produce syntactically correct data code while still making an organizationally unsafe change.
 
-DataHub already holds that missing context: schemas, column- and table-level lineage, ownership, governance terms, quality signals, incidents, and observed queries. ContextSeal makes that context an enforceable pre-merge decision.
+DataHub already holds that missing context: schemas, lineage, ownership, governance terms, quality signals, incidents, and observed queries. ContextSeal makes that context an enforceable pre-merge decision.
 
 ## What ContextSeal does
 
@@ -76,7 +76,7 @@ npm start
 Open <http://127.0.0.1:4173>, then:
 
 1. Select **Analyze the demo change**.
-2. Inspect the five-hop DataHub-compatible impact trace and risk findings.
+2. Inspect the fixture-backed five-hop downstream impact trace and risk findings.
 3. Select **Approve safe plan**.
 4. Inspect the passport ID and evidence states.
 5. Select **Prepare DataHub write-back**. In fixture mode, the application proves that operations were prepared while keeping write-back `NOT_RUN`.
@@ -128,9 +128,9 @@ npm run datahub:seed
 npm start
 ```
 
-The application calls DataHub MCP tools for entity context, downstream lineage, observed dataset queries, and bounded metadata mutations. See [Live DataHub Setup](docs/LIVE_DATAHUB_SETUP.md) for the exact verification path and limitations.
+The application calls DataHub MCP tools for entity context, downstream lineage, observed dataset queries, and bounded metadata mutations. The default judge path keeps the exact graph view fixture-backed unless a target-derived graph contract is exported separately. See [Live DataHub Setup](docs/LIVE_DATAHUB_SETUP.md) for the exact verification path and limitations.
 
-The repository includes a completed disposable-local proof under `examples/outputs/`: five downstream assets were returned through live MCP, and the approved status, risk score, passport ID, validity date, appended description, and decision document were written and verified against synthetic DataHub metadata.
+The repository includes a completed disposable-local proof under `examples/outputs/`: five downstream dataset-shaped results were returned through live MCP across the seeded local platforms, and the approved status, risk score, passport ID, validity date, appended description, and decision document were written and verified against synthetic DataHub metadata.
 
 ## MCP tools used
 
@@ -168,6 +168,26 @@ docs/tr/        beginner-safe Turkish operator, Devpost, and video guides
 npm run validate
 ```
 
+## Optional local AI copilot
+
+The repo now ships an optional local Ollama adapter, a visible Local AI Copilot panel, and inspectable grounded AI artifacts. The deterministic verdict is still computed first. If AI is disabled or Ollama is unavailable, ContextSeal records `NOT_ENABLED` or `UNAVAILABLE` instead of inventing text.
+
+```bash
+npm run ai:probe
+```
+
+See [AI Runtime Decision](docs/AI_RUNTIME_DECISION.md) for the exact runtime and fallback contract.
+
+Committed AI artifacts:
+
+- `examples/outputs/generated/ai/contextseal-ai-input.json`
+- `examples/outputs/generated/ai/contextseal-ai-output.json`
+- `examples/outputs/generated/ai/contextseal-ai-output.md`
+
+## PR review handoff contract
+
+ContextSeal now includes a reviewer-ready PR handoff contract in [PR Review Packet](docs/PR_REVIEW_PACKET.md). The default path stays offline and token-free: the next generator step will emit a PR body, checklist, payload, and links to the approved run, artifact manifest, sandbox evidence, and generated files. Actual draft PR creation remains optional and will require an explicit `GITHUB_TOKEN`.
+
 This runs repository-integrity checks, the deterministic Node test suite, and a fresh end-to-end fixture certification. CI also builds the container.
 
 ## Judge paths
@@ -177,6 +197,7 @@ This runs repository-integrity checks, the deterministic Node test suite, and a 
 - [Claim-by-claim evidence map](docs/EVIDENCE_MANIFEST.md)
 - [Build-period disclosure](docs/BUILD_PERIOD_DISCLOSURE.md)
 - [Demo script](docs/DEMO_SCRIPT.md)
+- [PR review packet contract](docs/PR_REVIEW_PACKET.md)
 - [Devpost submission draft](docs/DEVPOST_SUBMISSION.md)
 
 Turkish beginner guides:

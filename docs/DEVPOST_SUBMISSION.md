@@ -10,9 +10,9 @@ Every data change ships with proof, not confidence.
 
 ## Challenge category
 
-Agents That Do Real Work
+Metadata-Aware Code Generation & Development
 
-Secondary fit: Metadata-Aware Code Generation & Development.
+Secondary fit: Agents That Do Real Work.
 
 ## Inspiration
 
@@ -21,6 +21,8 @@ AI coding agents can generate valid SQL and dbt code while missing the organizat
 ## What it does
 
 ContextSeal accepts a proposed column rename, drop, or type change. It reads DataHub entity context, lineage, ownership, governance signals, quality evidence, incidents, and observed queries. A deterministic policy engine reconstructs downstream paths and explains every risk finding. Instead of producing a destructive operation, ContextSeal generates an expand–migrate–contract dbt model, schema tests, rollback, and owner briefing.
+
+After the deterministic verdict is fixed, an optional local Ollama layer can turn that grounded run into a non-authoritative owner alert, migration rationale, reviewer-note draft, and next-step guidance. If the runtime is unavailable, ContextSeal records `NOT_ENABLED` or `UNAVAILABLE` instead of fabricating confidence.
 
 A human reviewer approves or rejects only that bounded safe scope. ContextSeal then creates a SHA-256 change passport covering the request, DataHub context, risk, generated artifacts, evidence states, approval, and expiration. In live mode it writes certification properties, decision context, and the passport document back to DataHub so the next engineer or agent inherits the decision.
 
@@ -32,6 +34,7 @@ A human reviewer approves or rejects only that bounded safe scope. ContextSeal t
 - DataHub structured-property, description, and document mutation tools for write-back
 - Bounded breadth-first lineage traversal
 - Versioned risk policy and typed contracts
+- Optional local Ollama adapter with grounded input and bounded output contracts
 - dbt artifact generator
 - SHA-256 passport manifest
 - Dependency-free responsive dashboard
@@ -51,9 +54,12 @@ The hardest design problem was separating a risky original request from a safe g
 - Deterministic findings that model text cannot overwrite
 - A safe migration package that preserves the original field during consumer transition
 - Human approval cryptographically bound to the exact request, context, and artifacts
+- Optional local AI companion with honest `NOT_ENABLED` / `UNAVAILABLE` fallback states
 - Fail-closed DataHub write-back gates
 - A reproducible judge fixture and a completed disposable-local DataHub proof
-- Five downstream assets retrieved through live MCP across Airflow, Snowflake, Looker, MLflow, and Power BI metadata
+- A deterministic local sandbox harness that validates the generated artifact bundle against its manifest and grounding contract
+- A documented PR review packet contract that locks the reviewer-ready bundle shape and token boundary before GitHub automation
+- Five downstream dataset-shaped results retrieved through live MCP across seeded Airflow, Snowflake, Looker, MLflow, and Power BI platform metadata
 - Four certification properties, an appended passport description, and a standalone decision document written and read back
 - A reusable DataHub change-certification skill
 
@@ -66,7 +72,7 @@ Context is most valuable when it changes an action, not when it only improves an
 - Verify and contribute the ContextSeal skill upstream to DataHub Skills
 - Add target-derived normalization for more DataHub entity types
 - Add signed reviewer identities and replay protection
-- Add GitHub pull-request delivery after explicit approval
+- Generate and optionally post the already-defined GitHub PR review packet after explicit approval
 - Add warehouse-specific sandbox executors
 - Extend from column changes to dbt model and pipeline schedule changes
 
@@ -79,4 +85,4 @@ Context is most valuable when it changes an action, not when it only improves an
 
 ## Honest limitations
 
-ContextSeal is a hackathon prototype. It does not auto-merge, execute production warehouse SQL, guarantee security, or claim customer impact. Fixture execution and live DataHub execution are labeled separately. Only operations with named artifacts are marked PASS.
+ContextSeal is a hackathon prototype. It does not auto-merge, execute production warehouse SQL, guarantee security, or claim customer impact. The default judge path uses fixture-backed path reconstruction, while separate live-local artifacts prove raw MCP reads and bounded write-back on synthetic metadata. Only operations with named artifacts are marked PASS.
