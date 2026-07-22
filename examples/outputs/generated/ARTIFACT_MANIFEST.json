@@ -1,9 +1,9 @@
 {
   "manifestVersion": "1.0",
-  "generatedFromRunId": "csr_ea7ac87fa9d973359b2e6996731a18c5",
+  "generatedFromRunId": "csr_4ab7ef5169bd2e0dcbfd64669646933a",
   "passportContext": {
-    "passportId": "csp_6737bde14310a4fd1b9c",
-    "manifestHash": "6737bde14310a4fd1b9c7fd70da5640d7a2b181b8afc4b93fcd9b6ff1abdf317",
+    "passportId": "csp_60ce7207989fff37fdf8",
+    "manifestHash": "60ce7207989fff37fdf8c37f256fb16a9fd4fa6adf0f926c136008a428f3e963",
     "validUntil": "2026-07-23T06:39:36.469Z",
     "status": "CERTIFIED",
     "artifactGroundingContractVersion": "1.0",
@@ -21,7 +21,17 @@
       "sourceField": "customer_email",
       "destinationField": "contact_email",
       "destinationType": null,
-      "safeClaim": "Generated code currently uses the requested field names and target model identity. It does not yet ingest a full DataHub field-schema snapshot into the generator."
+      "generatedModelName": "gold_customers_contextseal",
+      "sourceFieldSchema": {
+        "fieldPath": "customer_email",
+        "nativeDataType": "varchar",
+        "nullable": false
+      },
+      "capturedFieldCount": 1,
+      "generatedTests": [
+        "not_null"
+      ],
+      "safeClaim": "Generated tests are derived from the captured source-field schema constraint; not_null is emitted only when nullable is explicitly false."
     },
     "lineageInputs": {
       "impactedAssetCount": 5,
@@ -120,7 +130,7 @@
     {
       "path": "generated/rollback/gold_customers.sql",
       "kind": "ROLLBACK",
-      "sha256": "8b9cdd8d9e3a02e9a18382fa2bf6f9bcaf15ba587a03a5b9dc8bbd10f0a8eb17",
+      "sha256": "69e5d94459c9c804495577b71f62e430bfeccf05841137e3f8b009dec74cf2ee",
       "groundingRefs": [
         "target",
         "schemaInputs",

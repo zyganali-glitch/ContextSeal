@@ -437,6 +437,12 @@ test("spawned live server enforces operator auth, JSON, allowlist, refresh super
     contentType: "text/plain",
     body: JSON.stringify({ request: changeRequest })
   })).status, 415);
+  const unwrapped = await api(app.baseUrl, "/api/analyze", {
+    method: "POST",
+    body: changeRequest
+  });
+  assert.equal(unwrapped.status, 400);
+  assert.match(unwrapped.payload.error, /explicit change request object/);
   const outside = await api(app.baseUrl, "/api/analyze", {
     method: "POST",
     body: { request: { ...changeRequest, targetUrn: "urn:li:dataset:(urn:li:dataPlatform:snowflake,outside,PROD)" } }

@@ -115,7 +115,7 @@ A human reviewer approves or rejects only that bounded safe scope. ContextSeal t
 ### How we built it
 
 ```text
-ContextSeal has a deterministic Node.js core, a dual-transport DataHub MCP client for the official local stdio server and DataHub Cloud streamable HTTP, bounded multi-hop lineage traversal, a versioned policy engine, a dbt artifact generator, a human approval contract, and a SHA-256 passport manifest. The dashboard has no frontend runtime dependencies. DataHub is used for entity, lineage, ownership, governance, quality, incident, and query context, then enriched through structured properties, descriptions, and saved passport documents. Docker and GitHub Actions provide reproducible validation.
+ContextSeal has a deterministic Node.js core, a dual-transport DataHub MCP client for the official local stdio server and DataHub Cloud streamable HTTP, bounded multi-hop lineage traversal, a versioned policy engine, a dbt artifact generator, a human approval contract, and a SHA-256 passport manifest. The hardened live read contract uses exactly five tool families: get_entities, paginated list_schema_fields, get_lineage, get_lineage_paths_between for every downstream target, and get_dataset_queries. DataHub context then drives deterministic risk and generated artifacts; approved results can be enriched through structured properties, descriptions, and saved passport documents. The dashboard has no frontend runtime dependencies. Docker and GitHub Actions provide reproducible validation.
 ```
 
 ### Challenges we ran into
@@ -139,7 +139,7 @@ Context is most valuable when it changes an action, not when it only improves an
 ### What's next
 
 ```text
-Next we will contribute the verified change-certification skill to the DataHub Skills registry, add signed reviewer identities, deliver approved artifacts into GitHub pull requests, add warehouse-specific sandbox executors, and extend certification from column changes to dbt models and pipeline schedules.
+Next we will close the mandatory real-dbt proof for rename, type-change, and drop bundles, recapture exact-final-head DataHub read/write/read-back evidence, and attach the final proof surfaces to our open DataHub Skills PR #35. After submission, signed reviewer identities and additional warehouse adapters can extend the same deterministic certification boundary without weakening it.
 ```
 
 ## 7. Built with alanı

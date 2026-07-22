@@ -32,7 +32,7 @@ A human reviewer approves or rejects only that bounded safe scope. ContextSeal t
 
 - Node.js deterministic core and local HTTP API
 - Dual-transport DataHub MCP client: official local stdio server and DataHub Cloud streamable HTTP
-- DataHub entity, lineage, and query tools for context
+- Five-tool live read contract: `get_entities`, paginated `list_schema_fields`, `get_lineage`, per-target `get_lineage_paths_between`, and `get_dataset_queries`
 - DataHub structured-property, description, and document mutation tools for write-back
 - Bounded breadth-first lineage traversal
 - Versioned risk policy and typed contracts
@@ -59,7 +59,7 @@ The hardest design problem was separating a risky original request from a safe g
 - Optional local AI companion with honest `NOT_ENABLED` / `UNAVAILABLE` fallback states
 - Fail-closed DataHub write-back gates
 - A reproducible judge fixture and a preserved historical disposable-local DataHub proof, kept separate from final-head claims until recaptured
-- A deterministic local sandbox harness that validates the generated artifact bundle against its manifest and grounding contract
+- A deterministic local conformance harness that validates canonical model identity, schema-grounded tests, file hashes, and the bundle grounding contract
 - A reviewer-ready PR bundle plus an optional token-gated draft PR path that keep GitHub delivery separate from deterministic evidence authority
 - Five downstream dataset-shaped results retrieved through live MCP across seeded Airflow, Snowflake, Looker, MLflow, and Power BI platform metadata
 - Four certification properties, an appended passport description, and a standalone decision document written and read back
@@ -72,11 +72,12 @@ Context is most valuable when it changes an action, not when it only improves an
 ## What's next
 
 - Recapture disposable-local live DataHub proof from the reconciled final HEAD and re-run `npm run evidence:check`
+- Add committed `dbt-core` + `dbt-duckdb` parse, compile, run, and test evidence for rename, type-change, and drop bundles
 - Keep the upstream `datahub-schema-change-certification` contribution truthful until PR #35 is reviewed or merged
 - Add target-derived normalization for more DataHub entity types
 - Add signed reviewer identities and stronger reviewer-auth provenance
 - Exercise the optional token-gated draft PR path against a real GitHub branch after explicit approval
-- Add warehouse-specific sandbox executors
+- Add further warehouse-specific executors only after the mandatory DuckDB/dbt proof is green
 - Extend from column changes to dbt model and pipeline schedule changes
 
 ## Submission links

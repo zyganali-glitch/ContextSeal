@@ -12,6 +12,13 @@
       "tags": ["PII", "Tier1"],
       "terms": ["Personal Email Address"],
       "assertions": ["urn:li:assertion:customer-email-not-null"],
+      "schemaFields": [
+        {
+          "fieldPath": "customer_email",
+          "nativeDataType": "varchar",
+          "nullable": false
+        }
+      ],
       "incidents": []
     },
     {

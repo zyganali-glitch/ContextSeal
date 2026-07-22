@@ -30,15 +30,15 @@
           <p class="hero-copy">ContextSeal reads DataHub context, blocks the risky field change, generates a staged migration bundle, and issues a durable passport only after a human approves the safe scope.</p>
           <div class="hero-signals" aria-label="Judge snapshot summary">
             <div class="hero-pill">
-              <strong id="heroRiskPill">BLOCKED</strong>
+              <strong id="heroRiskPill">PENDING</strong>
               <span>deterministic verdict</span>
             </div>
             <div class="hero-pill">
-              <strong id="heroImpactPill">5 downstream</strong>
+              <strong id="heroImpactPill">— downstream</strong>
               <span>reachable assets</span>
             </div>
             <div class="hero-pill">
-              <strong id="heroPackagePill">4 review files</strong>
+              <strong id="heroPackagePill">— review files</strong>
               <span>safe handoff</span>
             </div>
           </div>
@@ -54,20 +54,20 @@
               <p class="kicker">FIXTURE JUDGE SNAPSHOT</p>
               <h2>What judges should see first</h2>
             </div>
-            <span id="heroSnapshotState" class="status-pill" aria-label="Snapshot state">BLOCKED</span>
+            <span id="heroSnapshotState" class="status-pill" data-state="ANALYSIS_PENDING" aria-label="Snapshot state">ANALYSIS PENDING</span>
           </div>
 
           <div class="hero-preview-block">
             <span>Blocked request</span>
             <strong id="heroRequest">Rename customer_email -> contact_email</strong>
-            <p id="heroImpactSummary">5 downstream assets, 4 critical, 2 observed queries.</p>
+            <p id="heroImpactSummary">Run analysis to reveal the grounded blast radius.</p>
           </div>
 
           <div class="hero-preview-grid">
             <div class="hero-preview-stat">
               <span>Safe package</span>
-              <strong id="heroPackageCount">4 review files</strong>
-              <p id="heroStrategy">EXPAND_MIGRATE_CONTRACT</p>
+              <strong id="heroPackageCount">Pending analysis</strong>
+              <p id="heroStrategy">AWAITING CONTEXT</p>
             </div>
             <div class="hero-preview-stat hero-preview-passport">
               <span>Passport payoff</span>
@@ -103,18 +103,18 @@
       <div class="inheritance-grid">
         <article class="inheritance-card">
           <div class="inheritance-top">
-            <span id="loopReadState" class="loop-state" data-state="FIXTURE">FIXTURE</span>
+            <span id="loopReadState" class="loop-state" data-state="NOT_RUN">NOT_RUN</span>
             <strong>Read context</strong>
           </div>
-          <p id="loopReadCopy">DataHub-shaped lineage, ownership, and query evidence ground the request before any package is proposed.</p>
+          <p id="loopReadCopy">Analysis has not read the DataHub-shaped fixture yet.</p>
         </article>
 
         <article class="inheritance-card">
           <div class="inheritance-top">
-            <span id="loopActState" class="loop-state" data-state="PASS">PASS</span>
+            <span id="loopActState" class="loop-state" data-state="NOT_RUN">NOT_RUN</span>
             <strong>Act safely</strong>
           </div>
-          <p id="loopActCopy">The destructive rename is replaced with a safe staged migration and a reviewable PR handoff bundle.</p>
+          <p id="loopActCopy">No safe migration package exists before deterministic analysis.</p>
         </article>
 
         <article class="inheritance-card">
@@ -127,10 +127,10 @@
 
         <article class="inheritance-card">
           <div class="inheritance-top">
-            <span id="loopInheritState" class="loop-state" data-state="CERTIFIED">CERTIFIED</span>
+            <span id="loopInheritState" class="loop-state" data-state="PENDING">PENDING</span>
             <strong>Inherit the decision</strong>
           </div>
-          <p id="loopInheritCopy">The next human or agent inherits the passport and decision context instead of starting from an empty chat.</p>
+          <p id="loopInheritCopy">Inheritance starts only after scoped approval certifies the passport.</p>
         </article>
       </div>
     </section>

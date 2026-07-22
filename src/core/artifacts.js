@@ -28,7 +28,26 @@ function representativePaths(impact) {
   }));
 }
 
+function schemaGrounding(request, impact) {
+  const schemaFields = Array.isArray(impact.target?.schemaFields) ? impact.target.schemaFields : [];
+  const sourceField = schemaFields.find((field) => field?.fieldPath === request.sourceField) || null;
+  const generatedTests = sourceField?.nullable === false ? ["not_null"] : [];
+  return {
+    sourceFieldSchema: sourceField ? {
+      fieldPath: sourceField.fieldPath,
+      nativeDataType: sourceField.nativeDataType || null,
+      nullable: sourceField.nullable ?? null
+    } : null,
+    capturedFieldCount: schemaFields.length,
+    generatedTests,
+    safeClaim: sourceField
+      ? "Generated tests are derived from the captured source-field schema constraint; not_null is emitted only when nullable is explicitly false."
+      : "No source-field nullability constraint was captured, so the generator does not invent a not_null test."
+  };
+}
+
 function buildArtifactGrounding(request, impact, risk, migration) {
+  const groundedSchema = schemaGrounding(request, impact);
   return {
     contractVersion: "1.0",
     target: {
@@ -41,7 +60,8 @@ function buildArtifactGrounding(request, impact, risk, migration) {
       sourceField: request.sourceField,
       destinationField: request.destinationField || null,
       destinationType: request.destinationType || null,
-      safeClaim: "Generated code currently uses the requested field names and target model identity. It does not yet ingest a full DataHub field-schema snapshot into the generator."
+      generatedModelName: migration.generatedModelName,
+      ...groundedSchema
     },
     lineageInputs: {
       impactedAssetCount: impact.counts.total,
@@ -111,14 +131,16 @@ function safeMigration(request) {
   const source = sqlIdentifier(request.sourceField);
   const destination = sqlIdentifier(request.destinationField || `${source}_v2`);
   const entity = sqlIdentifier(request.entityName);
+  const generatedModelName = `${entity}_contextseal`;
   if (request.changeType === "rename_column") {
     return {
       ruleId: "RENAME_COLUMN_REQUIRES_COMPATIBILITY_FIELD",
       strategy: "EXPAND_MIGRATE_CONTRACT",
       summary: `Add ${destination}, backfill from ${source}, migrate consumers, then deprecate ${source}.`,
       safeClaim: "Direct rename requests are converted into a compatibility-field migration so downstream consumers can move before removal.",
+      generatedModelName,
       sql: `-- ContextSeal safe expansion: keep the old field during consumer migration\nselect\n  *,\n  ${source} as ${destination}\nfrom {{ ref('${entity}') }}\n`,
-      rollback: `-- Rollback keeps the original field authoritative\nselect * exclude (${destination}) from {{ ref('${entity}_compat') }};\n`
+      rollback: `-- Rollback keeps the original field authoritative\nselect * exclude (${destination}) from {{ ref('${generatedModelName}') }};\n`
     };
   }
   if (request.changeType === "type_change") {
@@ -128,8 +150,9 @@ function safeMigration(request) {
       strategy: "PARALLEL_TYPED_FIELD",
       summary: `Create a parallel typed field and retain ${source} until validation completes.`,
       safeClaim: "Type changes create a parallel typed column so the original field stays authoritative during validation.",
+      generatedModelName,
       sql: `select\n  *,\n  try_cast(${source} as ${destinationType}) as ${source}_typed\nfrom {{ ref('${entity}') }}\n`,
-      rollback: `select * exclude (${source}_typed) from {{ ref('${entity}_typed') }};\n`
+      rollback: `select * exclude (${source}_typed) from {{ ref('${generatedModelName}') }};\n`
     };
   }
   if (request.changeType === "drop_column") {
@@ -138,6 +161,7 @@ function safeMigration(request) {
       strategy: "DEPRECATE_BEFORE_DROP",
       summary: `Mark ${source} deprecated, migrate every known consumer, and drop it only in a later approved change.`,
       safeClaim: "Direct drops are refused; the generator preserves the field and emits a later-drop migration note instead.",
+      generatedModelName,
       sql: `-- Deliberately preserves ${source}; direct destructive removal is not generated.\nselect * from {{ ref('${entity}') }}\n`,
       rollback: `-- No destructive operation was generated; rollback is a no-op.\nselect 1;\n`
     };
@@ -151,7 +175,11 @@ export function generateArtifacts(request, impact, risk) {
     : request.changeType === "type_change"
       ? `${request.sourceField}_typed`
       : request.sourceField;
-  const schema = `version: 2\nmodels:\n  - name: ${request.entityName}_contextseal\n    description: "ContextSeal migration candidate; strategy ${migration.strategy}."\n    columns:\n      - name: ${field}\n        tests:\n          - not_null\n`;
+  const generatedTests = schemaGrounding(request, impact).generatedTests;
+  const testsYaml = generatedTests.length
+    ? `\n        tests:\n${generatedTests.map((test) => `          - ${test}`).join("\n")}`
+    : "";
+  const schema = `version: 2\nmodels:\n  - name: ${migration.generatedModelName}\n    description: "ContextSeal migration candidate; strategy ${migration.strategy}."\n    columns:\n      - name: ${field}${testsYaml}\n`;
   const ownerBrief = [
     "# Impacted owner briefing",
     "",
@@ -166,8 +194,8 @@ export function generateArtifacts(request, impact, risk) {
     strategy: migration.strategy,
     summary: migration.summary,
     files: [
-      { path: `generated/models/${request.entityName}_contextseal.sql`, kind: "DBT_MODEL", content: migration.sql },
-      { path: `generated/models/${request.entityName}_contextseal.yml`, kind: "DBT_TESTS", content: schema },
+      { path: `generated/models/${migration.generatedModelName}.sql`, kind: "DBT_MODEL", content: migration.sql },
+      { path: `generated/models/${migration.generatedModelName}.yml`, kind: "DBT_TESTS", content: schema },
       { path: `generated/rollback/${request.entityName}.sql`, kind: "ROLLBACK", content: migration.rollback },
       { path: "generated/IMPACTED_OWNERS.md", kind: "OWNER_BRIEF", content: ownerBrief }
     ]

@@ -29,7 +29,7 @@ Open <http://127.0.0.1:4173>.
 - Safe alternative generation
 - Approval/passport boundary
 - Mutation gating and honest fixture labeling
-- Executable local conformance proof for the generated artifact bundle via `npm run sandbox`
+- Executable local conformance proof for the generated artifact bundle via `npm run sandbox` (this checks grounding and internal consistency, not dbt execution)
 
 ## What it does not prove
 
@@ -37,6 +37,7 @@ Open <http://127.0.0.1:4173>.
 - A local-model-backed `PASS` explanation unless Ollama is installed and enabled
 - Live metadata mutation
 - Warehouse execution
+- Real `dbt parse`, `dbt compile`, `dbt run`, and `dbt test` proof until mandatory `W-14F` is complete
 - Production readiness
 
 The separate live path is documented in [LIVE_DATAHUB_SETUP.md](LIVE_DATAHUB_SETUP.md).

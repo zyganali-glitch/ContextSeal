@@ -13,7 +13,8 @@ Bu belge proje sahibinin yapması gereken işleri, yapılma sırasına göre anl
 - [x] Yerel ContextSeal klasörü oluşturuldu.
 - [x] Yerel DataHub kuruldu ve sağlık kontrolü geçti.
 - [x] Sentetik ContextSeal verileri DataHub'a yüklendi.
-- [x] Canlı MCP okuma ve sınırlı geri yazma kanıtı oluşturuldu.
+- [x] Tarihsel sentetik-yerel MCP okuma ve sınırlı geri yazma kanıtı oluşturuldu.
+- [ ] Final SHA üzerinde taze MCP okuma, yazma ve tekrar okuma kanıtı oluşturulacak.
 
 ## Senin yapacağın işler — kısa liste
 
@@ -115,7 +116,7 @@ Codex geliştirmeyi tamamlayıp sana “yerel denemeye hazır” dediğinde:
 
 ## 4. Canlı DataHub kanıtı
 
-Bu bölüm yarışmadaki en önemli kullanıcı görevidir. Ayrıntılar [Canlı DataHub Kurulumu](CANLI_DATAHUB_KURULUMU.md) belgesindedir. Bu işi yalnız yapmaya çalışma; her ekranı Codex ile birlikte ilerlet.
+Bu bölüm yarışmadaki en önemli kullanıcı görevidir. Ayrıntılar [Canlı DataHub Kurulumu](CANLI_DATAHUB_KURULUMU.md) belgesindedir. Mevcut kayıt tarihsel kanıttır; video ve final başvuru için exact final SHA üzerinde yeniden yakalanmalıdır. Bu işi yalnız yapmaya çalışma; her ekranı Codex ile birlikte ilerlet.
 
 Canlı kanıt tamamlandığında elimizde şunlar olmalı:
 

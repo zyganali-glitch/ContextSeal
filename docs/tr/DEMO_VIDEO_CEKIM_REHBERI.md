@@ -156,13 +156,13 @@ OBS’nin alt bölümünde **Sources** adlı kutuyu bul.
 7. Risk puanı görünürken 4 saniye bekle.
 8. Yatay bağlantı zincirini yavaşça göster.
 9. Risk bulgularına doğru aşağı kaydır.
-10. `BREAKING LINEAGE`, `SENSITIVE DATA` ve `LIVE QUERY USAGE` satırlarında 4 saniye bekle.
+10. `BREAKING LINEAGE`, `SENSITIVE DATA` ve sorgu kanıtı satırlarında 4 saniye bekle; bunun halka açık akışta fixture kanıtı olduğu görünür kalmalıdır.
 11. Üretilen dört dosyayı göster.
 12. İnsan onayı bölümüne kaydır.
 13. **Approve safe plan** düğmesine bir kez bas.
 14. Pasaport numarası oluşunca 5 saniye bekle.
 15. **Prepare DataHub write-back** düğmesine bas. Bu halka açık fixture gösteriminde ekranda hiçbir kataloğun değiştirilmediği yazmalıdır.
-16. Daha önce gerçek yerel yazma kanıtı hazırlanan DataHub sekmesine geç.
+16. Yalnız final SHA üzerinde taze write-back/read-back kanıtı `PASS` ise o DataHub sekmesine geç; aksi halde fixture ekranında kal.
 17. Eklenen ContextSeal alanlarını göster.
 18. Pasaport belgesini göster.
 19. ContextSeal ana başlığına geri dön.
@@ -224,13 +224,13 @@ Here, a developer asks to rename customer email directly. ContextSeal validates 
 #### Ses 3 — DataHub bağlamı
 
 ```text
-DataHub context reveals five downstream assets across an Airflow job, a Snowflake dataset, two dashboards, and a production machine learning model. Every impact includes its lineage path.
+The DataHub-shaped judge fixture reveals five downstream assets across an Airflow job, a Snowflake dataset, two dashboards, and a production machine learning model. Every impact includes its lineage path.
 ```
 
 #### Ses 4 — Risk kararı
 
 ```text
-The deterministic policy blocks the direct change with a risk score of eighty. The field is sensitive, used by observed queries, and connected to critical downstream consumers.
+The deterministic policy blocks the direct change with a risk score of eighty. Fixture query evidence shows usage of the sensitive field, which is connected to critical downstream consumers.
 ```
 
 #### Ses 5 — Güvenli çözüm
@@ -247,16 +247,16 @@ A human approves only this safe scope. ContextSeal binds the request, DataHub co
 
 #### Ses 7 — Kapanış
 
-Bu proje için kullanacağın kapanış metni:
+Yalnız final SHA üzerinde taze canlı DataHub write-back ve read-back görüntüsü `PASS` ise şu kapanış metnini kullan:
 
 ```text
 The certified status and passport are written back to DataHub, so the next engineer and agent inherit the decision. ContextSeal: every data change ships with proof, not confidence.
 ```
 
-Yalnız DataHub kanıtı daha sonra silinmiş veya çalışmıyorsa bunun yerine:
+Yalnız fixture veya hazırlanmış operasyon gösteriliyorsa bunun yerine:
 
 ```text
-In this public fixture, write-back remains not run and no catalog is modified. ContextSeal keeps every claim honest: every data change ships with proof, not confidence.
+In this public fixture, write-back remains not run and no catalog is modified. After a human-approved live run, the passport can be written back and read back from DataHub. ContextSeal keeps every claim honest: every data change ships with proof, not confidence.
 ```
 
 ### 5. Ses ayarı

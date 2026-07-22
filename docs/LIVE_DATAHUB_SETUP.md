@@ -102,9 +102,12 @@ npm run datahub:properties:apply
 
 ```powershell
 $headers = @{ Authorization = "Bearer $env:CONTEXTSEAL_OPERATOR_TOKEN"; "Content-Type" = "application/json" }
-$body = Get-Content examples/retail-change-request.json -Raw
+$request = Get-Content examples/retail-change-request.json -Raw | ConvertFrom-Json
+$body = @{ request = $request } | ConvertTo-Json -Depth 10
 Invoke-RestMethod -Method Post -Uri http://127.0.0.1:4173/api/analyze -Headers $headers -Body $body
 ```
+
+The wrapper is required in live mode: `/api/analyze` accepts the change contract under the top-level `request` property and fails closed on an unwrapped body.
 
 3. Inspect the created run or invoke the live-evidence refresh endpoint for an undecided run.
 4. Inspect `.contextseal/runs/<run-id>.json`.

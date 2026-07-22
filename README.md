@@ -233,7 +233,7 @@ npm run pr:draft -- --dry-run
 
 The read-only validation suite re-checks repository integrity, Python mutation safety, the full Node suite, deterministic demo and sandbox artifacts, fixture HTTP smoke, PR bundle parity, and draft-PR dry-run behavior without rewriting committed artifacts.
 
-`npm run validate` now covers repository integrity, Python mutation-safety tests, the full Node regression suite, demo regeneration, sandbox proof, fixture HTTP smoke, and PR handoff refresh. The stricter live-proof validator remains a separate command:
+`npm run validate` is read-only: it covers repository integrity, Python mutation-safety tests, the full Node regression suite, deterministic demo parity, committed sandbox-evidence freshness, fixture HTTP smoke, PR-bundle parity, and draft-PR request validation. The stricter live-proof validator remains a separate command:
 
 ```bash
 npm run evidence:check

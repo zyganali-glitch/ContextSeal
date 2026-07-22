@@ -21,14 +21,14 @@ A developer requests a direct rename of `customer_email` to `contact_email`. Con
 ### 00:20–00:34 — Blast radius
 
 - On screen: Hold on the context trace and downstream counts.
-- Spoken beat: `DataHub shows five downstream assets, and ContextSeal preserves the exact path that explains the blast radius.`
-- Subtitle: `DataHub shows five downstream assets and the exact path that explains the blast radius.`
+- Spoken beat: `The DataHub-shaped judge fixture reveals five downstream assets, and ContextSeal preserves the exact path that explains the blast radius.`
+- Subtitle: `The DataHub-shaped fixture reveals five downstream assets and the exact path behind the blast radius.`
 
 ### 00:34–00:46 — Deterministic block
 
 - On screen: Zoom the risk score and policy findings.
-- Spoken beat: `The verdict is deterministic: risk eighty, blocked, with breaking lineage, sensitive data, and live query usage.`
-- Subtitle: `Deterministic verdict: risk 80, BLOCKED, with breaking lineage, sensitive data, and live query usage.`
+- Spoken beat: `The verdict is deterministic: risk eighty, blocked, with breaking lineage, sensitive data, and fixture query evidence.`
+- Subtitle: `Deterministic verdict: risk 80, BLOCKED, with breaking lineage, sensitive data, and fixture query evidence.`
 
 ### 00:46–00:56 — AI boundary
 
@@ -58,7 +58,7 @@ A developer requests a direct rename of `customer_email` to `contact_email`. Con
 
 - On screen: Cut to the prepared local DataHub tab or the documented live-local evidence surface.
 - Spoken beat: `That certified decision can be written back to a disposable local DataHub so the next human and agent inherit it.`
-- Subtitle: `The certified decision is written back only to disposable local DataHub synthetic metadata.`
+- Subtitle: `The certified decision can be written back only to disposable local DataHub synthetic metadata.`
 
 > ContextSeal turns DataHub context into a safe decision the next human and agent can inherit.
 

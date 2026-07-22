@@ -4,7 +4,7 @@ Bu rehber gerçek DataHub bağlantısını kanıtlamak içindir. Komutların ne 
 
 ## Bu bilgisayardaki mevcut durum
 
-14 Temmuz 2026 tarihinde aşağıdaki işlemler tamamlandı:
+14 Temmuz 2026 tarihinde aşağıdaki işlemler tamamlandı ve tarihsel kanıt olarak saklandı; bu kayıt final SHA kanıtı değildir:
 
 - DataHub yerel olarak kuruldu ve `http://localhost:9002` adresi yanıt verdi.
 - Altı sentetik varlık ve beş bağlantı yüklendi.
@@ -206,11 +206,13 @@ Başarılı olursa ContextSeal Status, Risk Score, Passport ID ve Valid Until al
 
 `npm run datahub:seed` ve `npm run datahub:properties` komutları arka planda sabitlenmiş ücretsiz yol olan `uv run --with acryl-datahub==1.6.0.14` kullanır.
 
-İlk bağlantıda yalnız okuma işlemleri açık tutulacak. Şunları kanıtlamadan yazma işlemini açmayacağız:
+İlk bağlantıda yalnız okuma işlemleri açık tutulacak. Şu beş araç sözleşmesinin tamamını kanıtlamadan yazma işlemini açmayacağız:
 
-- hedef varlık okunuyor,
-- bağlantılar okunuyor,
- - sorgu kanıtı okunuyor,
+- `get_entities` ile hedef varlık okunuyor,
+- sayfalanmış `list_schema_fields` ile tam şema görüntüsü ve alan kısıtları okunuyor,
+- `get_lineage` ile aşağı akış hedefleri bulunuyor,
+- her hedef için `get_lineage_paths_between` ile tam yol okunuyor,
+- `get_dataset_queries` ile sorgu kanıtı okunuyor; sıfır sonuç da dürüstçe kaydediliyor,
 - gizli anahtar hiçbir çıktıda görünmüyor.
 
 ## Aşama 9 — Yazma kapısını aç

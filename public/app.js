@@ -59,13 +59,12 @@ function renderGraph(run) {
   }
 }
 
-function renderHeroSnapshot(run, approvedRun = null) {
+function renderHeroSnapshot(run) {
   if (!run) return;
 
-  const referenceRun = approvedRun?.passport ? approvedRun : run.passport ? run : null;
-  const passport = referenceRun?.passport || null;
+  const passport = run.passport || null;
   const request = run.request || {};
-  const artifactCount = referenceRun?.artifacts?.manifest?.artifacts?.length ?? run.artifacts?.files?.length ?? 0;
+  const artifactCount = run.artifacts?.manifest?.artifacts?.length ?? run.artifacts?.files?.length ?? 0;
   const queryCount = run.context?.queries?.length ?? 0;
   const impactCount = run.impact?.counts?.total ?? 0;
   const criticalCount = run.impact?.counts?.highCriticality ?? 0;
@@ -73,13 +72,9 @@ function renderHeroSnapshot(run, approvedRun = null) {
   text("#heroRiskPill", `${run.risk?.score ?? "—"}/100 ${run.risk?.verdict || "BLOCKED"}`);
   text("#heroImpactPill", `${impactCount} downstream`);
   text("#heroPackagePill", `${artifactCount} review files`);
-  const snapshotState = passport && !run.passport
-    ? `${run.risk?.verdict || "BLOCKED"} -> ${passport.status}`
-    : passport?.status || run.risk?.verdict || run.state || "BLOCKED";
+  const snapshotState = passport?.status || run.risk?.verdict || run.state || "PENDING";
   text("#heroSnapshotState", snapshotState);
-  $("#heroSnapshotState").dataset.state = snapshotState.includes("CERTIFIED")
-    ? "BLOCKED_TO_CERTIFIED"
-    : (passport?.status || run.risk?.verdict || run.state || "BLOCKED");
+  $("#heroSnapshotState").dataset.state = passport?.status || run.risk?.verdict || run.state || "PENDING";
   text("#heroRequest", `${formatChangeType(request.changeType)} ${request.sourceField || "field"} -> ${request.destinationField || "safe target"}`);
   text("#heroImpactSummary", `${impactCount} downstream assets, ${criticalCount} critical, ${queryCount} observed queries.`);
   text("#heroPackageCount", `${artifactCount} review files`);
@@ -94,15 +89,14 @@ function renderHeroSnapshot(run, approvedRun = null) {
   }
 }
 
-function renderInheritanceLoop(run, approvedRun = null) {
+function renderInheritanceLoop(run) {
   if (!run) return;
 
-  const referenceRun = approvedRun?.passport ? approvedRun : run;
-  const artifactCount = referenceRun?.artifacts?.manifest?.artifacts?.length ?? run.artifacts?.files?.length ?? 0;
+  const artifactCount = run.artifacts?.manifest?.artifacts?.length ?? run.artifacts?.files?.length ?? 0;
   const readState = evidenceState(run, "DataHub context retrieved");
   const actState = evidenceState(run, "Migration artifacts generated");
-  const writebackState = evidenceState(referenceRun, "DataHub write-back completed");
-  const inheritState = referenceRun?.passport?.status || "PENDING";
+  const writebackState = evidenceState(run, "DataHub write-back completed");
+  const inheritState = run.passport?.status || "PENDING";
 
   text("#loopReadState", readState);
   $("#loopReadState").dataset.state = readState;
@@ -122,8 +116,8 @@ function renderInheritanceLoop(run, approvedRun = null) {
 
   text("#loopInheritState", inheritState);
   $("#loopInheritState").dataset.state = inheritState;
-  text("#loopInheritCopy", referenceRun?.passport
-    ? `The next human or agent can inherit passport ${referenceRun.passport.passportId} instead of starting from an empty chat.`
+  text("#loopInheritCopy", run.passport
+    ? `The next human or agent can inherit passport ${run.passport.passportId} instead of starting from an empty chat.`
     : "Inheritance starts only after scoped approval certifies the passport.");
 }
 
@@ -247,8 +241,8 @@ function renderAi(run) {
 function renderRun(run) {
   currentRun = run;
   $("#workspace").classList.remove("hidden");
-  renderHeroSnapshot(run, run.passport ? run : staticDemo?.approved);
-  renderInheritanceLoop(run, run.passport ? run : staticDemo?.approved);
+  renderHeroSnapshot(run);
+  renderInheritanceLoop(run);
   text("#requestTitle", run.request.entityName);
   text("#sourceField", run.request.sourceField);
   text("#destinationField", run.request.destinationField || `${run.request.sourceField}_typed`);
@@ -267,7 +261,19 @@ function renderRun(run) {
   renderAi(run);
   renderEvidence(run.evidence);
   if (run.passport) renderPassport(run.passport);
+  else renderPendingPassport();
   $("#workspace").scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function renderPendingPassport() {
+  text("#passportTitle", "Waiting for approval");
+  text("#passportStatus", "PENDING");
+  $("#passportStatus").className = "seal waiting";
+  $("#passportStatus").dataset.state = "PENDING";
+  for (const value of $("#passportDetails").querySelectorAll("dd")) value.textContent = "—";
+  $("#writebackButton").disabled = true;
+  $("#approveButton").disabled = false;
+  text("#writebackMessage", "");
 }
 
 function renderPassport(passport) {
@@ -343,14 +349,6 @@ try {
   $("#modeBadge").className = `badge ${health.mode === "datahub" ? "badge-live" : "badge-fixture"}`;
 } catch {
   text("#modeBadge", "SERVER OFFLINE");
-}
-
-try {
-  const demo = await ensureDemoData();
-  renderHeroSnapshot(demo.analyzed, demo.approved);
-  renderInheritanceLoop(demo.analyzed, demo.approved);
-} catch {
-  // Keep the static fallback copy if the demo snapshot cannot be loaded.
 }
 
 $("#analyzeButton").addEventListener("click", analyze);

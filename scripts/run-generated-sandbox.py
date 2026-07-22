@@ -104,7 +104,7 @@ def validate_model_sql(text: str, grounding: dict) -> None:
 
 
 def validate_tests_yaml(text: str, grounding: dict) -> None:
-    entity = grounding["target"]["entityName"]
+    generated_model = grounding["schemaInputs"]["generatedModelName"]
     source = grounding["schemaInputs"]["sourceField"]
     destination = grounding["schemaInputs"]["destinationField"]
     destination_type = grounding["schemaInputs"]["destinationType"]
@@ -119,13 +119,14 @@ def validate_tests_yaml(text: str, grounding: dict) -> None:
     else:
         fail(f"Unsupported migration rule id in tests yaml: {rule_id}")
 
-    require(f"name: {entity}_contextseal" in text, "tests yaml must name the grounded generated model")
+    require(f"name: {generated_model}" in text, "tests yaml must name the grounded generated model")
     require(f"- name: {expected_field}" in text, "tests yaml must cover the grounded compatibility field")
-    require("- not_null" in text, "tests yaml must preserve the not_null expectation")
+    expected_tests = grounding["schemaInputs"].get("generatedTests") or []
+    require(("- not_null" in text) == ("not_null" in expected_tests), "tests yaml not_null must match the grounded schema constraint")
 
 
 def validate_rollback_sql(text: str, grounding: dict) -> None:
-    entity = grounding["target"]["entityName"]
+    generated_model = grounding["schemaInputs"]["generatedModelName"]
     source = grounding["schemaInputs"]["sourceField"]
     destination = grounding["schemaInputs"]["destinationField"]
     rule_id = grounding["migrationRule"]["ruleId"]
@@ -134,10 +135,10 @@ def validate_rollback_sql(text: str, grounding: dict) -> None:
     if rule_id == RENAME_RULE:
         require(destination is not None, "rename rule requires a destination field")
         require(f"exclude ({destination})" in normalized, "rollback must exclude the grounded compatibility field")
-        require(f"ref('{entity}_compat')" in normalized, "rollback must target the grounded compatibility model")
+        require(f"ref('{generated_model}')" in normalized, "rollback must target the canonical grounded generated model")
     elif rule_id == TYPE_RULE:
         require(f"exclude ({source}_typed)" in normalized, "rollback must exclude the typed compatibility field")
-        require(f"ref('{entity}_typed')" in normalized, "rollback must target the typed grounded compatibility model")
+        require(f"ref('{generated_model}')" in normalized, "rollback must target the canonical grounded generated model")
     elif rule_id == DROP_RULE:
         require("select 1;" in text.lower(), "drop-preserving rollback should remain a no-op")
     else:

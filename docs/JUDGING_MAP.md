@@ -7,7 +7,7 @@
 
 ## Use of DataHub
 
-- MCP reads entity context, downstream lineage, and observed queries.
+- The hardened live MCP contract requires `get_entities`, every paginated `list_schema_fields` page, `get_lineage`, one `get_lineage_paths_between` result per discovered target, and `get_dataset_queries`.
 - Risk decisions use ownership, governance signals, quality, incidents, and lineage.
 - Approved outcomes write structured properties, description context, and a passport document back to DataHub.
 - The write-back makes the next agent inherit the decision rather than starting from an empty chat.
@@ -25,7 +25,7 @@
 - Destructive requests produce non-destructive migration artifacts.
 - Passport hashes bind request, context, artifacts, evidence, and approval.
 - MCP failures and disabled mutations fail closed.
-- `npm run validate` now covers repository integrity, Python safety, the full Node regression suite, demo regeneration, sandbox proof, fixture smoke, and PR bundle refresh.
+- `npm run validate` is read-only and covers repository integrity, Python safety, the full Node regression suite, deterministic demo parity, committed sandbox-evidence freshness, fixture smoke, PR-bundle parity, and draft-PR request validation.
 - GitHub workflows for Node 20/24, Pages, and container smoke are restored, but exact-head hosted execution still remains a separate final gate.
 
 ## Originality

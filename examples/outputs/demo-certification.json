@@ -1,5 +1,5 @@
 {
-  "runId": "csr_ea7ac87fa9d973359b2e6996731a18c5",
+  "runId": "csr_4ab7ef5169bd2e0dcbfd64669646933a",
   "state": "APPROVED_FOR_WRITEBACK",
   "mode": "fixture",
   "createdAt": "2026-07-22T06:39:36.461Z",
@@ -37,6 +37,13 @@
         ],
         "assertions": [
           "urn:li:assertion:customer-email-not-null"
+        ],
+        "schemaFields": [
+          {
+            "fieldPath": "customer_email",
+            "nativeDataType": "varchar",
+            "nullable": false
+          }
         ],
         "incidents": []
       },
@@ -167,6 +174,13 @@
       ],
       "assertions": [
         "urn:li:assertion:customer-email-not-null"
+      ],
+      "schemaFields": [
+        {
+          "fieldPath": "customer_email",
+          "nativeDataType": "varchar",
+          "nullable": false
+        }
       ],
       "incidents": []
     },
@@ -340,7 +354,17 @@
         "sourceField": "customer_email",
         "destinationField": "contact_email",
         "destinationType": null,
-        "safeClaim": "Generated code currently uses the requested field names and target model identity. It does not yet ingest a full DataHub field-schema snapshot into the generator."
+        "generatedModelName": "gold_customers_contextseal",
+        "sourceFieldSchema": {
+          "fieldPath": "customer_email",
+          "nativeDataType": "varchar",
+          "nullable": false
+        },
+        "capturedFieldCount": 1,
+        "generatedTests": [
+          "not_null"
+        ],
+        "safeClaim": "Generated tests are derived from the captured source-field schema constraint; not_null is emitted only when nullable is explicitly false."
       },
       "lineageInputs": {
         "impactedAssetCount": 5,
@@ -430,7 +454,7 @@
       {
         "path": "generated/rollback/gold_customers.sql",
         "kind": "ROLLBACK",
-        "content": "-- Rollback keeps the original field authoritative\nselect * exclude (contact_email) from {{ ref('gold_customers_compat') }};\n"
+        "content": "-- Rollback keeps the original field authoritative\nselect * exclude (contact_email) from {{ ref('gold_customers_contextseal') }};\n"
       },
       {
         "path": "generated/IMPACTED_OWNERS.md",
@@ -440,10 +464,10 @@
     ],
     "manifest": {
       "manifestVersion": "1.0",
-      "generatedFromRunId": "csr_ea7ac87fa9d973359b2e6996731a18c5",
+      "generatedFromRunId": "csr_4ab7ef5169bd2e0dcbfd64669646933a",
       "passportContext": {
-        "passportId": "csp_6737bde14310a4fd1b9c",
-        "manifestHash": "6737bde14310a4fd1b9c7fd70da5640d7a2b181b8afc4b93fcd9b6ff1abdf317",
+        "passportId": "csp_60ce7207989fff37fdf8",
+        "manifestHash": "60ce7207989fff37fdf8c37f256fb16a9fd4fa6adf0f926c136008a428f3e963",
         "validUntil": "2026-07-23T06:39:36.469Z",
         "status": "CERTIFIED",
         "artifactGroundingContractVersion": "1.0",
@@ -461,7 +485,17 @@
           "sourceField": "customer_email",
           "destinationField": "contact_email",
           "destinationType": null,
-          "safeClaim": "Generated code currently uses the requested field names and target model identity. It does not yet ingest a full DataHub field-schema snapshot into the generator."
+          "generatedModelName": "gold_customers_contextseal",
+          "sourceFieldSchema": {
+            "fieldPath": "customer_email",
+            "nativeDataType": "varchar",
+            "nullable": false
+          },
+          "capturedFieldCount": 1,
+          "generatedTests": [
+            "not_null"
+          ],
+          "safeClaim": "Generated tests are derived from the captured source-field schema constraint; not_null is emitted only when nullable is explicitly false."
         },
         "lineageInputs": {
           "impactedAssetCount": 5,
@@ -560,7 +594,7 @@
         {
           "path": "generated/rollback/gold_customers.sql",
           "kind": "ROLLBACK",
-          "sha256": "8b9cdd8d9e3a02e9a18382fa2bf6f9bcaf15ba587a03a5b9dc8bbd10f0a8eb17",
+          "sha256": "69e5d94459c9c804495577b71f62e430bfeccf05841137e3f8b009dec74cf2ee",
           "groundingRefs": [
             "target",
             "schemaInputs",
@@ -625,7 +659,7 @@
   "aiGroundingInput": {
     "schemaVersion": "1.0",
     "product": "ContextSeal",
-    "generatedFromRunId": "csr_ea7ac87fa9d973359b2e6996731a18c5",
+    "generatedFromRunId": "csr_4ab7ef5169bd2e0dcbfd64669646933a",
     "mode": "fixture",
     "runState": "AWAITING_HUMAN",
     "evidenceBoundary": {
@@ -906,13 +940,13 @@
   },
   "passport": {
     "passportVersion": "2.0",
-    "runId": "csr_ea7ac87fa9d973359b2e6996731a18c5",
+    "runId": "csr_4ab7ef5169bd2e0dcbfd64669646933a",
     "createdAt": "2026-07-22T06:39:36.461Z",
     "status": "CERTIFIED",
     "mode": "fixture",
     "targetUrn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)",
     "requestHash": "a0bd0168caa39e82d232eac2a3a9f3ebeeaf9a0b7dc3dac7ef84e05d6bb281f9",
-    "contextHash": "274ac8ab766baf7909ad61fb653eed7ade2f5b865a24e35701af2158b2232ce1",
+    "contextHash": "de3e5c8ccd78f5149a3d167584f2c2db88aa30ba1bdfcce8f0d2eeabb07eaf32",
     "policy": {
       "version": "2026-07-14",
       "sha256": "eadf377cceb74742db8523466ec4fd700574e55e4786bbc993c7985053d31a82"
@@ -938,7 +972,7 @@
         "ML_MODEL": 1
       }
     },
-    "impactHash": "93cbddbfe5f6ef62d3df4d309b25a9eca5fc2c7d73673568465d60abd5e06711",
+    "impactHash": "db6e767b2b95f7b9d7e52c042a61204afc83f8ea6eeb119c7c08673ba5f40c19",
     "migrationStrategy": "EXPAND_MIGRATE_CONTRACT",
     "migrationSummary": "Add contact_email, backfill from customer_email, migrate consumers, then deprecate customer_email.",
     "artifactGroundingContractVersion": "1.0",
@@ -954,7 +988,7 @@
       },
       {
         "path": "generated/rollback/gold_customers.sql",
-        "sha256": "8b9cdd8d9e3a02e9a18382fa2bf6f9bcaf15ba587a03a5b9dc8bbd10f0a8eb17"
+        "sha256": "69e5d94459c9c804495577b71f62e430bfeccf05841137e3f8b009dec74cf2ee"
       },
       {
         "path": "generated/IMPACTED_OWNERS.md",
@@ -1011,7 +1045,7 @@
       "decidedAt": "2026-07-22T06:39:36.469Z"
     },
     "validUntil": "2026-07-23T06:39:36.469Z",
-    "passportId": "csp_6737bde14310a4fd1b9c",
-    "manifestHash": "6737bde14310a4fd1b9c7fd70da5640d7a2b181b8afc4b93fcd9b6ff1abdf317"
+    "passportId": "csp_60ce7207989fff37fdf8",
+    "manifestHash": "60ce7207989fff37fdf8c37f256fb16a9fd4fa6adf0f926c136008a428f3e963"
   }
 }

@@ -30,6 +30,14 @@ This checklist is authoritative for final-head release readiness. Do not claim t
 - [ ] Run `npm run evidence:check` and attach the exact result.
 - [ ] Keep any historical artifact labeled `historical` until the fresh capture exists.
 
+## Generated bundle execution
+
+- [ ] Generate isolated rename, type-change, and drop dbt projects from the exact final SHA.
+- [ ] Run `dbt parse`, `dbt compile`, `dbt run`, and `dbt test` with `dbt-core` and `dbt-duckdb` for all three paths.
+- [ ] Confirm the generator consumes and records the complete captured schema snapshot, resolves output-name collisions, and derives tests only from explicit field constraints.
+- [ ] Commit the machine-readable real-dbt evidence artifact and confirm it names the exact generator input and final SHA.
+- [ ] Reproduce the same real-dbt proof in CI; conformance-only sandbox evidence cannot close this gate.
+
 ## Hosted and container proof
 
 - [ ] Trigger the CI workflow on the exact final SHA.
@@ -50,8 +58,9 @@ This checklist is authoritative for final-head release readiness. Do not claim t
 
 ## Submission assets
 
-- [ ] Record the final public demo video URL.
-- [ ] Freeze the Devpost draft against the exact final SHA.
+- [ ] Record a playable public YouTube, Vimeo, or Youku demo URL showing the functioning app in under three minutes.
+- [ ] Freeze and submit the Devpost entry against the exact final SHA; remove every placeholder URL.
+- [ ] Confirm the Apache-2.0 license is detected and visible in the public repository's GitHub About surface.
 - [ ] Freeze README, judging docs, evidence docs, and Turkish helper surfaces against the same final truth.
 - [ ] Confirm upstream PR #35 is described only as `OPEN / READY_FOR_REVIEW / NOT_MERGED` unless GitHub records a new state.
 
@@ -59,4 +68,4 @@ This checklist is authoritative for final-head release readiness. Do not claim t
 
 - [ ] Leave production warehouse execution `NOT_RUN` unless named evidence exists.
 - [ ] Leave customer impact `NOT_RUN` unless named evidence exists.
-- [ ] Leave optional dbt execution proof `NOT_RUN` unless named evidence exists.
+- [ ] Do not freeze the submission while the mandatory real dbt bundle execution proof is `NOT_RUN` or `FAIL`.

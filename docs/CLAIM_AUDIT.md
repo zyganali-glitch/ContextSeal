@@ -1,10 +1,12 @@
 # Claim Audit
 
-Updated: 2026-07-21 UTC
+Updated: 2026-07-22 UTC
 
 This audit closes the first truth-reset pass for Phase 1. Each risky claim is marked as one of:
 
 - `keep`: technically supported by the current product and evidence.
+- `keep_after_fix`: supported after the named correction and its regression coverage landed.
+- `keep_as_historical_raw_export`: retained unchanged as labeled historical evidence rather than rewritten as final-head proof.
 - `downgrade`: wording must be narrowed to match the current implementation.
 - `implement_later`: useful, but not safe to claim before new work lands.
 
@@ -19,6 +21,10 @@ This audit closes the first truth-reset pass for Phase 1. Each risky claim is ma
 | DataHub write-back inheritance | `keep` | The bounded mutation path and post-write verification are real in the committed local proof, as long as they stay scoped to synthetic local metadata. |
 | Deterministic authority over AI/model output | `keep` | The core verdict and evidence state logic remain deterministic and test-covered. |
 | Field-aware filtering as a product enhancement | `implement_later` | It may still be valuable, but it is not required for an honest winning path and should not be claimed today. |
+| Generated dbt rollback/model identity | `keep_after_fix` | SQL, YAML, rollback, and manifest now share the canonical `<entity>_contextseal` model identity; real dbt execution remains a separate mandatory gate. |
+| Generated `not_null` tests | `keep_after_fix` | The generator now emits `not_null` only from an explicit captured `nullable: false` source-field constraint. |
+| Approval sequencing in the UI | `keep_after_fix` | Approved fixture data is no longer rendered before the user approves the safe scope. |
+| Hardened live read contract | `keep_after_fix` | Evidence Boundary, Judging Map, Devpost, and live setup now share the exact five-tool contract: `get_entities`, paginated `list_schema_fields`, `get_lineage`, per-target `get_lineage_paths_between`, and `get_dataset_queries`. |
 
 ## Audited surfaces
 
@@ -34,6 +40,9 @@ This audit closes the first truth-reset pass for Phase 1. Each risky claim is ma
 | `docs/JUDGING_MAP.md` | Live proof could be read as fully typed cross-entity lineage | `downgrade` | Clarified dataset-shaped seeded proof and separate live/fixture surfaces. |
 | `docs/EVIDENCE_BOUNDARY.md` | Query and entity-type boundary was under-specified | `downgrade` | Added explicit rules for zero-result query reads and dataset-shaped downstream results. |
 | `docs/LIVE_DATAHUB_SETUP.md` | Verified status wording risked overstating entity types and live query usage | `downgrade` | Narrowed the verified-local wording to match the committed artifacts. |
+| `docs/LIVE_DATAHUB_SETUP.md` | The PowerShell example sent an unwrapped live request body | `keep_after_fix` | Wrapped the change contract under the required top-level `request` property. |
+| `public/index.html`, `public/app.js` | Static approved data could surface `CERTIFIED` before approval | `keep_after_fix` | Initial state is pending; analyzed state never receives approved fixture data; only the approval action can render a passport. |
+| `src/core/artifacts.js`, sandbox tests | Rollback referenced non-existent `_compat`/`_typed` models and every output invented `not_null` | `keep_after_fix` | Canonicalized model identity and grounded test selection on explicit source-field nullability. |
 | `skills/contextseal-change-certification/SKILL.md` | `table- and column-level impact` overstated the current workflow | `downgrade` | Reworded to downstream impact with a no-overclaim rule for field precision. |
 | `examples/outputs/live-datahub-read-evidence.json` | None in the wrapper; the artifact already proves a zero-result query read honestly | `keep` | Left unchanged. |
 | `examples/outputs/live-datahub-writeback-evidence.json` | Historical embedded run still contains the old claim label | `keep_as_historical_raw_export` | Not rewritten. The export is preserved as historical raw evidence until a fresh live run is captured under the new wording. |

@@ -1,11 +1,11 @@
 ## Summary
 
-- Run ID: csr_ea7ac87fa9d973359b2e6996731a18c5
-- Passport ID: csp_6737bde14310a4fd1b9c
+- Run ID: csr_4ab7ef5169bd2e0dcbfd64669646933a
+- Passport ID: csp_60ce7207989fff37fdf8
 - Target entity: gold_customers
 - Change type: rename-column
 - PR title: ContextSeal: staged rename for gold_customers.customer_email -> contact_email
-- Branch name: contextseal/rename-column/gold-customers-csr_ea7ac87fa9d973359b2e6996731a18c5
+- Branch name: contextseal/rename-column/gold-customers-csr_4ab7ef5169bd2e0dcbfd64669646933a
 - Safe staged strategy: Add contact_email, backfill from customer_email, migrate consumers, then deprecate customer_email.
 
 ## Blocked original request
