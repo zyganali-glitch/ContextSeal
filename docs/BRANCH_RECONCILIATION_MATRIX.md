@@ -5,7 +5,7 @@
 - Common ancestor verified: `e738268d16a686080208c3559bc0276725941df6`
 - Current `main` line inspected: `35d64550a5825fee55bbfdba61bf6be6a76b7fe4` -> `8b44ce1f6ac4c68ed4cb0c3fe8c4f7b25be355db`
 - Hardened line inspected: `65bea060e0ed6260067b57838fb0f358d1ce3d0d`
-- Working branch for reconciliation: `reconcile/hardened-final-head`
+- Temporary working branch used for reconciliation: `reconcile/hardened-final-head` (deleted after promotion to `main`)
 
 Status legend:
 
@@ -18,7 +18,7 @@ Status legend:
 
 | Area | Current `main` behavior | Hardened-line behavior | Selected final behavior | Files involved | Tests / checks proving preservation | Status | Notes / evidence boundary |
 |---|---|---|---|---|---|---|---|
-| Branch graph and ancestry | Current repo contains AI, sandbox, PR bundle, UI polish, and living plan work | Hardened line diverged after the same ancestor with stronger DataHub, security, CI, and Skills work | Keep current `main` as the architectural base, port hardened capabilities selectively, and document every manual merge | `plans/PLAN_20260721_contextseal_hackathon_win.md`, `docs/BRANCH_RECONCILIATION_MATRIX.md` | `git status`; `git branch --all`; `git log --oneline --decorate --graph --all`; `git merge-base`; diff-stat review | `DONE` | No history rewrite on `main`; all reconciliation happens on `reconcile/hardened-final-head`. |
+| Branch graph and ancestry | Current repo contains AI, sandbox, PR bundle, UI polish, and living plan work | Hardened line diverged after the same ancestor with stronger DataHub, security, CI, and Skills work | Keep current `main` as the architectural base, port hardened capabilities selectively, and document every manual merge | `plans/PLAN_20260721_contextseal_hackathon_win.md`, `docs/BRANCH_RECONCILIATION_MATRIX.md` | `git status`; `git branch --all`; `git log --oneline --decorate --graph --all`; `git merge-base`; diff-stat review | `DONE` | No history rewrite on `main`; reconciliation was completed on `reconcile/hardened-final-head` before the exact result was fast-forwarded onto canonical `main`. |
 | CI workflows | Current `main` did not carry the restored final-head workflow contract for Node 20/24, Python safety, dispatchable CI, and idempotence proof | Hardened line preserves the stronger CI, Pages, and container-smoke shape | Restore hardened workflows, then update them for current scripts and final-head truth | `.github/workflows/ci.yml`, `.github/workflows/pages.yml`, `package.json`, `Dockerfile`, `compose.yaml` | Workflow review; local equivalents of `npm run validate`, smoke, Docker, and idempotence checks | `DONE` | Workflows, package scripts, dispatch triggers, and smoke/idempotence wiring are restored; exact-commit hosted execution still belongs to the final validation gate. |
 | Server integration | Current server exposes fixture demo, AI enrichment, approval, live evidence capture, and PR-friendly API flow, but uses a simpler live-mode safety envelope | Hardened server adds operator-token auth, allowed-target enforcement, safe JSON parsing, supersede-aware state handling, write-back read-back verification, and stronger HTTP headers | Manual merge: preserve current AI entry points and judge flow while carrying hardened auth, state, and write-back verification guards | `src/server.js`, `src/store.js`, `src/datahub/writeback.js`, `src/datahub/live-context.js`, `src/ai/*` | `tests/server-integration.test.js`; `npm test`; `npm run smoke` | `DONE` | AI remains explanatory only; live mode is now guarded by operator auth, target allowlists, supersede checks, and durable read-back verification. |
 | MCP client provenance | Current client handles basic HTTP/stdio sessions and `isError` tool failures | Hardened client adds stricter provenance, protocol handling, redaction, non-JSON rejection, and defensive diagnostics | Prefer hardened client, then keep any current-main compatibility needed by AI/demo scripts | `src/datahub/mcp-client.js`, `tests/mcp-client.test.js` | `tests/mcp-client.test.js`; live-pipeline tests | `DONE` | MCP provenance must not conflate runtime package version, protocol version, or server identity. |
@@ -49,7 +49,7 @@ Status legend:
 
 ## Canonicalization Disposition
 
-- Both strong development lines were fully reconciled on `reconcile/hardened-final-head`.
-- `W-17G-S` promotes that complete reconciled result to `main` as the single canonical working branch without rewriting history.
-- After reachability verification confirms the reconciled commit is contained in `main`, the temporary reconciliation branch will be deleted.
-- Future plan execution must continue only from `main` once canonicalization completes.
+- Both strong development lines were fully reconciled.
+- The complete reconciled result was promoted to canonical `main` without rewriting history.
+- The temporary reconciliation branch was deleted after reachability verification confirmed its head was contained in `main`.
+- Future plan execution continues only from `main`.
