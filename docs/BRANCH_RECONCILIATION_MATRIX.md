@@ -46,3 +46,10 @@ Status legend:
 1. Recapture final-head disposable-local live evidence after seeding the synthetic DataHub graph with the restored fail-closed helpers.
 2. Run the full reconciled validation suite, exact-head container smoke, and hosted/manual GitHub gates before deciding whether submission phases can resume.
 3. Close `W-17L` with one final parity review after `W-17J` and `W-17K` either pass or remain explicitly blocked.
+
+## Canonicalization Disposition
+
+- Both strong development lines were fully reconciled on `reconcile/hardened-final-head`.
+- `W-17G-S` promotes that complete reconciled result to `main` as the single canonical working branch without rewriting history.
+- After reachability verification confirms the reconciled commit is contained in `main`, the temporary reconciliation branch will be deleted.
+- Future plan execution must continue only from `main` once canonicalization completes.
