@@ -43,6 +43,6 @@ The separate live path is documented in [LIVE_DATAHUB_SETUP.md](LIVE_DATAHUB_SET
 
 ## Pre-recorded local DataHub proof
 
-- `examples/outputs/live-datahub-read-evidence.json` preserves three raw MCP reads, including the saved query-read result.
-- `examples/outputs/live-datahub-writeback-evidence.json` preserves the approved run and three successful bounded mutations.
-- Both artifacts are explicitly synthetic-local, never production evidence.
+- `examples/outputs/live-datahub-read-evidence.json` preserves a historical synthetic-local read artifact from before the reconciled final HEAD.
+- `examples/outputs/live-datahub-writeback-evidence.json` preserves the matching historical approved run and bounded mutation artifact.
+- Both artifacts remain explicitly synthetic-local, never production evidence, and neither should be presented as final-head live proof until they are recaptured and revalidated.

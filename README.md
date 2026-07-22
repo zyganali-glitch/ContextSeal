@@ -121,7 +121,7 @@ Copy `.env.example` to `.env`, then set:
 CONTEXTSEAL_MODE=datahub
 DATAHUB_MCP_TRANSPORT=stdio
 DATAHUB_MCP_COMMAND=uvx
-DATAHUB_MCP_ARGS=["mcp-server-datahub@latest"]
+DATAHUB_MCP_ARGS=["mcp-server-datahub@0.6.0"]
 DATAHUB_GMS_URL=http://localhost:8080
 DATAHUB_GMS_TOKEN=your-local-token
 DATAHUB_MCP_MUTATIONS_ENABLED=false
@@ -150,14 +150,16 @@ npm start
 
 The application calls DataHub MCP tools for entity context, downstream lineage, observed dataset queries, and bounded metadata mutations. The default judge path keeps the exact graph view fixture-backed unless a target-derived graph contract is exported separately. See [Live DataHub Setup](docs/LIVE_DATAHUB_SETUP.md) for the exact verification path and limitations.
 
-The repository includes a completed disposable-local proof under `examples/outputs/`: five downstream dataset-shaped results were returned through live MCP across the seeded local platforms, and the approved status, risk score, passport ID, validity date, appended description, and decision document were written and verified against synthetic DataHub metadata.
+The repository preserves historical disposable-local proof under `examples/outputs/`: an earlier synthetic-local run returned five downstream dataset-shaped results through live MCP across seeded local platforms, and wrote plus read back the approved status, risk score, passport ID, validity date, appended description, and decision document. Those artifacts remain useful for review, but they predate the reconciled final HEAD and are labeled historical until live proof is recaptured.
 
 ## MCP tools used
 
 Read path:
 
 - `get_entities`
+- `list_schema_fields`
 - `get_lineage`
+- `get_lineage_paths_between`
 - `get_dataset_queries`
 
 Approved write-back path:
@@ -166,7 +168,7 @@ Approved write-back path:
 - `update_description`
 - `save_document`
 
-The reusable workflow is also packaged as [`contextseal-change-certification`](skills/contextseal-change-certification/SKILL.md), designed for contribution to the DataHub Skills ecosystem.
+The reusable workflow is canonically packaged as [`datahub-schema-change-certification`](skills/datahub-schema-change-certification/SKILL.md). The legacy local name [`contextseal-change-certification`](skills/contextseal-change-certification/SKILL.md) remains only as a compatibility alias while older prompts are migrated.
 
 ## Repository map
 
@@ -216,6 +218,14 @@ npm run pr:draft -- --dry-run
 `npm run pr:draft -- --dry-run` prepares the exact GitHub draft-PR request without using a token. A live draft PR call remains optional and explicit: the branch named in `examples/outputs/pr/pr-payload.json` must already exist on GitHub, and `GITHUB_TOKEN` is required before running `npm run pr:draft` without `--dry-run`.
 
 This runs repository-integrity checks, the deterministic Node test suite, and a fresh end-to-end fixture certification. CI also builds the container.
+
+`npm run validate` now covers repository integrity, Python mutation-safety tests, the full Node regression suite, demo regeneration, sandbox proof, fixture HTTP smoke, and PR handoff refresh. The stricter live-proof validator remains a separate command:
+
+```bash
+npm run evidence:check
+```
+
+It is expected to stay `WARN` until the disposable-local live DataHub artifacts are recaptured from the reconciled final HEAD.
 
 ## Judge paths
 

@@ -9,9 +9,10 @@
 - Archive directory: `plans/completed/PLAN_20260721_contextseal_hackathon_win.md`
 - Plan ID: `CS-HACK-20260721-01`
 - Project Target Platform: `DATA + API + WEB_DEMO + SUBMISSION_ASSETS`
-- Last updated: `2026-07-21 UTC`
+- Last updated: `2026-07-22 UTC`
 - Plan owner: `main-agent`
 - Active status: `IN_PROGRESS`
+- Active blocking phase: `P2X — Hardened Branch Reconciliation`
 - Required context load:
   1. `AGENT_MEMORY_AND_LESSONS.md`
   2. `AGENT_ARCHITECTURE_AND_PATTERNS.md`
@@ -56,16 +57,16 @@
 
 | Contract ID | Competition requirement | Commitment level | Delivery phases | Owning micro-phases | Required deliverable | Validation gate |
 |---|---|---|---|---|---|---|
-| `HC-01` | Build a working software application that uses DataHub | `COMMITTED` | `P1-P7` | `W-04` to `W-18C` | Running app, docs, and reproducible validation path | `Working Application Gate` |
-| `HC-02` | The agent reads DataHub before generating or deciding | `COMMITTED` | `P2-P4` | `W-06`, `W-06A`, `W-06B`, `W-11`, `W-12`, `W-13`, `W-14A` | Grounded input bundle tied to DataHub facts and MCP evidence | `DataHub Read Grounding Gate` |
-| `HC-03` | The AI agent takes action rather than only reporting | `COMMITTED` | `P2`, `P4`, `P5` | `W-07`, `W-08`, `W-08A`, `W-14B`, `W-14C`, `W-15A` | AI-assisted operator outputs plus generated migration and review artifacts | `AI Hero Gate`, `Generated Artifact Gate` |
-| `HC-04` | The system writes results back so the next human or agent inherits them | `COMMITTED` | `P3`, `P7` | `W-11`, `W-16A`, `W-18B` | Visible write-back and inheritance story grounded in the passport | `Write-Back Inheritance Gate` |
-| `HC-05` | Generate production data code after reading real schemas, lineage, and rules | `COMMITTED` | `P2-P4` | `W-06`, `W-07A`, `W-14A`, `W-14B`, `W-14C`, `W-14D` | Grounded code-generation contract plus regenerated dbt and rollback outputs | `Generated Artifact Gate`, `Sandbox Execution Gate` |
-| `HC-06` | Show example generated artifacts in the repository | `COMMITTED` | `P2-P5` | `W-09A`, `W-14D`, `W-14E`, `W-15C` | Refreshed committed artifacts and example evidence files | `Generated Artifact Gate` |
-| `HC-07` | Attach the generated result to a PR and make it reviewer-ready | `COMMITTED` | `P5` | `W-15`, `W-15A`, `W-15B`, `W-15C` | Free GitHub PR path: PR-ready bundle by default, optional draft PR creation when token is provided | `PR Delivery Gate` |
-| `HC-08` | Give judges confidence the output works the first time | `COMMITTED` | `P4`, `P6`, `P7` | `W-14C`, `W-14D`, `W-17`, `W-18A`, `W-18B` | Local sandbox execution evidence and concise demo proof | `Sandbox Execution Gate`, `Demo Compression Gate` |
-| `HC-09` | Use DataHub MCP or Skills explicitly | `COMMITTED` | `P3`, `P7` | `W-11`, `W-16A`, `W-18A`, `W-18B`, `W-19` | Submission story and product copy explicitly show MCP/Skills usage | `Submission Surface Parity Gate` |
-| `HC-10` | Strong entry quality: examples, proof, and handoff quality | `COMMITTED` | `P4-P8` | `W-09A`, `W-14D`, `W-15C`, `W-17A`, `W-18A`, `W-19`, `W-19A` | Example artifacts, demo script, PR packet, and maintainer-facing story | `Generated Artifact Gate`, `Submission Surface Parity Gate`, `Maintainer Traction Gate` |
+| `HC-01` | Build a working software application that uses DataHub | `COMMITTED` | `P1-P7`, `P2X` | `W-04` to `W-18C`, `W-17B` to `W-17L` | Running app, reconciled docs, and reproducible validation path | `Working Application Gate`, `Branch Reconciliation Gate` |
+| `HC-02` | The agent reads DataHub before generating or deciding | `COMMITTED` | `P2-P4`, `P2X` | `W-06`, `W-06A`, `W-06B`, `W-11`, `W-12`, `W-13`, `W-14A`, `W-17D`, `W-17E`, `W-17J` | Grounded input bundle tied to DataHub facts, complete live-local pipeline evidence, and MCP provenance | `DataHub Read Grounding Gate`, `Live Pipeline Completeness Gate`, `MCP Fail-Closed Gate` |
+| `HC-03` | The AI agent takes action rather than only reporting | `COMMITTED` | `P2`, `P4`, `P5`, `P2X` | `W-07`, `W-08`, `W-08A`, `W-14B`, `W-14C`, `W-15A`, `W-17I`, `W-17J` | AI-assisted operator outputs plus generated migration and review artifacts | `AI Boundary Gate`, `AI Model-Backed Proof Gate`, `Generated Artifact Gate` |
+| `HC-04` | The system writes results back so the next human or agent inherits them | `COMMITTED` | `P3`, `P2X`, `P7` | `W-11`, `W-16A`, `W-17D`, `W-17E`, `W-17J`, `W-18B` | Visible write-back and inheritance story grounded in the passport with durable read-back proof | `Write-Back Inheritance Gate`, `Passport Integrity Gate` |
+| `HC-05` | Generate production data code after reading real schemas, lineage, and rules | `COMMITTED` | `P2-P4`, `P2X` | `W-06`, `W-07A`, `W-14A`, `W-14B`, `W-14C`, `W-14D`, `W-17D`, `W-17I`, `W-17J` | Grounded code-generation contract plus regenerated dbt and rollback outputs | `Generated Artifact Gate`, `Local Sandbox Gate`, `Optional Local dbt Execution Gate` |
+| `HC-06` | Show example generated artifacts in the repository | `COMMITTED` | `P2-P5`, `P2X` | `W-09A`, `W-14D`, `W-14E`, `W-15C`, `W-17J` | Refreshed committed artifacts, evidence files, and freshness labels | `Generated Artifact Gate`, `Evidence Validation Gate` |
+| `HC-07` | Attach the generated result to a PR and make it reviewer-ready | `COMMITTED` | `P5`, `P2X` | `W-15`, `W-15A`, `W-15B`, `W-15C`, `W-17G`, `W-17I`, `W-17K` | Free GitHub PR path: PR-ready bundle by default, optional draft PR creation when token is provided | `PR Delivery Gate`, `CI Final-HEAD Gate` |
+| `HC-08` | Give judges confidence the output works the first time | `COMMITTED` | `P4`, `P6`, `P2X`, `P7` | `W-14C`, `W-14D`, `W-17`, `W-17J`, `W-17K`, `W-18A`, `W-18B` | Local deterministic proof, optional local dbt proof, and concise demo evidence | `Local Sandbox Gate`, `Optional Local dbt Execution Gate`, `Demo Compression Gate`, `CI Final-HEAD Gate` |
+| `HC-09` | Use DataHub MCP or Skills explicitly | `COMMITTED` | `P3`, `P2X`, `P7` | `W-11`, `W-16A`, `W-17D`, `W-17H`, `W-18A`, `W-18B`, `W-19` | Submission story and product copy explicitly show MCP/Skills usage and upstream PR truth | `MCP Fail-Closed Gate`, `Submission Surface Parity Gate`, `Upstream PR Truth Gate` |
+| `HC-10` | Strong entry quality: examples, proof, and handoff quality | `COMMITTED` | `P4-P8`, `P2X` | `W-09A`, `W-14D`, `W-15C`, `W-17A`, `W-17J`, `W-17K`, `W-18A`, `W-19`, `W-19A` | Example artifacts, evidence ledger, demo script, PR packet, and maintainer-facing story | `Evidence Validation Gate`, `Submission Surface Parity Gate`, `Maintainer Traction Gate`, `Pre-Submission Freeze Gate` |
 
 ### 1.2) Mandatory Competition Deliverables
 
@@ -82,6 +83,10 @@ The winning path is not considered ready until these artifacts exist or are expl
 9. Synced README, Devpost draft, judge docs, and Turkish operator aids.
 10. A recorded note that actual third-party review or merge is outside the agent's control and may never be pre-claimed.
 11. A professional, corporate, modern judge-facing UI plus a recorded desktop/mobile UI audit.
+12. A committed branch-reconciliation matrix describing what came from current `main`, what came from the hardened line, and how regressions are prevented.
+13. One authoritative evidence ledger with explicit `historical` versus `final-HEAD` freshness labels.
+14. Final-HEAD CI, container smoke, and Pages validation recorded as `PASS` or truthful `WARN`.
+15. A mandatory manual gate for one real Ollama-backed AI proof artifact, left `WARN` if the environment cannot run it.
 
 ---
 
@@ -92,21 +97,32 @@ The winning path is not considered ready until these artifacts exist or are expl
 - Excluded: production warehouse execution, customer claims, paid hosted AI services, speculative multi-tenant product work, and non-DataHub ecosystem expansion beyond pitch notes
 
 ### 2.2 Allowlist
+- `.env.example`
+- `.github/workflows/*`
 - `README.md`
 - `README.tr.md`
+- `CONTRIBUTING.md`
+- `SECURITY.md`
+- `Dockerfile`
+- `compose.yaml`
 - `AGENT_USER_PREFERENCES.md`
+- `docs/BRANCH_RECONCILIATION_MATRIX.md`
 - `docs/DEVPOST_SUBMISSION.md`
 - `docs/DEMO_SCRIPT.md`
 - `docs/JUDGE_TEST_PATH.md`
 - `docs/JUDGING_MAP.md`
 - `docs/EVIDENCE_BOUNDARY.md`
+- `docs/EVIDENCE_MANIFEST.md`
 - `docs/CLAIM_AUDIT.md`
 - `docs/COMPETITION_REQUIREMENT_MATRIX.md`
 - `docs/AI_RUNTIME_DECISION.md`
+- `docs/DATAHUB_SKILL_CONTRIBUTION.md`
+- `docs/PRE_SUBMISSION_CHECKLIST.md`
 - `docs/VISUAL_DIRECTION.md`
 - `docs/UI_REVIEW.md`
 - `docs/PR_REVIEW_PACKET.md`
 - `docs/MAINTAINER_OUTREACH.md`
+- `docs/media/*`
 - `public/index.html`
 - `public/app.js`
 - `public/styles.css`
@@ -114,10 +130,14 @@ The winning path is not considered ready until these artifacts exist or are expl
 - `src/core/*`
 - `src/datahub/*`
 - `src/ai/*`
+- `src/security/*`
+- `src/store.js`
+- `src/server.js`
 - `scripts/*`
-- `tests/ai-*.test.js`
-- `tests/sandbox-*.test.js`
-- `skills/contextseal-change-certification/SKILL.md`
+- `tests/*`
+- `tests_py/*`
+- `skills/contextseal-change-certification/*`
+- `skills/datahub-schema-change-certification/*`
 - `examples/outputs/*`
 - `examples/outputs/generated/ai/*`
 - `examples/outputs/pr/*`
@@ -136,21 +156,25 @@ The winning path is not considered ready until these artifacts exist or are expl
 
 | Objective ID | Objective | Success signal | Priority wave | Status |
 |---|---|---|---|---|
-| `O-01` | Make the product unambiguously agentic without weakening deterministic authority | A free/local AI copilot visibly reads grounded ContextSeal evidence and emits owner alert, migration rationale, reviewer-note draft, and next-step guidance inside the default winning demo path | `MUST` | `IN_PROGRESS` |
+| `O-01` | Make the product unambiguously agentic without weakening deterministic authority | A free/local AI copilot visibly reads grounded ContextSeal evidence and emits owner alert, migration rationale, reviewer-note draft, and next-step guidance inside the default winning demo path | `MUST` | `DONE` |
+| `O-01A` | Reconcile the hardened branch into the current judge-ready architecture without regressing AI, sandbox, PR, UI, or demo flow | One `main`-ready repository state preserves the strongest DataHub safety controls and the strongest current-main submission surfaces, with regression tests proving both remain intact | `MUST` | `IN_PROGRESS` |
 | `O-02` | Remove or repair fragile technical claims | README, UI, and evidence docs are truthful about asset-level vs field-level and fixture vs live | `MUST` | `DONE` |
-| `O-03` | Reposition the story around the passport artifact | Top-of-fold copy, Devpost, and video all make the passport the hero | `MUST` | `PENDING` |
+| `O-03` | Reposition the story around the passport artifact | Top-of-fold copy, Devpost, and video all make the passport the hero | `MUST` | `IN_PROGRESS` |
 | `O-04` | Compress the demo into a memorable 90-110 second flow | Updated demo script and UI show blocked risk, AI explanation, and passport payoff in under two minutes | `MUST` | `DONE` |
 | `O-04A` | Upgrade the UI into a professional, corporate, modern product surface | Hero, AI output area, risk proof, passport, and PR handoff read as boardroom-ready on desktop and mobile | `MUST` | `DONE` |
 | `O-05` | Prove the generated data code works in a local deterministic sandbox | Generated dbt/SQL artifacts run or validate in a reproducible local execution path and produce named evidence | `MUST` | `DONE` |
 | `O-06` | Deliver the generated result into repo-native and PR-native review surfaces | Repo-committed artifacts exist and a free GitHub PR path is implemented: PR-ready bundle by default, optional draft PR creation with token | `MUST` | `DONE` |
-| `O-07` | Preserve or strengthen live DataHub credibility | Live proof path and wording survive technical scrutiny | `SHOULD` | `PENDING` |
+| `O-06A` | Consolidate one final-head evidence ledger and validation story | Every major claim has one current proof surface, one honest boundary, and one recorded reproduction path or explicit `WARN` reason | `MUST` | `IN_PROGRESS` |
+| `O-07` | Preserve or strengthen live DataHub credibility | Live proof path, query honesty, write-back durability, and wording survive technical scrutiny | `SHOULD` | `IN_PROGRESS` |
 | `O-08` | Earn upstream or community traction | PR #35 gets an update comment and at least one outreach attempt is documented | `SHOULD` | `PENDING` |
 | `O-09` | Add one defensible stretch proof beyond the core challenge contract | One extra upgrade lands without harming core truth or schedule | `STRETCH` | `PENDING` |
 
 ### 3.1 Cut lines
-- Must ship: truthful claim reset, mandatory visible local AI copilot, passport-first pitch rewrite, professional modern UI refresh, local sandbox code proof, free PR delivery path, compressed demo script, track choice, and submission-surface sync
+- Must ship: truthful claim reset, mandatory visible local AI copilot, passport-first pitch rewrite, professional modern UI refresh, hardened-branch reconciliation, final-head evidence freshness, local sandbox code proof, free PR delivery path, compressed demo script, track choice, and submission-surface sync
 - Should ship: live evidence UI step, stronger live normalization story, PR #35 update, and maintainers outreach
 - Stretch: field-aware filtering, signed reviewer identity hardening, or expanded entity-type realism in local proof
+
+> No final Devpost, video, outreach, or stretch phase can close until the reconciled final HEAD passes all mandatory gates.
 
 ---
 
@@ -160,14 +184,15 @@ The winning path is not considered ready until these artifacts exist or are expl
 |---|---|---|---|---|
 | `P0` | Consolidate critique, constraints, governance spine, and challenge contract | `DONE` | `-` | Root governance files, active plan, and explicit challenge coverage matrix created |
 | `P1` | Truth reset: fix or downgrade fragile claims and lock exact challenge wording | `DONE` | `P0` | Claim audit closes with synchronized docs and UI wording |
-| `P2` | Add a free/local AI copilot that is impossible to miss in the demo | `PENDING` | `P1` | AI output artifact, UI surface, example output, grounded input bundle, and safe tests exist |
-| `P3` | Strengthen live DataHub credibility, MCP/Skills visibility, and inheritance loop clarity | `PENDING` | `P1` | Live path states are truthful, visible, and technically defensible |
+| `P2` | Add a free/local AI copilot that is impossible to miss in the demo | `DONE` | `P1` | AI output artifact, visible UI surface, grounded input bundle, safe tests, and deterministic fallback all exist; real model-backed proof remains separately gated |
+| `P3` | Strengthen live DataHub credibility, MCP/Skills visibility, and inheritance loop clarity | `DONE` | `P1` | Live-versus-fixture wording, inheritance cues, and baseline proof surfaces are in place; stronger final-HEAD recapture is reopened under `P2X` |
 | `P4` | Prove grounded code generation and local working-code execution | `DONE` | `P1`, `P2`, `P3` | Generated artifacts are tied to DataHub facts and validated through a reproducible local sandbox |
 | `P5` | Deliver a free GitHub PR path and repo-native review package | `DONE` | `P4` | PR-ready bundle exists, repo validation refreshes it, and the optional token-gated draft PR path now passes dry-run validation |
 | `P6` | Rebuild the demo around blocked risk, AI action, passport payoff, PR handoff, and a professional modern UI | `DONE` | `P2`, `P3`, `P4`, `P5` | 90-110 second judge flow with updated UI cues, visual hierarchy, and script |
-| `P7` | Rewrite submission surfaces as a sales pitch with honest authority | `PENDING` | `P1`, `P2`, `P3`, `P4`, `P5`, `P6` | README, Devpost draft, judging map, and Turkish helpers aligned |
-| `P8` | Pursue upstream/social proof with minimal time burn | `PENDING` | `P7` | PR update + outreach log |
-| `P9` | Land one stretch upgrade if core waves are closed | `PENDING` | `P7` | One bounded stretch item validates without hurting core truth |
+| `P2X` | Reconcile the hardened branch line into the current judge-ready architecture and refresh proof from the reconciled HEAD | `IN_PROGRESS` | `P2`, `P3`, `P4`, `P5`, `P6` | Branch matrix closed; hardened DataHub, security, CI, and Skills surfaces restored; AI/sandbox/PR/UI preserved; final-head evidence and mandatory gates refreshed |
+| `P7` | Rewrite submission surfaces as a sales pitch with honest authority | `PENDING` | `P1`, `P2`, `P3`, `P4`, `P5`, `P6`, `P2X` | README, Devpost draft, judging map, evidence docs, and Turkish helpers aligned on the reconciled truth |
+| `P8` | Pursue upstream/social proof with minimal time burn | `PENDING` | `P2X`, `P7` | PR update + outreach log |
+| `P9` | Land one stretch upgrade if core waves are closed | `PENDING` | `P2X`, `P7` | One bounded stretch item validates without hurting core truth |
 
 ### 4.1) Phase-by-Phase Execution Contract
 
@@ -179,7 +204,8 @@ The winning path is not considered ready until these artifacts exist or are expl
 | `P4` | `src/core/*`, `scripts/*`, `tests/*`, `examples/outputs/generated/*`, `examples/outputs/*` | Freeze the DataHub-to-codegen grounding contract, harden generation manifests, run the generated bundle in a local sandbox or equivalent deterministic executor, and save the proof | Sandbox or deterministic execution artifact, refreshed generated outputs, validation record |
 | `P5` | `scripts/*`, `src/*`, `docs/*`, `examples/outputs/*` | Define the GitHub PR delivery contract, generate a PR-ready bundle, add optional draft PR creation with token, and save one reviewable PR example artifact | PR bundle exists, optional draft PR path tested when possible, repo artifact saved |
 | `P6` | `public/index.html`, `public/app.js`, `public/styles.css`, `public/demo-data.json`, `docs/DEMO_SCRIPT.md`, `docs/VISUAL_DIRECTION.md`, `docs/UI_REVIEW.md`, `AGENT_USER_PREFERENCES.md` | Rebuild the hero sequence so judges see blocked risk, AI explanation, passport, and PR handoff in under two minutes, while upgrading the visual system into a professional corporate product surface | Updated UI flow, visual direction note, UI review note, updated script, timed dry run |
-| `P7` | `README.md`, `README.tr.md`, `docs/DEVPOST_SUBMISSION.md`, `docs/JUDGING_MAP.md`, `docs/EVIDENCE_BOUNDARY.md`, `docs/tr/*` | Rewrite the repo and submission surfaces so the challenge contract, AI path, codegen proof, PR path, and write-back story are all explicit and consistent | Cross-surface parity review passes |
+| `P2X` | `.github/workflows/*`, `Dockerfile`, `compose.yaml`, `README.md`, `README.tr.md`, `docs/*`, `public/*`, `src/datahub/*`, `src/security/*`, `src/ai/*`, `src/core/*`, `src/server.js`, `src/store.js`, `scripts/*`, `skills/*`, `tests/*`, `tests_py/*`, `examples/outputs/*`, `plans/PLAN_20260721_contextseal_hackathon_win.md` | Verify the branch graph, compare both implementation lines file by file, restore hardened DataHub and safety capabilities, align the canonical Skills package, preserve AI/sandbox/PR/UI strengths, regenerate evidence from the reconciled HEAD, and rerun final-head validation | Reconciliation matrix updated, mandatory gates re-evaluated from actual runs, and no preserved capability regresses without a documented reason |
+| `P7` | `README.md`, `README.tr.md`, `docs/DEVPOST_SUBMISSION.md`, `docs/JUDGING_MAP.md`, `docs/JUDGE_TEST_PATH.md`, `docs/EVIDENCE_BOUNDARY.md`, `docs/EVIDENCE_MANIFEST.md`, `docs/LIVE_DATAHUB_SETUP.md`, `docs/COMPETITION_REQUIREMENT_MATRIX.md`, `docs/CLAIM_AUDIT.md`, `docs/DEMO_SCRIPT.md`, `docs/tr/*`, `public/*` | Rewrite the repo and submission surfaces so the challenge contract, AI path, codegen proof, PR path, proof freshness, upstream PR truth, and write-back story are all explicit and consistent | Cross-surface parity review passes on the reconciled truth |
 | `P8` | GitHub PR text, outreach notes, docs references | Post PR #35 update and prepare maintainer/community outreach | Public outreach artifact or copy-ready note exists |
 | `P9` | Chosen stretch surfaces only | Land one extra improvement only after all must-ship gates are green | Stretch validation artifact |
 
@@ -247,6 +273,22 @@ These rows are binding execution specs. If implementation diverges, the plan mus
 | `W-17` | `docs/DEMO_SCRIPT.md`, `README.md`, `docs/DEVPOST_SUBMISSION.md` | Compressed demo script | Timed dry run | Script fits 90-110 seconds | The story still takes too long or buries the AI | Cut exposition, not proof moments | `W-16D` |
 | `W-17A` | `docs/DEMO_SCRIPT.md` | Exact shot list, subtitle copy, and spoken beats | Script review | Recording can proceed without improvisation | Demo still relies on ad-lib storytelling | Prefer fewer scenes and bigger beats | `W-17` |
 
+#### P2X — Hardened Branch Reconciliation
+
+| Task ID | Exact files to touch | Exact output artifact(s) | Exact validation command or review | Done when | Failure trigger | Fallback rule | Depends on |
+|---|---|---|---|---|---|---|---|
+| `W-17B` | `plans/PLAN_20260721_contextseal_hackathon_win.md`, `docs/BRANCH_RECONCILIATION_MATRIX.md` | Verified branch ancestry note | `git status`; `git branch --all`; `git log --oneline --decorate --graph --all`; `git merge-base main 65bea060e0ed6260067b57838fb0f358d1ce3d0d`; `git diff --stat e738268d16a686080208c3559bc0276725941df6..main`; `git diff --stat e738268d16a686080208c3559bc0276725941df6..65bea060e0ed6260067b57838fb0f358d1ce3d0d`; `git diff --stat main..65bea060e0ed6260067b57838fb0f358d1ce3d0d` | The common ancestor, divergence shape, and changed-area inventory are captured before reconciliation edits continue | Reconciliation starts from an assumed graph or stale commit story | If a referenced commit is missing locally, fetch and document the gap before proceeding | `W-17A` |
+| `W-17C` | `docs/BRANCH_RECONCILIATION_MATRIX.md`, `.github/workflows/*`, `docs/*`, `public/*`, `src/*`, `scripts/*`, `skills/*`, `tests/*`, `tests_py/*` | `docs/BRANCH_RECONCILIATION_MATRIX.md` | File-level comparison review against both lines | Every material surface records current-main behavior, hardened-line behavior, selected final behavior, tests, status, and evidence boundary | A meaningful changed area is merged without an explicit selection rationale | When a whole-file carry-forward would drop a proven capability, switch to manual porting and record it in the matrix | `W-17B` |
+| `W-17D` | `src/datahub/*`, `src/server.js`, `src/core/*`, `src/store.js`, `scripts/capture-live-evidence.js`, `scripts/export-live-run.js`, `examples/outputs/live-datahub-read-evidence.json`, `examples/outputs/live-datahub-writeback-evidence.json`, `docs/EVIDENCE_BOUNDARY.md`, `docs/LIVE_DATAHUB_SETUP.md` | Restored live-pipeline completeness contract | `npm test`; focused live-pipeline review; `npm run check`; disposable-local recapture when credentials are available | Complete schema pagination, exact path preservation, query honesty, provenance validation, and durable read-back logic are restored or truthfully downgraded | The reconciled code can mark success without complete pages, complete explainable paths, or durable read-back | If fresh live execution is unavailable, keep the hardened fail-closed code and label live proof as historical until recaptured | `W-17C` |
+| `W-17E` | `tests/live-pipeline.test.js`, `tests/server-integration.test.js`, `tests/mcp-client.test.js`, `tests/store.test.js`, `tests/workflow.test.js`, `tests/artifacts.test.js` | Restored adversarial regression suite | `npm test`; focused targeted test reruns while reconciling | Truncation, malformed evidence, replay, stale, tamper, superseded-run, mutation boundary, and transport/protocol failure paths are covered again | A restored hardened guard has no regression test protecting it | Prefer adding a narrow test before widening implementation scope | `W-17D` |
+| `W-17F` | `src/security/*`, `scripts/validate-evidence.js`, `scripts/datahub_mutation_safety.py`, `tests/credential-scan.test.js`, `tests/evidence-validator.test.js`, `tests_py/*`, `docs/EVIDENCE_MANIFEST.md` | Credential and evidence validator restoration | `npm run evidence:check`; `npm run datahub:safety:test`; `python -m unittest discover -s tests_py -p "test_*.py"` | Credential-shaped keys and values are rejected safely, evidence validation is restored, and mutation safety checks run without leaking secrets | Evidence or safety checks exist only in docs or can echo credential-shaped content | If a validator cannot run in this environment, keep the code and mark the gate `WARN` with the exact blocker | `W-17C` |
+| `W-17G` | `.github/workflows/ci.yml`, `.github/workflows/pages.yml`, `Dockerfile`, `compose.yaml`, `scripts/smoke-server.js`, `package.json`, `docs/PRE_SUBMISSION_CHECKLIST.md`, `AGENT_ENVIRONMENT_AND_API.md` | Restored CI, Pages, container-smoke, and idempotence contract | Workflow review plus local equivalents of `npm ci --ignore-scripts`; `npm run smoke`; `docker build -t contextseal-final .`; `docker run --detach --name contextseal-final-ci --publish 4173:4173 contextseal-final`; `curl --fail http://127.0.0.1:4173/api/health`; `git diff --exit-code` | Node 20/24, Python, container smoke, manual workflow dispatch, Pages deployment, and idempotence checks are encoded for the final HEAD | CI proves only build success, or uses invalid actions, or cannot validate the running container | Prefer manual-dispatch-capable official actions and explicit smoke scripts over hidden CI assumptions | `W-17C` |
+| `W-17H` | `skills/datahub-schema-change-certification/*`, `skills/contextseal-change-certification/*`, `README.md`, `docs/DATAHUB_SKILL_CONTRIBUTION.md`, `docs/COMPETITION_REQUIREMENT_MATRIX.md`, `docs/JUDGING_MAP.md` | Canonical DataHub Skills package alignment note | Skill-package review and self-test review | One canonical skill name matches upstream PR #35, references are synchronized, and backward compatibility is documented only if still needed | The repo ends with two divergent skill packages that make different claims | If compatibility is required, keep one canonical implementation and add a redirect or compatibility note instead of a second divergent skill | `W-17C` |
+| `W-17I` | `src/ai/*`, `public/*`, `scripts/run-demo.js`, `scripts/run-generated-sandbox.py`, `scripts/build-pr-bundle.js`, `scripts/create-draft-pr.js`, `tests/ai-*.test.js`, `tests/sandbox-*.test.js`, `tests/workflow.test.js` | Preservation checks for AI, sandbox, PR, and UI surfaces | `npm test`; `npm run demo`; `npm run sandbox`; `npm run pr:bundle`; `npm run pr:draft -- --dry-run` | The current-main AI layer, deterministic sandbox, PR handoff, and judge-facing UI all still work after hardened restorations land | A hardened backport silently breaks the visible judge path or weakens AI boundary labels | Reconcile by manually porting the stronger safety logic into the current architecture instead of reverting the user-facing flow | `W-17D`, `W-17E`, `W-17F`, `W-17G`, `W-17H` |
+| `W-17J` | `examples/outputs/*`, `public/demo-data.json`, `docs/EVIDENCE_MANIFEST.md`, `docs/JUDGE_TEST_PATH.md`, `docs/EVIDENCE_BOUNDARY.md`, `docs/LIVE_DATAHUB_SETUP.md`, `docs/DEVPOST_SUBMISSION.md`, `README.md` | Final-head evidence refresh ledger | `npm run demo`; `npm run demo:check`; `npm run sandbox`; `npm run evidence:check`; manual live-local and Ollama recapture when available | Every claim has an artifact, a reproduction command, an evidence boundary, and a freshness label showing `historical` versus `final-HEAD`; optional AI and live-local proofs remain `WARN` if not freshly recaptured | Historical proof is presented as if it came from the reconciled HEAD | If fresh live-local, Ollama, dbt, or live PR evidence cannot be captured, keep the artifact historical and mark the gate `WARN` with a direct reason | `W-17I` |
+| `W-17K` | `package.json`, `.github/workflows/*`, `Dockerfile`, `public/*`, `scripts/*`, `docs/PRE_SUBMISSION_CHECKLIST.md`, `docs/EVIDENCE_MANIFEST.md` | Final-head CI verification log | `npm ci --ignore-scripts`; `npm run check`; `npm test`; `npm run datahub:safety:test`; `npm run evidence:check`; `npm run demo`; `npm run demo:check`; `npm run sandbox`; `npm run pr:bundle`; `npm run pr:draft -- --dry-run`; `npm run smoke`; `npm run validate`; `git diff --exit-code`; `docker build -t contextseal-final .`; `docker run --detach --name contextseal-final-ci --publish 4173:4173 contextseal-final`; `curl --fail http://127.0.0.1:4173/api/health` | The reconciled HEAD passes all mandatory local checks, with only explicitly environment-gated items left as truthful `WARN` | Final readiness is claimed from partial validation or from a dirty tree after regeneration | Keep the gate `FAIL` or `WARN`; do not advance submission phases on narrative confidence | `W-17J` |
+| `W-17L` | `plans/PLAN_20260721_contextseal_hackathon_win.md`, `docs/BRANCH_RECONCILIATION_MATRIX.md`, `docs/EVIDENCE_MANIFEST.md`, `docs/PRE_SUBMISSION_CHECKLIST.md` | Regression review and unblock decision | Manual parity review across code, proof, docs, and gates | No capability from either branch is lost without an explicit note, all remaining `WARN` gates are truthful, and `P7` to `P9` are either unblocked or explicitly held | Submission phases close while reconciliation, CI final-head proof, or mandatory gate review is still open | If any mandatory gate remains unresolved, keep `P2X` active and block `P7` to `P9` closure | `W-17K` |
+
 #### P7, P8, P9 — Submission, Outreach, and Stretch
 
 | Task ID | Exact files to touch | Exact output artifact(s) | Exact validation command or review | Done when | Failure trigger | Fallback rule | Depends on |
@@ -307,10 +349,21 @@ These rows are binding execution specs. If implementation diverges, the plan mus
 | `W-16D` | Review the refreshed UI at desktop and mobile widths and record the audit | `DONE` | `main-agent` | `2026-07-21` | `docs/UI_REVIEW.md`, browser audit at `1440px` and `390px`, no horizontal overflow, and `npm run validate` close the desktop/mobile review with the workflow-state readability fix included |
 | `W-17` | Rewrite demo script to 90-110 seconds | `DONE` | `main-agent` | `2026-07-21` | `docs/DEMO_SCRIPT.md` now totals 100 seconds across 9 timestamped segments; README and Devpost copy are synced; `npm run validate` passed |
 | `W-17A` | Produce exact shot order, subtitle copy, and spoken beats for the new demo | `DONE` | `main-agent` | `2026-07-21` | `docs/DEMO_SCRIPT.md` now provides exact on-screen actions, spoken beats, and subtitle copy for all 9 timed segments; `npm run validate` passed |
+| `W-17B` | Verify the branch graph, merge-base, and changed-area inventory before reconciliation edits | `DONE` | `main-agent` | `2026-07-22` | Verified `main`, `65bea060`, and common ancestor `e738268`; diff-stat surfaces captured on `reconcile/hardened-final-head` |
+| `W-17C` | Build the file-level reconciliation matrix and choose a final behavior per material surface | `DONE` | `main-agent` | `2026-07-22` | `docs/BRANCH_RECONCILIATION_MATRIX.md` now tracks the selected final behavior, restored code/test surfaces, and remaining evidence/docs blockers |
+| `W-17D` | Restore the strongest hardened live DataHub pipeline, provenance, and write-back safety controls | `DONE` | `main-agent` | `2026-07-22` | Hardened live-context, write-back read-back verification, fail-closed server controls, capture/export flow, and seed helpers are merged; fresh live proof moved to `W-17J` |
+| `W-17E` | Restore adversarial live-pipeline and mutation-boundary regression tests | `DONE` | `main-agent` | `2026-07-22` | Restored and passed `tests/live-pipeline.test.js`, `tests/server-integration.test.js`, `tests/artifacts.test.js`, `tests/store.test.js`, `tests/workflow.test.js`, and `tests/mcp-client.test.js` |
+| `W-17F` | Restore credential scanning, evidence validation, and Python mutation-safety coverage | `DONE` | `main-agent` | `2026-07-22` | JS credential scan, request/approval secret rejection, evidence validator, and Python mutation-safety tests are restored; committed live proof refresh remains under `W-17J` |
+| `W-17G` | Restore Node 20/24 CI, Pages dispatch, container smoke, and validation idempotence | `DONE` | `main-agent` | `2026-07-22` | Package scripts, smoke validation, Node 20/24 CI matrix, Pages workflow, and idempotence checks are restored; execution still belongs to `W-17K` |
+| `W-17H` | Align the DataHub Skills package to the upstream PR #35 canonical name and boundaries | `DONE` | `main-agent` | `2026-07-22` | Canonical `skills/datahub-schema-change-certification/*` package, compatibility alias, README copy, judge docs, and PR #35 truth are now synchronized |
+| `W-17I` | Preserve and regression-test AI, sandbox, PR handoff, and UI surfaces after hardened backports | `DONE` | `main-agent` | `2026-07-22` | `npm run validate`, `npm run smoke`, and the restored regression suite preserved the current-main AI, sandbox, PR handoff, and judge-facing UI strengths |
+| `W-17J` | Regenerate one authoritative evidence ledger with final-head freshness labels | `PENDING` | `main-agent` | `2026-07-22` | `npm run evidence:check` confirms the committed live artifacts predate the five-tool/v2 contract: they lack `list_schema_fields`, exact-path captures, pinned launcher provenance, current raw-evidence hashes, and final read-back/passport bindings |
+| `W-17K` | Run the reconciled final-head validation suite, container smoke, and manual gates | `IN_PROGRESS` | `main-agent` | `2026-07-22` | Local `npm run validate` passes on the reconciled HEAD; this environment still lacks a running Docker daemon and `uv`, so stale live-proof recapture, exact-head container smoke, and hosted/manual CI plus Pages gates remain open |
+| `W-17L` | Complete regression review and decide whether submission phases are unblocked | `IN_PROGRESS` | `main-agent` | `2026-07-22` | Code reconciliation, regression coverage, and public-doc truth are aligned; `P7` to `P9` stay blocked until `W-17J` and `W-17K` close honestly |
 | `W-18` | Rewrite README top fold and product positioning | `DONE` | `main-agent` | `2026-07-21` | `README.md` and `README.tr.md` now lead with blocked risk, AI boundary, safe package, PR handoff, and passport payoff before longer limitations/problem framing; `npm run validate` passed |
-| `W-18A` | Rewrite Devpost draft around passport, AI action, sandbox proof, PR path, and safe write-back | `PENDING` | `main-agent` | `2026-07-21` | Primary track and hero narrative locked |
-| `W-18B` | Update judging map and evidence boundary docs to reflect final truth and challenge coverage | `PENDING` | `main-agent` | `2026-07-21` | No cross-surface contradictions |
-| `W-18C` | Update Turkish guides for the new story if English surfaces change materially | `PENDING` | `main-agent` | `2026-07-21` | Keep beginner-safe guidance aligned |
+| `W-18A` | Rewrite Devpost draft around passport, AI action, sandbox proof, PR path, and safe write-back | `DONE` | `main-agent` | `2026-07-22` | `docs/DEVPOST_SUBMISSION.md` now reflects the canonical skill package, historical-versus-final-head live-proof boundary, and remaining exact-head blockers without premature polish claims |
+| `W-18B` | Update judging map and evidence boundary docs to reflect final truth and challenge coverage | `DONE` | `main-agent` | `2026-07-22` | Judge-path, evidence-manifest, live-setup, and judging-map docs now distinguish fixture, historical live proof, and pending final-head recapture correctly |
+| `W-18C` | Update Turkish guides for the new story if English surfaces change materially | `DONE` | `main-agent` | `2026-07-22` | Turkish live-setup guidance now matches the pinned MCP package and no additional Turkish truth drift was found in the targeted parity audit |
 | `W-19` | Post a concise update on PR #35 with demo/value context | `PENDING` | `main-agent` | `2026-07-21` | Low-cost traction attempt |
 | `W-19A` | Prepare maintainer/community outreach message using free channels only | `PENDING` | `main-agent` | `2026-07-21` | Slack/GitHub note, no paid promo |
 | `W-20` | Choose one stretch proof candidate after all must-ship gates are green | `PENDING` | `main-agent` | `2026-07-21` | Stretch cannot preempt core challenge closure |
@@ -353,10 +406,20 @@ These rows are binding execution specs. If implementation diverges, the plan mus
 | `7.1` | Reframe home-page hero and add visible live-evidence/inheritance cue | `DONE` | `W-16`, `W-16A` | `main-agent` | `2026-07-21` | `2026-07-21` | Browser review at `http://127.0.0.1:4173`, refreshed `public/demo-data.json`, and `npm run validate` confirm the new hero order and inheritance loop |
 | `7.2` | Define and implement the professional visual direction and UI audit | `DONE` | `W-16B`, `W-16C`, `W-16D` | `main-agent` | `2026-07-21` | `2026-07-21` | `docs/VISUAL_DIRECTION.md`, `docs/UI_REVIEW.md`, browser audits at `1440px` and `390px`, and `npm run validate` close the visual professionalism wave |
 | `7.3` | Rewrite the demo script, shot order, and subtitle beats | `DONE` | `W-17`, `W-17A` | `main-agent` | `2026-07-21` | `2026-07-21` | The demo script now totals 100 seconds and includes exact shot order, subtitle copy, and spoken beats; `npm run validate` passed |
-| `8.1` | Rewrite README and Devpost draft for the chosen challenge contract | `IN_PROGRESS` | `W-18`, `W-18A` | `main-agent` | `2026-07-21` | `-` | README top-fold positioning is complete; Devpost copy alignment remains open in `W-18A` |
-| `8.2` | Update judging docs and Turkish support surfaces | `PENDING` | `W-18B`, `W-18C` | `main-agent` | `-` | `-` | Global story parity |
-| `9.1` | Post PR #35 update and prepare community outreach note | `PENDING` | `W-19`, `W-19A` | `main-agent` | `-` | `-` | Traction attempt artifacts |
-| `10.1` | Choose and implement one stretch upgrade after core closure | `PENDING` | `W-20`, `W-20A` | `main-agent` | `-` | `-` | No stretch before core gates are green |
+| `7.4` | Verify branch ancestry, merge-base, and diff surfaces before reconciliation | `DONE` | `W-17B` | `main-agent` | `2026-07-22` | `2026-07-22` | Verified common ancestor `e738268` and captured diff stats for `main` versus `65bea060` |
+| `7.5` | Build the file-level branch reconciliation matrix | `DONE` | `W-17C` | `main-agent` | `2026-07-22` | `2026-07-22` | `docs/BRANCH_RECONCILIATION_MATRIX.md` now records per-surface selection, preservation tests, and remaining final-head blockers |
+| `7.6` | Restore hardened live DataHub pipeline and provenance safeguards | `DONE` | `W-17D` | `main-agent` | `2026-07-22` | `2026-07-22` | Runtime/server/live evidence generation path restored; fresh proof recapture remains a separate gate |
+| `7.7` | Restore adversarial regression coverage for pipeline, approval, and mutation boundaries | `DONE` | `W-17E` | `main-agent` | `2026-07-22` | `2026-07-22` | Restored regression suites now cover live pipeline, server boundaries, artifacts, store, workflow, and MCP client |
+| `7.8` | Restore credential scanning, evidence validation, and Python safety checks | `DONE` | `W-17F` | `main-agent` | `2026-07-22` | `2026-07-22` | Security/validator coverage is restored even though the committed live proof still needs regeneration |
+| `7.9` | Restore CI matrix, Pages dispatch, container smoke, and idempotence checks | `DONE` | `W-17G` | `main-agent` | `2026-07-22` | `2026-07-22` | Workflow and local smoke surfaces are restored; exact-head execution remains pending |
+| `7.10` | Align the DataHub Skills package to upstream PR #35 canonical truth | `DONE` | `W-17H` | `main-agent` | `2026-07-22` | `2026-07-22` | Canonical skill naming, compatibility alias, README/judge docs, and PR #35 status wording are now synchronized |
+| `7.11` | Re-run AI, sandbox, PR, and UI regression checks after hardened backports | `DONE` | `W-17I` | `main-agent` | `2026-07-22` | `2026-07-22` | `npm run validate`, `npm run smoke`, and the restored test suite preserved AI fallback behavior, sandbox proof, PR bundle flow, and the judge UI path |
+| `7.12` | Regenerate final-head evidence and freshness labels | `PENDING` | `W-17J` | `main-agent` | `-` | `-` | `npm run evidence:check` now gives exact stale-proof failures, so recapture must satisfy the five-tool live contract, pinned launcher provenance, and v2 passport/read-back bindings |
+| `7.13` | Run final-head CI/manual gates and decide whether submission phases are unblocked | `IN_PROGRESS` | `W-17K`, `W-17L` | `main-agent` | `2026-07-22` | `-` | Local validation and submission-surface parity are complete, but live recapture, Docker, CI, Pages, and final unblock review still block `P7` to `P9` |
+| `8.1` | Rewrite README and Devpost draft for the chosen challenge contract | `DONE` | `W-18`, `W-18A` | `main-agent` | `2026-07-21` | `2026-07-22` | README and Devpost draft now tell the reconciled truth about AI boundaries, PR handoff, canonical skill naming, and historical versus final-head live proof |
+| `8.2` | Update judging docs and Turkish support surfaces | `DONE` | `W-18B`, `W-18C` | `main-agent` | `2026-07-22` | `2026-07-22` | Judge-path, evidence, live-setup, and Turkish live-setup surfaces are now aligned to the reconciled final-head claim boundary |
+| `9.1` | Post PR #35 update and prepare community outreach note | `PENDING` | `W-19`, `W-19A` | `main-agent` | `-` | `-` | Blocked by final submission-surface parity |
+| `10.1` | Choose and implement one stretch upgrade after core closure | `PENDING` | `W-20`, `W-20A` | `main-agent` | `-` | `-` | No stretch before `P2X` and submission gates are green |
 
 ---
 
@@ -364,22 +427,31 @@ These rows are binding execution specs. If implementation diverges, the plan mus
 
 | Gate Designation | Scope | Assessment Vector | Expected | Result | Log / Artifact |
 |---|---|---|---|---|---|
-| `Repository Validation Gate` | Current repo health | `npm run validate` | `PASS` | `PASS` | Validation run completed on 2026-07-21 |
-| `Working Application Gate` | The shipped app remains runnable end to end | `npm run validate` plus local judge flow | `PASS` | `PASS` | Current repo already passes the base working-app path |
-| `DataHub Read Grounding Gate` | DataHub facts are the explicit basis for generation and AI explanation | Grounded input artifact plus MCP/Skills trace review | `PASS` | `PASS` | AI grounding input and code-generation grounding contract now explicitly name the deterministic facts used by both explanation and generation paths |
-| `Generated Artifact Gate` | Generated migration outputs remain concrete, committed, and reviewable | Artifact diff review plus example output refresh | `PASS` | `PASS` | Generated outputs now ship with grounding metadata, manifest linkage, and a committed sandbox evidence artifact tied to the refreshed bundle |
-| `Sandbox Execution Gate` | Generated code works in a local deterministic path | Focused sandbox command or deterministic executor | `PASS` | `PASS` | `npm run sandbox` regenerates `examples/outputs/sandbox/generated-sandbox-evidence.json` after validating the committed bundle |
-| `PR Delivery Gate` | Generated result is attachable to PR review | PR bundle generation and optional draft PR creation | `PASS` | `PASS` | `npm run pr:bundle`; `npm run pr:draft -- --dry-run`; `examples/outputs/pr/*`; live API creation remains optional and token-gated |
-| `Write-Back Inheritance Gate` | The next human or agent can inherit the result through DataHub write-back | Live proof review plus UI/doc surfacing | `PASS` | `PASS` | Live proof artifacts already existed; `public/index.html`, `public/app.js`, and `docs/JUDGING_MAP.md` now surface the inheritance loop explicitly |
-| `Integrity Lock Gate` | Governance surfaces | Manual parity check across `AGENTS.md`, root governance files, and active plan | `PASS` | `PASS` | Root governance spine and active plan created together |
-| `Evidence Boundary Gate` | Claims around live, fixture, field-level, and queries | Doc/UI/code audit | `PASS` | `PASS` | `docs/CLAIM_AUDIT.md`; docs/UI/skill/workflow wording synchronized on 2026-07-21 |
-| `AI Hero Gate` | Winning demo path AI presence | Local model run + saved artifact + visible UI proof | `PASS` | `WARN` | Visible AI panel plus committed input/output artifacts now exist, but a local-model-backed `PASS` artifact is still pending runtime availability |
-| `Agentic Boundary Gate` | Safe non-authoritative AI behavior | Tests + fallback verification + boundary review | `PASS` | `PASS` | Adapter tests cover disabled, unavailable, and bounded-success paths; UI and docs label AI as explanation-only |
-| `Visual Professionalism Gate` | Judge-facing UI quality | Desktop and mobile review against `docs/VISUAL_DIRECTION.md` | `PASS` | `PASS` | `docs/VISUAL_DIRECTION.md`; `docs/UI_REVIEW.md`; browser review at `1440px` and `390px`; workflow-state readability fix landed without introducing overflow |
-| `Demo Compression Gate` | Judge story | Updated script + timed dry run | `PASS` | `PASS` | `docs/DEMO_SCRIPT.md` totals 100 seconds across 9 segments and now includes exact shot order, subtitle copy, and spoken beats |
-| `No-Paid-Dependency Gate` | New roadmap work | Dependency and tool review | `PASS` | `PASS` | Roadmap constrained to free/open-source/local-first paths |
-| `Submission Surface Parity Gate` | README, Devpost, judging docs, UI copy | Cross-surface diff review | `PASS` | `NOT_RUN` | Pending `W-18` to `W-21` |
+| `Branch Reconciliation Gate` | Current `main` and hardened-line capability merge completeness | Branch graph review, reconciliation matrix, and regression review | `PASS` | `WARN` | Per-surface reconciliation, restored regression coverage, and public-doc parity are complete; fresh live evidence, exact-head hosted/manual gates, and final unblock review remain open under `W-17J` to `W-17L` |
+| `Repository Validation Gate` | Current repo health | `npm run validate` | `PASS` | `PASS` | `npm run validate` passed on 2026-07-22 on the reconciled HEAD after the hardened backports and truth-sync updates |
+| `Working Application Gate` | The shipped app remains runnable end to end | `npm run validate` plus local judge flow | `PASS` | `PASS` | `npm run validate` and `npm run smoke` passed on 2026-07-22, preserving the shipped app and default fixture judge flow on the reconciled HEAD |
+| `DataHub Read Grounding Gate` | DataHub facts are the explicit basis for generation and AI explanation | Grounded input artifact plus MCP/Skills trace review | `PASS` | `PASS` | AI grounding input and code-generation grounding contract already name the deterministic facts used by explanation and generation |
+| `Live Pipeline Completeness Gate` | Complete schema pagination, exact downstream path coverage, query honesty, and durable live-local proof | Restored live-pipeline tests plus fresh or historical proof review | `PASS` | `WARN` | Hardened live-pipeline/runtime tests pass on reconciled code, and `npm run evidence:check` confirms the committed artifacts still lack `list_schema_fields` coverage plus exact-path captures required by the final-head live contract |
+| `MCP Fail-Closed Gate` | MCP initialization, provenance, transport/protocol safety, and structured-content validation | Targeted client/integration tests and code review | `PASS` | `PASS` | Hardened MCP client and live server boundary tests now pass on the reconciled architecture |
+| `Evidence Validation Gate` | Evidence structure, boundary labels, freshness metadata, and claim-to-artifact mapping | `npm run evidence:check` | `PASS` | `WARN` | Validator code and regression tests are restored, and `npm run evidence:check` now fails only because the committed live artifacts predate pinned-launcher provenance, v2 passport binding, exact-path evidence, and durable read-back expectations |
+| `Credential Safety Gate` | Credential-shaped key/value rejection and safe diagnostics | JS + Python safety tests | `PASS` | `PASS` | Credential scan, request/approval rejection, and Python mutation-safety tests now pass on the reconciled code |
+| `Generated Artifact Gate` | Generated migration outputs remain concrete, committed, and reviewable | Artifact diff review plus example output refresh | `PASS` | `PASS` | Generated outputs ship with grounding metadata, manifest linkage, and committed review artifacts |
+| `Local Sandbox Gate` | Generated code works in a local deterministic path | `npm run sandbox` | `PASS` | `PASS` | Current conformance sandbox passes and remains a preserved strength to regression-check during `W-17I` |
+| `Optional Local dbt Execution Gate` | Synthetic local DuckDB/dbt execution proof for generated code | `npm run dbt:setup`; `npm run dbt:compile`; `npm run dbt:run`; `npm run dbt:test` | `PASS` | `NOT_RUN` | Not yet implemented; remains optional but must be truthfully labeled if left out |
+| `PR Delivery Gate` | Generated result is attachable to PR review | `npm run pr:bundle`; `npm run pr:draft -- --dry-run`; optional live draft PR | `PASS` | `PASS` | Offline PR bundle and token-gated dry run are currently present and must survive reconciliation |
+| `Write-Back Inheritance Gate` | The next human or agent can inherit the result through DataHub write-back and read-back | Live proof review, targeted tests, and UI/doc surfacing | `PASS` | `WARN` | Durable read-back verification and inheritance tests now pass, and public copy is refreshed, but final-head live proof still needs recapture |
+| `Passport Integrity Gate` | Request/policy/raw-hash/normalized-impact/artifact/approval binding plus replay, stale, tamper, and superseded-run rejection | Workflow, passport, store, and integration tests | `PASS` | `PASS` | Workflow, store, live-pipeline, and server-integration tests now cover replay, stale, tamper, supersede, and policy/hash binding on reconciled code |
+| `AI Boundary Gate` | Safe non-authoritative AI behavior | Tests + fallback verification + boundary review | `PASS` | `PASS` | Adapter tests cover disabled, unavailable, and bounded-success paths; AI remains explanation-only |
+| `AI Model-Backed Proof Gate` | One real local Ollama-backed `PASS` artifact for the reconciled HEAD | Manual model-backed run plus artifact review | `PASS` | `WARN` | Checked-in AI artifacts currently prove the truthful fallback path; real model-backed capture remains environment-dependent and open |
+| `Visual Professionalism Gate` | Judge-facing UI quality | Desktop and mobile review against `docs/VISUAL_DIRECTION.md` | `PASS` | `PASS` | `docs/VISUAL_DIRECTION.md`, `docs/UI_REVIEW.md`, and browser audits already close the current visual pass |
+| `Demo Compression Gate` | Judge story | Updated script + timed dry run | `PASS` | `PASS` | `docs/DEMO_SCRIPT.md` totals 100 seconds across 9 segments with exact shot order and subtitle copy |
+| `No-Paid-Dependency Gate` | New roadmap work | Dependency and tool review | `PASS` | `PASS` | Roadmap remains constrained to free/open-source/local-first paths |
+| `CI Final-HEAD Gate` | Node, Python, container, smoke, and idempotence proof on the exact reconciled commit | Full local validation suite plus GitHub Actions/manual dispatch review | `PASS` | `NOT_RUN` | Local validation is green, but exact-head Docker smoke and hosted GitHub Actions execution remain unverified in this environment under `W-17K` |
+| `Pages Final-HEAD Gate` | GitHub Pages deployability from the exact reconciled commit | Manual workflow dispatch and deployment review | `PASS` | `NOT_RUN` | Workflow is restored, but exact-head manual dispatch and deployment review remain pending under `W-17K` |
+| `Submission Surface Parity Gate` | README, Devpost, judging docs, evidence docs, Turkish guides, and UI copy | Cross-surface diff review | `PASS` | `PASS` | README, Devpost draft, judging docs, evidence ledger, live setup, and Turkish live-setup guidance now distinguish historical proof from final-head proof and preserve the reconciled claim boundary |
+| `Upstream PR Truth Gate` | Exact public truth about DataHub Skills PR #35 | Doc audit against the live repository state | `PASS` | `PASS` | Canonical package naming and the exact `OPEN / READY_FOR_REVIEW / NOT_MERGED` status are now synchronized across contribution, README, and submission-facing docs |
 | `Maintainer Traction Gate` | PR and outreach surfaces | Public comment/outreach evidence | `PASS` | `NOT_RUN` | Pending `W-19` and `W-19A` |
+| `Pre-Submission Freeze Gate` | Final regenerated artifacts, fresh references, clean tree, and closure review | Full suite plus `git diff --exit-code` and final checklist review | `PASS` | `NOT_RUN` | Pending `W-17J`, `W-17K`, `W-17L`, and final manual assets |
 | `Stretch Proof Gate` | Chosen extra upgrade only after core closure | Focused validation for chosen stretch | `PASS` | `NOT_RUN` | Pending `W-20` and `W-20A` |
 
 ---
@@ -396,6 +468,9 @@ These rows are binding execution specs. If implementation diverges, the plan mus
 | `R-02A` | The generated code still lacks a convincing first-time-working proof | `M` | `H` | Promote sandbox execution into the core plan instead of stretch work | `OPEN` |
 | `R-02B` | PR delivery remains hand-wavy and fails the chosen primary challenge | `M` | `H` | Promote PR bundle generation and optional draft PR creation into the core plan | `MITIGATED` |
 | `R-03` | README/Devpost/UI drift creates a credibility leak | `M` | `H` | Enforce live-doc sync and close `W-20` before claiming polish | `OPEN` |
+| `R-03A` | Branch reconciliation may silently drop hardened fail-closed behavior or current-main judge-path features | `M` | `H` | Use a written reconciliation matrix plus per-surface regression tests before closing `P2X` | `OPEN` |
+| `R-03B` | Historical live-local artifacts may be mistaken for final-head proof | `M` | `H` | Add explicit freshness labels and keep historical proof separate until recaptured | `OPEN` |
+| `R-03C` | Final submission claims may outpace CI, container, or Pages validation on the exact reconciled commit | `M` | `H` | Make `CI Final-HEAD Gate`, `Pages Final-HEAD Gate`, and `Pre-Submission Freeze Gate` mandatory blockers | `OPEN` |
 | `R-04` | Maintainers do not respond before deadline | `H` | `M` | Treat outreach as upside, not a dependency for the main story | `OPEN` |
 | `R-05` | Time gets consumed by stretch work before must-have fixes land | `M` | `H` | Hard cut line: no stretch work before `O-01` to `O-06` close | `OPEN` |
 | `R-06` | Over-defensive language remains and weakens first impressions | `M` | `M` | Rewrite top folds after truth reset, not before | `OPEN` |
@@ -417,13 +492,18 @@ These rows are binding execution specs. If implementation diverges, the plan mus
 | `D-09` | UI modernization is a core requirement, not optional polish | Judge perception and demo clarity depend on a professional product surface | `2026-07-21` | `main-agent` |
 | `D-10` | Field-aware filtering is deferred until after the core hackathon path ships | Truthful wording downgrade is cheaper and safer than late lineage-scope expansion | `2026-07-21` | `main-agent` |
 | `D-11` | The AI copilot runtime is optional local Ollama with `qwen2.5:7b`, and missing runtime must fall back to deterministic-only mode | This keeps the agentic path free/local while preserving a stable judge path on machines without Ollama | `2026-07-21` | `main-agent` |
+| `D-12` | `P2X — Hardened Branch Reconciliation` is a mandatory blocker before `P7`, `P8`, or `P9` can close | The repository must first reconcile both strong implementation lines and refresh final-head proof before submission polish is trustworthy | `2026-07-22` | `main-agent` |
+| `D-13` | Historical live-local artifacts remain valuable but do not count as final-head proof until recaptured from the reconciled HEAD | This preserves technical honesty while still allowing prior evidence to guide implementation and review | `2026-07-22` | `main-agent` |
+| `D-14` | Reconciliation starts from the current `main` architecture and manually ports hardened-line capabilities when whole-file adoption would regress AI, sandbox, PR, UI, or demo surfaces | Current `main` already contains stronger submission and demo assets that should not be discarded | `2026-07-22` | `main-agent` |
+| `D-15` | The final canonical DataHub skill name must match upstream PR #35, with compatibility notes used only if the legacy local name remains temporarily necessary | Public repository truth and local routing should not diverge into two competing skill contracts | `2026-07-22` | `main-agent` |
 
 ### 8.3 Handoff checkpoint
 
 ```markdown
 ## CHECKPOINT - HANDOFF
-- Last Concluded Micro-Step: 8.1
+- Last Concluded Micro-Step: W-17I
 - Status: IN_PROGRESS
-- Next Micro-Step: W-18A
-- Critical Gate Status: PASS for repository validation, working app, DataHub grounding, generated artifact proof, sandbox execution, PR delivery, write-back inheritance, evidence-boundary truth reset, agentic-boundary safety, visual professionalism, and demo compression; WARN for AI hero proof; NOT_RUN for submission parity gates
+- Next Micro-Step: W-17J
+- Critical Gate Status: PASS for repository validation, working app, MCP fail-closed safety, credential safety, generated artifacts, sandbox, PR delivery, passport integrity, submission-surface parity, upstream PR truth, and no-paid-dependency constraints; WARN for branch reconciliation, live pipeline completeness, evidence validation, write-back inheritance, and AI model-backed proof; NOT_RUN for CI final-head, Pages final-head, maintainer traction, and pre-submission freeze
+- Current Environment Blockers: Docker daemon unavailable; `uv` missing; `datahub` CLI missing
 ```

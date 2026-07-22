@@ -22,8 +22,14 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 24
-      - run: npm install --ignore-scripts
+          cache: npm
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: npm ci --ignore-scripts
       - run: npm run validate
+      - name: Prove validation is idempotent
+        run: git diff --exit-code
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

@@ -4,6 +4,14 @@
   "description": "Graph-backed certification for high-risk data changes",
   "type": "module",
   "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zyganali-glitch/ContextSeal.git"
+  },
+  "homepage": "https://zyganali-glitch.github.io/ContextSeal/",
+  "bugs": {
+    "url": "https://github.com/zyganali-glitch/ContextSeal/issues"
+  },
   "engines": {
     "node": ">=20"
   },
@@ -15,13 +23,21 @@
     "pr:bundle": "node scripts/build-pr-bundle.js",
     "pr:draft": "node scripts/create-draft-pr.js",
     "ai:probe": "node --input-type=module -e \"import { spawnSync } from 'node:child_process'; const version = spawnSync('ollama', ['--version'], { encoding: 'utf8' }); if (version.error) { console.log('WARN local AI runtime unavailable: ollama not found on PATH'); process.exit(0); } const list = spawnSync('ollama', ['list'], { encoding: 'utf8' }); const versionText = (version.stdout || version.stderr || '').trim(); if (versionText) console.log(versionText); if (list.status === 0) { const listText = (list.stdout || '').trim(); console.log(listText || 'No local models listed.'); console.log('PASS local AI runtime available'); process.exit(0); } console.log(`WARN local AI runtime installed but not ready: ${((list.stderr || list.stdout || '').trim() || `ollama list exit ${list.status ?? 'unknown'}`)}`); process.exit(0);\"",
-    "datahub:seed": "python scripts/seed-datahub.py",
+    "datahub:seed": "python scripts/seed-datahub.py --preflight",
+    "datahub:seed:apply": "python scripts/seed-datahub.py --apply",
+    "datahub:seed:scope": "python scripts/seed-datahub.py --print-scope",
+    "datahub:properties": "uv run --with acryl-datahub==1.6.0.14 python scripts/upsert-datahub-properties.py --preflight",
+    "datahub:properties:apply": "uv run --with acryl-datahub==1.6.0.14 python scripts/upsert-datahub-properties.py --apply",
+    "datahub:properties:scope": "uv run --with acryl-datahub==1.6.0.14 python scripts/upsert-datahub-properties.py --print-scope",
+    "datahub:safety:test": "python -m unittest discover -s tests_py -p test_*.py",
     "datahub:capture": "node scripts/capture-live-evidence.js",
     "datahub:export": "node scripts/export-live-run.js",
     "test": "node --test",
     "test:coverage": "node --test --experimental-test-coverage",
     "check": "node scripts/check-repository.js",
-    "validate": "npm run check && npm test && npm run demo && npm run sandbox && npm run pr:bundle && npm run pr:draft -- --dry-run"
+    "evidence:check": "node scripts/validate-evidence.js",
+    "smoke": "node scripts/smoke-server.js",
+    "validate": "npm run check && npm run datahub:safety:test && npm test && npm run demo && npm run sandbox && npm run smoke && npm run pr:bundle && npm run pr:draft -- --dry-run"
   },
   "keywords": [
     "datahub",

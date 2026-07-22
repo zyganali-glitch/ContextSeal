@@ -5,6 +5,15 @@ function sqlIdentifier(value) {
   return value;
 }
 
+function sqlType(value) {
+  if (typeof value !== "string" || !value.trim()) throw new Error(`Unsafe SQL type: ${value}`);
+  const normalized = value.trim();
+  if (!/^[a-zA-Z][a-zA-Z0-9_]*(\([0-9]+(?:\s*,\s*[0-9]+)?\))?$/.test(normalized)) {
+    throw new Error(`Unsafe SQL type: ${value}`);
+  }
+  return normalized;
+}
+
 function unique(values) {
   return [...new Set(values.filter(Boolean))];
 }
@@ -113,7 +122,7 @@ function safeMigration(request) {
     };
   }
   if (request.changeType === "type_change") {
-    const destinationType = String(request.destinationType).replace(/[^a-zA-Z0-9_(), ]/g, "");
+    const destinationType = sqlType(request.destinationType);
     return {
       ruleId: "TYPE_CHANGE_REQUIRES_PARALLEL_TYPED_FIELD",
       strategy: "PARALLEL_TYPED_FIELD",
@@ -123,18 +132,25 @@ function safeMigration(request) {
       rollback: `select * exclude (${source}_typed) from {{ ref('${entity}_typed') }};\n`
     };
   }
-  return {
-    ruleId: "DROP_REQUIRES_DEPRECATION_BEFORE_REMOVAL",
-    strategy: "DEPRECATE_BEFORE_DROP",
-    summary: `Mark ${source} deprecated, migrate every known consumer, and drop it only in a later approved change.`,
-    safeClaim: "Direct drops are refused; the generator preserves the field and emits a later-drop migration note instead.",
-    sql: `-- Deliberately preserves ${source}; direct destructive removal is not generated.\nselect * from {{ ref('${entity}') }}\n`,
-    rollback: `-- No destructive operation was generated; rollback is a no-op.\nselect 1;\n`
-  };
+  if (request.changeType === "drop_column") {
+    return {
+      ruleId: "DROP_REQUIRES_DEPRECATION_BEFORE_REMOVAL",
+      strategy: "DEPRECATE_BEFORE_DROP",
+      summary: `Mark ${source} deprecated, migrate every known consumer, and drop it only in a later approved change.`,
+      safeClaim: "Direct drops are refused; the generator preserves the field and emits a later-drop migration note instead.",
+      sql: `-- Deliberately preserves ${source}; direct destructive removal is not generated.\nselect * from {{ ref('${entity}') }}\n`,
+      rollback: `-- No destructive operation was generated; rollback is a no-op.\nselect 1;\n`
+    };
+  }
+  throw new Error(`Unsupported change type: ${request.changeType}`);
 }
 export function generateArtifacts(request, impact, risk) {
   const migration = safeMigration(request);
-  const field = request.destinationField || `${request.sourceField}_typed`;
+  const field = request.changeType === "rename_column"
+    ? request.destinationField
+    : request.changeType === "type_change"
+      ? `${request.sourceField}_typed`
+      : request.sourceField;
   const schema = `version: 2\nmodels:\n  - name: ${request.entityName}_contextseal\n    description: "ContextSeal migration candidate; strategy ${migration.strategy}."\n    columns:\n      - name: ${field}\n        tests:\n          - not_null\n`;
   const ownerBrief = [
     "# Impacted owner briefing",

@@ -7,36 +7,39 @@ import { DataHubMcpClient, DataHubStdioMcpClient, McpError, createDataHubMcpClie
 test("MCP client preserves session and calls named tools", async () => {
   const requests = [];
   const fetchImpl = async (_url, options) => {
-    requests.push({ headers: options.headers, body: JSON.parse(options.body) });
-    return new Response(JSON.stringify({ jsonrpc: "2.0", id: requests.length, result: { content: [{ type: "text", text: "ok" }] } }), {
+    const body = JSON.parse(options.body);
+    requests.push({ headers: options.headers, body });
+    return new Response(JSON.stringify({ jsonrpc: "2.0", id: body.id, result: { content: [{ type: "text", text: "ok" }] } }), {
       status: 200,
       headers: { "content-type": "application/json", "mcp-session-id": "session-1" }
     });
   };
-  const client = new DataHubMcpClient({ url: "http://datahub.test/mcp", token: "test-only", fetchImpl });
+  const client = new DataHubMcpClient({ url: "https://datahub.test/mcp", token: "test-only", fetchImpl });
   await client.initialize();
   await client.callTool("get_lineage", { urn: "urn:li:test" });
-  assert.equal(requests[0].body.method, "initialize");
-  assert.equal(requests[1].body.params.name, "get_lineage");
-  assert.equal(requests[1].headers["mcp-session-id"], "session-1");
-  assert.equal(requests[0].headers.authorization, "Bearer test-only");
+  const initializeRequest = requests.find((request) => request.body.method === "initialize");
+  const toolRequest = requests.find((request) => request.body.method === "tools/call");
+  assert.equal(initializeRequest.body.method, "initialize");
+  assert.equal(toolRequest.body.params.name, "get_lineage");
+  assert.equal(toolRequest.headers["mcp-session-id"], "session-1");
+  assert.equal(initializeRequest.headers.authorization, "Bearer test-only");
 });
 
 test("MCP client fails closed on HTTP and protocol errors", async () => {
   const httpClient = new DataHubMcpClient({
-    url: "http://datahub.test/mcp",
+    url: "https://datahub.test/mcp",
     fetchImpl: async () => new Response("down", { status: 503 })
   });
   await assert.rejects(() => httpClient.listTools(), McpError);
 
   const protocolClient = new DataHubMcpClient({
-    url: "http://datahub.test/mcp",
+    url: "https://datahub.test/mcp",
     fetchImpl: async () => new Response(JSON.stringify({ jsonrpc: "2.0", id: 1, error: { message: "denied" } }), { status: 200 })
   });
   await assert.rejects(() => protocolClient.listTools(), /denied/);
 
   const toolErrorClient = new DataHubMcpClient({
-    url: "http://datahub.test/mcp",
+    url: "https://datahub.test/mcp",
     fetchImpl: async () => new Response(JSON.stringify({
       jsonrpc: "2.0", id: 1,
       result: { isError: true, content: [{ type: "text", text: "validation failed" }] }

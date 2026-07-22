@@ -13,7 +13,8 @@
 - The write-back makes the next agent inherit the decision rather than starting from an empty chat.
 - The first viewport now surfaces the read -> block -> package -> certify flow, and the next strip explicitly shows how write-back and inheritance fit without overstating fixture-mode behavior.
 - The judge-facing path view is fixture-backed unless a target-derived graph contract is exported separately.
-- Committed live-local evidence proves three reads, five downstream dataset-shaped results across seeded platforms, three bounded mutations, and post-write verification on synthetic metadata.
+- The reconciled runtime now requires complete paginated schema reads, exact downstream path reads, query-honest normalization, and durable read-back before any live `PASS` claim.
+- The committed live-local artifacts are historical synthetic-local proof from before reconciliation and must be recaptured before they can be presented as final-head live evidence.
 
 ## Technical execution
 
@@ -24,7 +25,8 @@
 - Destructive requests produce non-destructive migration artifacts.
 - Passport hashes bind request, context, artifacts, evidence, and approval.
 - MCP failures and disabled mutations fail closed.
-- CI runs integrity checks, tests, demo generation, and container build.
+- `npm run validate` now covers repository integrity, Python safety, the full Node regression suite, demo regeneration, sandbox proof, fixture smoke, and PR bundle refresh.
+- GitHub workflows for Node 20/24, Pages, and container smoke are restored, but exact-head hosted execution still remains a separate final gate.
 
 ## Originality
 
@@ -49,4 +51,4 @@ The target user is a data platform or analytics engineering team reviewing schem
 
 ## Open-source bonus
 
-The repository includes a reusable DataHub change-certification skill. The intended bonus contribution is an upstream pull request to the DataHub Skills registry after live MCP verification.
+The repository includes the canonical `datahub-schema-change-certification` skill package and a public upstream PR #35. Its exact status is `OPEN / READY_FOR_REVIEW / NOT_MERGED`.

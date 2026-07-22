@@ -1,37 +1,27 @@
 ---
 name: contextseal-change-certification
-description: Certify a proposed schema change by gathering DataHub context, tracing downstream impact, producing a safe migration, recording human approval, and writing a bounded passport back to DataHub.
+description: Compatibility alias for the canonical datahub-schema-change-certification skill package. Use this only when an existing local workflow still calls the legacy name.
 ---
 
 # ContextSeal Change Certification
 
-Use this skill when a user proposes renaming, dropping, or changing the type of a dataset column.
+This is the legacy local alias for the canonical skill package in `skills/datahub-schema-change-certification/`.
 
-## Safety contract
+Use it only when an existing prompt, saved workflow, or local automation still calls `contextseal-change-certification` by name.
 
-- Never treat a chat message as approval for a catalog mutation.
-- Never claim a generated query ran unless a named execution artifact exists.
-- Keep `PASS`, `WARN`, `FAIL`, `NOT_RUN`, `STALE`, and `FIXTURE` distinct.
-- Do not retrieve or expose source data rows. Metadata context is sufficient.
-- A direct destructive change with downstream consumers must be converted into a staged migration.
+## Canonical source
 
-## Workflow
+- Canonical package: `skills/datahub-schema-change-certification/`
+- Canonical skill file: `skills/datahub-schema-change-certification/SKILL.md`
+- Canonical package README: `skills/datahub-schema-change-certification/README.md`
 
-1. Convert the request into the ContextSeal change contract.
-2. Use DataHub MCP `get_entities` for schema, ownership, tags, terms, quality, and incidents.
-3. Use `get_lineage` for downstream impact up to five hops. Preserve field hints when they are present, but do not claim field-precise lineage unless it is exported into the ContextSeal graph contract.
-4. Use `get_dataset_queries` to capture dataset query evidence and any observed references to the changing field that are actually present.
-5. Calculate deterministic findings before asking a model to explain them.
-6. Generate an expand–migrate–contract dbt model, tests, rollback, and owner briefing.
-7. Present the exact scope, forbidden direct operation, findings, and missing evidence.
-8. Require an explicit reviewer decision.
-9. After approval, create a hash manifest and prepare these mutation tools:
-   - `add_structured_properties`
-   - `update_description`
-   - `save_document`
-10. Invoke mutations only when runtime mutation enablement is true.
-11. Return the passport ID, manifest hash, write-back result, and any `NOT_RUN` claims.
+Follow the canonical package instructions without forking or weakening them. In particular:
 
-## Completion standard
+- Keep live and fixture evidence separate.
+- Require exact schema pagination, bounded lineage paths, and query evidence before live `PASS` claims.
+- Treat the initial request as non-approval and require a scope-bound human decision.
+- Keep DataHub mutations bounded, optional, and fail-closed until durable read-back passes.
 
-A run is complete only when its final state and every evidence claim can be traced to a named artifact. If write-back is disabled, report `NOT_RUN`; do not call the run fully complete.
+## Compatibility rule
+
+If the canonical package changes, update this alias to point at it; do not duplicate the workflow here.

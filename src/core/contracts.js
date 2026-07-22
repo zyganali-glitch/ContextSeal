@@ -1,5 +1,7 @@
 const CHANGE_TYPES = new Set(["rename_column", "drop_column", "type_change"]);
 
+import { containsRuntimeCredential } from "../security/credential-scan.js";
+
 export class ContractError extends Error {
   constructor(message, details = []) {
     super(message);
@@ -12,6 +14,9 @@ export function validateChangeRequest(value) {
   const errors = [];
   if (!value || typeof value !== "object" || Array.isArray(value)) {
     throw new ContractError("Change request must be an object.");
+  }
+  if (containsRuntimeCredential(JSON.stringify(value))) {
+    throw new ContractError("Invalid change request.", ["credential-like content is not allowed in the request"]);
   }
 
   const requiredStrings = ["targetUrn", "entityName", "changeType", "sourceField", "requestedBy", "rationale"];
@@ -45,17 +50,21 @@ export function validateChangeRequest(value) {
 export function validateApproval(value) {
   const errors = [];
   if (!value || typeof value !== "object") throw new ContractError("Approval must be an object.");
+  if (containsRuntimeCredential(JSON.stringify(value))) {
+    throw new ContractError("Invalid approval.", ["credential-like content is not allowed in the approval"]);
+  }
   if (value.decision !== "APPROVE" && value.decision !== "REJECT") {
     errors.push("decision must be APPROVE or REJECT");
   }
   if (typeof value.reviewer !== "string" || !value.reviewer.trim()) errors.push("reviewer is required");
   if (typeof value.note !== "string" || value.note.trim().length < 8) errors.push("note must contain at least 8 characters");
-  if (value.scopeAccepted !== true) errors.push("scopeAccepted must be true");
+  if (value.decision === "APPROVE" && value.scopeAccepted !== true) errors.push("scopeAccepted must be true for APPROVE");
+  if (value.decision === "REJECT" && value.scopeAccepted !== false) errors.push("scopeAccepted must be false for REJECT");
   if (errors.length) throw new ContractError("Invalid approval.", errors);
   return {
     decision: value.decision,
     reviewer: value.reviewer.trim(),
     note: value.note.trim(),
-    scopeAccepted: true
+    scopeAccepted: value.scopeAccepted === true
   };
 }

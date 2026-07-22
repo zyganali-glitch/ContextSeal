@@ -91,7 +91,7 @@ test("approved passport produces bounded DataHub mutation operations", () => {
     note: "Approve staged migration only.",
     scopeAccepted: true
   }, now);
-  const operations = buildWritebackOperations(approved, policy);
+  const operations = buildWritebackOperations(approved, policy, now);
   assert.deepEqual(operations.map((item) => item.tool), ["add_structured_properties", "update_description", "save_document"]);
   assert.deepEqual(operations[0].arguments.entity_urns, [fixtureRequest.targetUrn]);
   assert.deepEqual(operations[2].arguments.related_assets, [fixtureRequest.targetUrn]);

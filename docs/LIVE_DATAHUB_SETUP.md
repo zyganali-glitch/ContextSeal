@@ -5,11 +5,12 @@ This path is intentionally separate from the fixture judge demo. It should be co
 ## Prerequisites
 
 - Docker Desktop with the engine running
-- Python 3.10+
+- Python 3.11+
 - Node.js 20+
+- `uv` or `uvx` available on `PATH`
 - A local DataHub instance or authorized DataHub Cloud tenant
 - A DataHub token stored outside Git
-- DataHub MCP server v0.5.0+ with mutation tools available
+- DataHub MCP server `mcp-server-datahub@0.6.0` with mutation tools available
 
 ## Local DataHub
 
@@ -27,20 +28,30 @@ Confirm the DataHub UI loads before continuing. Load an organizer-provided datap
 datahub datapack load showcase-ecommerce
 ```
 
-On Windows, if the upstream datapack loader misreads a drive-letter path, use ContextSeal's reproducible synthetic seed instead:
+On Windows, or whenever you want the exact ContextSeal-owned synthetic scope, use the fail-closed seed helper instead of hand-editing catalog metadata:
 
 ```powershell
 npm run datahub:seed
 ```
 
+This default command is read-only preflight. It prints the exact mutation scope and a `certificationPlanSha256`. Apply the seed only after exporting the exact confirmations in the current shell:
+
+```powershell
+$env:DATAHUB_MCP_MUTATIONS_ENABLED="true"
+$env:CONTEXTSEAL_DATAHUB_MUTATION_CONFIRMATION="I_UNDERSTAND_THIS_COMMAND_MUTATES_DATAHUB"
+$env:CONTEXTSEAL_SEED_CONFIRMATION="SEED_CONTEXTSEAL_SYNTHETIC_METADATA_V1"
+$env:CONTEXTSEAL_APPROVED_BOOTSTRAP_PLAN_SHA256="<paste the preflight plan hash>"
+npm run datahub:seed:apply
+```
+
 ## MCP server
 
-Install `uv`. ContextSeal starts the official open-source MCP server as a child process using the exact package invocation below. Mutation tools remain disabled for the first connectivity test.
+Install `uv`. ContextSeal starts the official open-source MCP server as a child process using the exact pinned package invocation below. Mutation tools remain disabled for the first connectivity test.
 
 Local transport:
 
 ```text
-uvx mcp-server-datahub@latest
+uvx mcp-server-datahub@0.6.0
 ```
 
 `http://localhost:8080` is the GMS URL, not a local MCP HTTP endpoint. Streamable HTTP is supported for DataHub Cloud tenants through their `/integrations/ai/mcp/` URL.
@@ -57,28 +68,39 @@ Edit `.env`:
 CONTEXTSEAL_MODE=datahub
 DATAHUB_MCP_TRANSPORT=stdio
 DATAHUB_MCP_COMMAND=uvx
-DATAHUB_MCP_ARGS=["mcp-server-datahub@latest"]
+DATAHUB_MCP_ARGS=["mcp-server-datahub@0.6.0"]
 DATAHUB_GMS_URL=http://localhost:8080
 DATAHUB_GMS_TOKEN=LOCAL_TOKEN_ONLY
 DATAHUB_MCP_MUTATIONS_ENABLED=false
 ```
 
-Load the property definitions:
+Preflight the property-definition bootstrap:
 
 ```powershell
-datahub properties upsert -f config/contextseal-structured-properties.yml
+npm run datahub:properties
+```
+
+Apply those definitions only after the preflight hash and exact confirmations are exported in the same shell:
+
+```powershell
+$env:DATAHUB_MCP_MUTATIONS_ENABLED="true"
+$env:CONTEXTSEAL_DATAHUB_MUTATION_CONFIRMATION="I_UNDERSTAND_THIS_COMMAND_MUTATES_DATAHUB"
+$env:CONTEXTSEAL_PROPERTIES_CONFIRMATION="UPSERT_CONTEXTSEAL_STRUCTURED_PROPERTIES_V1"
+$env:CONTEXTSEAL_APPROVED_BOOTSTRAP_PLAN_SHA256="<paste the preflight plan hash>"
+npm run datahub:properties:apply
 ```
 
 ## Read-only verification
 
 1. Start ContextSeal.
 2. Analyze a target that exists in the local catalog.
-3. Invoke the run's live-evidence endpoint or documented UI path.
+3. Inspect the created run or invoke the live-evidence refresh endpoint for an undecided run.
 4. Inspect `.contextseal/runs/<run-id>.json`.
-5. Confirm three raw MCP evidence entries exist.
-6. Keep all mutation evidence `NOT_RUN`.
+5. Confirm the raw MCP evidence includes `get_entities`, one or more unfiltered `list_schema_fields` pages, `get_lineage`, one `get_lineage_paths_between` call per discovered downstream target, and `get_dataset_queries`.
+6. Confirm `run.context.evidenceBoundary` is `LIVE_DATAHUB_MCP_NORMALIZED` and that `run.liveEvidence.rawEvidenceHash` binds the captured call array.
+7. Keep all mutation evidence `NOT_RUN`.
 
-This read-only check proves raw MCP access. It does not, by itself, upgrade the dashboard's path visualization to live-normalized impact.
+This read-only check proves hash-bound MCP access plus deterministic live normalization. It still does not upgrade the dashboard's public path visualization beyond its explicit fixture/live labels.
 
 ## Mutation verification
 
@@ -90,21 +112,16 @@ Only after read-only verification:
 4. Re-analyze with fresh context.
 5. Approve the exact staged scope.
 6. Execute write-back.
-7. Verify structured properties and appended description in DataHub UI.
+7. Verify structured properties and appended description in DataHub UI or through the read-back envelope.
 8. Verify the saved passport document.
-9. Export the local run record without credentials.
-10. Set evidence to PASS only for the operations with successful tool responses.
+9. Export the local run record without credentials with `node scripts/export-live-run.js`.
+10. Run `npm run evidence:check` to validate the read/write/readback bundle.
+11. Set evidence to PASS only for the operations and read-back checks with named artifacts.
 
-## Verified local status
+## Checked-in live proof status
 
-A disposable local DataHub run has completed successfully with synthetic metadata:
+The committed `examples/outputs/live-datahub-read-evidence.json` and `examples/outputs/live-datahub-writeback-evidence.json` files are preserved as historical synthetic-local artifacts from before the reconciled final HEAD.
 
-- six seeded catalog assets and five downstream dataset-shaped lineage results across seeded platforms,
-- three read-only MCP calls, including a saved query read whose exported example currently returns zero observed dataset queries for the target,
-- a fail-closed pre-evidence mutation gate,
-- four structured properties written and read back,
-- a passport description appended and read back,
-- a standalone decision document created,
-- all successful MCP tool results checked for `isError: false`.
+They remain useful for reviewing the disposable-local proof shape, but they are not current final-head `PASS` artifacts. A new final-head live claim requires rerunning seed/property preflight and apply, capturing fresh read evidence, completing bounded write-back plus durable read-back, exporting the run, and passing `npm run evidence:check`.
 
-See `examples/outputs/live-datahub-read-evidence.json` and `examples/outputs/live-datahub-writeback-evidence.json`. This does not claim production or customer impact.
+This path does not claim production or customer impact.

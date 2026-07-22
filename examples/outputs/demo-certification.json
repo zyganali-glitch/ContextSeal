@@ -1,8 +1,10 @@
 {
-  "runId": "csr_6541faae806909b2",
+  "runId": "csr_ea7ac87fa9d973359b2e6996731a18c5",
   "state": "APPROVED_FOR_WRITEBACK",
   "mode": "fixture",
-  "createdAt": "2026-07-21T21:41:27.362Z",
+  "createdAt": "2026-07-22T06:39:36.461Z",
+  "policyVersion": "2026-07-14",
+  "policyHash": "eadf377cceb74742db8523466ec4fd700574e55e4786bbc993c7985053d31a82",
   "request": {
     "targetUrn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)",
     "entityName": "gold_customers",
@@ -15,7 +17,7 @@
   },
   "context": {
     "source": "DataHub-compatible fixture",
-    "observedAt": "2026-07-21T21:41:27.361Z",
+    "observedAt": "2026-07-22T06:39:36.459Z",
     "assets": [
       {
         "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)",
@@ -323,7 +325,7 @@
         ]
       }
     ],
-    "contextAgeHours": 2.7777777777777776e-7
+    "contextAgeHours": 5.555555555555555e-7
   },
   "artifacts": {
     "grounding": {
@@ -438,11 +440,11 @@
     ],
     "manifest": {
       "manifestVersion": "1.0",
-      "generatedFromRunId": "csr_6541faae806909b2",
+      "generatedFromRunId": "csr_ea7ac87fa9d973359b2e6996731a18c5",
       "passportContext": {
-        "passportId": "csp_a3f2019881651687ae76",
-        "manifestHash": "a3f2019881651687ae76007fe1132d3708d95173ee34a41a5cabe8be0d4c85d9",
-        "validUntil": "2026-07-22T21:41:27.366Z",
+        "passportId": "csp_6737bde14310a4fd1b9c",
+        "manifestHash": "6737bde14310a4fd1b9c7fd70da5640d7a2b181b8afc4b93fcd9b6ff1abdf317",
+        "validUntil": "2026-07-23T06:39:36.469Z",
         "status": "CERTIFIED",
         "artifactGroundingContractVersion": "1.0",
         "artifactGroundingRuleId": "RENAME_COLUMN_REQUIRES_COMPATIBILITY_FIELD"
@@ -585,9 +587,14 @@
       "artifact": "fixture context snapshot"
     },
     {
+      "claim": "Target field validated in schema",
+      "state": "FIXTURE",
+      "artifact": "fixture schema contract"
+    },
+    {
       "claim": "Downstream impact paths traced",
       "state": "PASS",
-      "artifact": "impact paths"
+      "artifact": "5 assets across exact paths"
     },
     {
       "claim": "Migration artifacts generated",
@@ -608,12 +615,17 @@
       "claim": "DataHub write-back completed",
       "state": "NOT_RUN",
       "artifact": null
+    },
+    {
+      "claim": "Durable DataHub read-back verified",
+      "state": "NOT_RUN",
+      "artifact": null
     }
   ],
   "aiGroundingInput": {
     "schemaVersion": "1.0",
     "product": "ContextSeal",
-    "generatedFromRunId": "csr_6541faae806909b2",
+    "generatedFromRunId": "csr_ea7ac87fa9d973359b2e6996731a18c5",
     "mode": "fixture",
     "runState": "AWAITING_HUMAN",
     "evidenceBoundary": {
@@ -828,9 +840,14 @@
         "artifact": "fixture context snapshot"
       },
       {
+        "claim": "Target field validated in schema",
+        "state": "FIXTURE",
+        "artifact": "fixture schema contract"
+      },
+      {
         "claim": "Downstream impact paths traced",
         "state": "PASS",
-        "artifact": "impact paths"
+        "artifact": "5 assets across exact paths"
       },
       {
         "claim": "Migration artifacts generated",
@@ -849,6 +866,11 @@
       },
       {
         "claim": "DataHub write-back completed",
+        "state": "NOT_RUN",
+        "artifact": null
+      },
+      {
+        "claim": "Durable DataHub read-back verified",
         "state": "NOT_RUN",
         "artifact": null
       }
@@ -879,16 +901,23 @@
     "decision": "APPROVE",
     "reviewer": "demo-reviewer",
     "note": "Approved safe expand-migrate-contract scope only.",
-    "scopeAccepted": true
+    "scopeAccepted": true,
+    "decidedAt": "2026-07-22T06:39:36.469Z"
   },
   "passport": {
-    "passportVersion": "1.0",
-    "runId": "csr_6541faae806909b2",
+    "passportVersion": "2.0",
+    "runId": "csr_ea7ac87fa9d973359b2e6996731a18c5",
+    "createdAt": "2026-07-22T06:39:36.461Z",
     "status": "CERTIFIED",
     "mode": "fixture",
     "targetUrn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)",
     "requestHash": "a0bd0168caa39e82d232eac2a3a9f3ebeeaf9a0b7dc3dac7ef84e05d6bb281f9",
-    "contextHash": "16b4fe2ef05294bfc4a23bfdde948c57b6bb7a056d3e7747f80c7d6a13850ee2",
+    "contextHash": "274ac8ab766baf7909ad61fb653eed7ade2f5b865a24e35701af2158b2232ce1",
+    "policy": {
+      "version": "2026-07-14",
+      "sha256": "eadf377cceb74742db8523466ec4fd700574e55e4786bbc993c7985053d31a82"
+    },
+    "liveEvidence": null,
     "risk": {
       "verdict": "BLOCKED",
       "score": 80,
@@ -896,7 +925,8 @@
         "BREAKING_LINEAGE",
         "SENSITIVE_DATA",
         "LIVE_QUERY_USAGE"
-      ]
+      ],
+      "sha256": "3ad5835ef056f36cd47ff7144196ea577225668ce1b9b35ecc9b5715d6ecf3d6"
     },
     "impact": {
       "total": 5,
@@ -908,7 +938,9 @@
         "ML_MODEL": 1
       }
     },
+    "impactHash": "93cbddbfe5f6ef62d3df4d309b25a9eca5fc2c7d73673568465d60abd5e06711",
     "migrationStrategy": "EXPAND_MIGRATE_CONTRACT",
+    "migrationSummary": "Add contact_email, backfill from customer_email, migrate consumers, then deprecate customer_email.",
     "artifactGroundingContractVersion": "1.0",
     "artifactGroundingRuleId": "RENAME_COLUMN_REQUIRES_COMPATIBILITY_FIELD",
     "artifactHashes": [
@@ -936,9 +968,14 @@
         "artifact": "fixture context snapshot"
       },
       {
+        "claim": "Target field validated in schema",
+        "state": "FIXTURE",
+        "artifact": "fixture schema contract"
+      },
+      {
         "claim": "Downstream impact paths traced",
         "state": "PASS",
-        "artifact": "impact paths"
+        "artifact": "5 assets across exact paths"
       },
       {
         "claim": "Migration artifacts generated",
@@ -952,11 +989,16 @@
       },
       {
         "claim": "Human scope approval recorded",
+        "state": "PASS",
+        "artifact": "demo-reviewer"
+      },
+      {
+        "claim": "DataHub write-back completed",
         "state": "NOT_RUN",
         "artifact": null
       },
       {
-        "claim": "DataHub write-back completed",
+        "claim": "Durable DataHub read-back verified",
         "state": "NOT_RUN",
         "artifact": null
       }
@@ -965,10 +1007,11 @@
       "reviewer": "demo-reviewer",
       "note": "Approved safe expand-migrate-contract scope only.",
       "decision": "APPROVE",
-      "decidedAt": "2026-07-21T21:41:27.366Z"
+      "scopeAccepted": true,
+      "decidedAt": "2026-07-22T06:39:36.469Z"
     },
-    "validUntil": "2026-07-22T21:41:27.366Z",
-    "passportId": "csp_a3f2019881651687ae76",
-    "manifestHash": "a3f2019881651687ae76007fe1132d3708d95173ee34a41a5cabe8be0d4c85d9"
+    "validUntil": "2026-07-23T06:39:36.469Z",
+    "passportId": "csp_6737bde14310a4fd1b9c",
+    "manifestHash": "6737bde14310a4fd1b9c7fd70da5640d7a2b181b8afc4b93fcd9b6ff1abdf317"
   }
 }

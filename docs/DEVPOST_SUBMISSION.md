@@ -58,12 +58,12 @@ The hardest design problem was separating a risky original request from a safe g
 - Human approval cryptographically bound to the exact request, context, and artifacts
 - Optional local AI companion with honest `NOT_ENABLED` / `UNAVAILABLE` fallback states
 - Fail-closed DataHub write-back gates
-- A reproducible judge fixture and a completed disposable-local DataHub proof
+- A reproducible judge fixture and a preserved historical disposable-local DataHub proof, kept separate from final-head claims until recaptured
 - A deterministic local sandbox harness that validates the generated artifact bundle against its manifest and grounding contract
 - A reviewer-ready PR bundle plus an optional token-gated draft PR path that keep GitHub delivery separate from deterministic evidence authority
 - Five downstream dataset-shaped results retrieved through live MCP across seeded Airflow, Snowflake, Looker, MLflow, and Power BI platform metadata
 - Four certification properties, an appended passport description, and a standalone decision document written and read back
-- A reusable DataHub change-certification skill
+- A canonical `datahub-schema-change-certification` skill package plus a public upstream PR #35 that is `OPEN / READY_FOR_REVIEW / NOT_MERGED`
 
 ## What we learned
 
@@ -71,7 +71,8 @@ Context is most valuable when it changes an action, not when it only improves an
 
 ## What's next
 
-- Verify and contribute the ContextSeal skill upstream to DataHub Skills
+- Recapture disposable-local live DataHub proof from the reconciled final HEAD and re-run `npm run evidence:check`
+- Keep the upstream `datahub-schema-change-certification` contribution truthful until PR #35 is reviewed or merged
 - Add target-derived normalization for more DataHub entity types
 - Add signed reviewer identities and replay protection
 - Exercise the optional token-gated draft PR path against a real GitHub branch after explicit approval
@@ -83,8 +84,8 @@ Context is most valuable when it changes an action, not when it only improves an
 - Repository: https://github.com/zyganali-glitch/ContextSeal
 - Live demo: https://zyganali-glitch.github.io/ContextSeal/
 - Demo video: `ADD_PUBLIC_YOUTUBE_URL`
-- DataHub skill contribution: Not submitted upstream yet; the review-ready skill source is included in the repository.
+- DataHub skill contribution: Public upstream PR #35 exists and is `OPEN / READY_FOR_REVIEW / NOT_MERGED`; the canonical package is included in the repository at `skills/datahub-schema-change-certification/`.
 
 ## Honest limitations
 
-ContextSeal is a hackathon prototype. It does not auto-merge, execute production warehouse SQL, guarantee security, or claim customer impact. The default judge path uses fixture-backed path reconstruction, while separate live-local artifacts prove raw MCP reads and bounded write-back on synthetic metadata. Only operations with named artifacts are marked PASS.
+ContextSeal is a hackathon prototype. It does not auto-merge, execute production warehouse SQL, guarantee security, or claim customer impact. The default judge path uses fixture-backed path reconstruction, while separate live-local artifacts prove raw MCP reads and bounded write-back on synthetic metadata. The checked-in live artifacts are historical until recaptured from the reconciled final HEAD. Only operations with named artifacts are marked PASS.

@@ -1,22 +1,23 @@
 # Evidence Manifest
 
-| Claim | State | Evidence |
-| --- | --- | --- |
-| Typed schema-change contract works | PASS | `tests/workflow.test.js` |
-| Five-hop impact paths are reconstructed | PASS | fixture test and generated demo record |
-| Policy blocks the direct retail rename | PASS | score 80 fixture test |
-| Safe staged dbt artifacts are generated | PASS | `examples/outputs/generated/` after `npm run demo`, `artifacts.grounding` in the demo run record, and `examples/outputs/generated/ARTIFACT_MANIFEST.json` |
-| Approval creates a hash-bound passport | PASS | workflow test and demo record |
-| Unapproved write-back is rejected | PASS | workflow test |
-| MCP session/error behavior is fail-closed | PASS | `tests/mcp-client.test.js` |
-| Dashboard loads and the product API completes the judge flow | PASS | local render check plus containerized analyze/approve/write-back smoke test |
-| Docker image and Compose service build and run unprivileged | PASS | local build, health check, fixture load, and full API smoke test |
-| Generated artifact bundle passes deterministic local sandbox validation | PASS | `npm run sandbox` plus `tests/sandbox-conformance.test.js` |
-| DataHub MCP read path executed live | PASS | `examples/outputs/live-datahub-read-evidence.json`: entity, five downstream assets, and query-history response |
-| Structured properties written and read back from DataHub | PASS | live read evidence contains status, score, passport ID, and validity date |
-| Passport description and document saved in DataHub | PASS | `examples/outputs/live-datahub-writeback-evidence.json` plus post-write read evidence |
-| Production warehouse SQL executed | NOT_RUN | intentionally outside current scope |
-| Customer impact measured | NOT_RUN | no customer deployment is claimed |
+| Claim | State | Freshness | Evidence |
+| --- | --- | --- | --- |
+| Typed schema-change contract works | PASS | `final-head` | `npm test`; `tests/workflow.test.js` |
+| Five-hop fixture impact paths are reconstructed | PASS | `final-head` | `npm run demo`; fixture demo record; `tests/workflow.test.js` |
+| Policy blocks the direct retail rename | PASS | `final-head` | `npm run demo`; deterministic score 80 fixture run |
+| Safe staged dbt artifacts are generated | PASS | `final-head` | `examples/outputs/generated/` after `npm run demo`; `artifacts.grounding`; `examples/outputs/generated/ARTIFACT_MANIFEST.json` |
+| Approval creates a hash-bound passport | PASS | `final-head` | `tests/workflow.test.js`; demo record |
+| MCP runtime fails closed on transport, provenance, truncation, tamper, replay, and mutation-boundary errors | PASS | `final-head` | `tests/mcp-client.test.js`; `tests/live-pipeline.test.js`; `tests/server-integration.test.js`; `tests/store.test.js` |
+| Dashboard route and fixture API judge path run end to end | PASS | `final-head` | `npm run smoke`; `npm run validate` |
+| Generated artifact bundle passes deterministic local sandbox validation | PASS | `final-head` | `npm run sandbox`; `tests/sandbox-conformance.test.js` |
+| Node, Python, demo, sandbox, smoke, and PR bundle validation contract passes on the reconciled HEAD | PASS | `final-head` | `npm run validate` |
+| Docker image and container smoke on the exact reconciled HEAD | WARN | `pending final-head` | Workflow and smoke contract restored in `.github/workflows/*`; local Docker daemon/build proof was not available in this session |
+| DataHub MCP read path executed live against the disposable synthetic-local catalog | WARN | `historical` | `examples/outputs/live-datahub-read-evidence.json`; final-head recapture pending before `npm run evidence:check` can pass |
+| Structured properties were written and read back from DataHub | WARN | `historical` | `examples/outputs/live-datahub-writeback-evidence.json`; final-head recapture pending |
+| Passport description and document were saved and read back from DataHub | WARN | `historical` | `examples/outputs/live-datahub-writeback-evidence.json`; final-head recapture pending |
+| Public upstream DataHub Skills contribution exists | PASS | `historical external` | `docs/DATAHUB_SKILL_CONTRIBUTION.md`; PR #35 is `OPEN / READY_FOR_REVIEW / NOT_MERGED` |
+| Production warehouse SQL executed | NOT_RUN | `n/a` | intentionally outside current scope |
+| Customer impact measured | NOT_RUN | `n/a` | no customer deployment is claimed |
 
 Update this table only when a named reproducible artifact exists.
 
