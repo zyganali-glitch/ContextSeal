@@ -60,7 +60,7 @@ This checklist is authoritative for final-head release readiness. Do not claim t
 
 - [ ] Record a playable public YouTube, Vimeo, or Youku demo URL showing the functioning app in under three minutes.
 - [ ] Freeze and submit the Devpost entry against the exact final SHA; remove every placeholder URL.
-- [ ] Confirm the Apache-2.0 license is detected and visible in the public repository's GitHub About surface.
+- [x] Confirm the Apache-2.0 license is detected and visible in the public repository's GitHub About surface (`Apache-2.0`, verified 2026-07-22).
 - [ ] Freeze README, judging docs, evidence docs, and Turkish helper surfaces against the same final truth.
 - [ ] Confirm upstream PR #35 is described only as `OPEN / READY_FOR_REVIEW / NOT_MERGED` unless GitHub records a new state.
 
