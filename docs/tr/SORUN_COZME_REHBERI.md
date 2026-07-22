@@ -67,6 +67,41 @@ Node.js kurulu değildir veya uygulama yeniden başlatılmamıştır. Codex’e 
 
 4. Başka uygulama aynı adresi kullanıyorsa ekran görüntüsü gönder.
 
+## Canlı mod başlarken `CONTEXTSEAL_OPERATOR_TOKEN` veya `CONTEXTSEAL_ALLOWED_TARGET_URNS` hatası
+
+1. `.env` dosyasını aç.
+2. Şu satırların boş olmadığını doğrula:
+
+   ```dotenv
+   CONTEXTSEAL_OPERATOR_TOKEN=
+   CONTEXTSEAL_ALLOWED_TARGET_URNS=["urn:li:..."]
+   ```
+
+3. `CONTEXTSEAL_OPERATOR_TOKEN=` satırına yerelde rastgele uzun bir bearer değer yaz.
+4. `CONTEXTSEAL_ALLOWED_TARGET_URNS` tek tırnaklı düz metin değil, köşeli parantezli geçerli JSON dizi olmalıdır.
+5. Kaydet ve `npm start` komutunu yeniden çalıştır.
+
+## Canlı API 401 veya 403 dönüyor
+
+1. Canlı modda her istekte `Authorization: Bearer <CONTEXTSEAL_OPERATOR_TOKEN>` başlığının gönderildiğini doğrula.
+2. `.env` içindeki token ile istek başlığındaki token aynı olmalıdır.
+3. İstekteki hedef URN, `CONTEXTSEAL_ALLOWED_TARGET_URNS` içinde değilse 403 alırsın.
+
+## `uv` veya `uvx` komutu bulunamıyor
+
+PowerShell’de şunu çalıştır:
+
+```powershell
+python -m pip install --user --upgrade "acryl-datahub==1.6.0.14" uv
+```
+
+Sonra doğrula:
+
+```powershell
+uv --version
+uvx --version
+```
+
 ## `npm run validate` kırmızı hata veriyor
 
 Devpost veya video işlemine geçme. PowerShell’deki hatanın başından sonuna ekran görüntüsü al ve Codex’e gönder.

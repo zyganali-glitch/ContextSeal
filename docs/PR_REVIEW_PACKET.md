@@ -191,8 +191,8 @@ The current committed evidence set that the packet must cite is:
 Before a PR packet is claimed complete, the repo must pass this sequence:
 
 ```bash
-npm run demo
-npm run sandbox
+npm run demo:generate
+npm run sandbox:generate
 node scripts/build-pr-bundle.js
 npm run pr:draft -- --dry-run
 npm run validate

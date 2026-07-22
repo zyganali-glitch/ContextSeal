@@ -1,7 +1,7 @@
 import argparse
 import hashlib
 import json
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 
@@ -37,6 +37,27 @@ def sha256_text(text: str) -> str:
 
 def iso_now() -> str:
     return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+
+
+def parse_iso_datetime(value: str | None) -> datetime | None:
+    if not value:
+        return None
+    try:
+        return datetime.fromisoformat(value.replace("Z", "+00:00")).astimezone(timezone.utc)
+    except ValueError:
+        return None
+
+
+def stable_validated_at(manifest: dict) -> str:
+    passport = manifest.get("passportContext") or {}
+    valid_until = parse_iso_datetime(passport.get("validUntil"))
+    if valid_until is None:
+        return iso_now()
+    baseline = valid_until - timedelta(days=1)
+    rounded = baseline.replace(microsecond=0)
+    if baseline.microsecond:
+        rounded += timedelta(seconds=1)
+    return rounded.isoformat().replace("+00:00", "Z")
 
 
 def write_json(path: Path, payload: dict) -> None:
@@ -157,7 +178,7 @@ def validate_artifact(artifact: dict, grounding: dict, outputs_root: Path) -> No
 def build_evidence(manifest_path: Path, repo_root: Path, manifest: dict, status: str, message: str) -> dict:
     return {
         "status": status,
-        "validatedAt": iso_now(),
+        "validatedAt": stable_validated_at(manifest),
         "evidenceBoundary": "Deterministic local conformance harness for generated ContextSeal artifacts; not warehouse execution.",
         "command": "python scripts/run-generated-sandbox.py --evidence-output examples/outputs/sandbox/generated-sandbox-evidence.json",
         "manifestPath": display_path(manifest_path, repo_root),
@@ -180,6 +201,19 @@ def run(manifest_path: Path) -> tuple[dict, str]:
     return manifest, f"PASS generated artifact sandbox: {len(manifest['artifacts'])} artifact(s) validated against manifest {manifest_path.name}"
 
 
+def serialized_evidence(manifest_path: Path, repo_root: Path, manifest: dict, status: str, message: str) -> str:
+    return json.dumps(build_evidence(manifest_path, repo_root, manifest, status, message), indent=2) + "\n"
+
+
+def assert_evidence_matches(manifest_path: Path, repo_root: Path, manifest: dict, evidence_output: Path, message: str) -> None:
+    expected = serialized_evidence(manifest_path, repo_root, manifest, "PASS", message)
+    if not evidence_output.exists():
+        fail(f"sandbox evidence file is missing: {display_path(evidence_output, repo_root)}")
+    actual = evidence_output.read_text(encoding="utf8")
+    if actual != expected:
+        fail(f"sandbox evidence differs from deterministic generation: {display_path(evidence_output, repo_root)}")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Validate the generated ContextSeal artifact bundle with deterministic local conformance checks.")
     parser.add_argument(
@@ -192,6 +226,11 @@ def main() -> int:
         default=None,
         help="Optional path to write a JSON evidence record for this sandbox run."
     )
+    parser.add_argument(
+        "--check",
+        action="store_true",
+        help="Compare the committed evidence artifact against deterministic generation without rewriting it."
+    )
     args = parser.parse_args()
     manifest_path = Path(args.manifest).resolve()
     evidence_output = Path(args.evidence_output).resolve() if args.evidence_output else None
@@ -200,8 +239,14 @@ def main() -> int:
     try:
         manifest, message = run(manifest_path)
         if evidence_output:
-            write_json(evidence_output, build_evidence(manifest_path, repo_root, manifest, "PASS", message))
-        print(message)
+            if args.check:
+                assert_evidence_matches(manifest_path, repo_root, manifest, evidence_output, message)
+            else:
+                write_json(evidence_output, build_evidence(manifest_path, repo_root, manifest, "PASS", message))
+        if args.check:
+            print(f"PASS generated artifact sandbox check: deterministic evidence matches {evidence_output.name if evidence_output else manifest_path.name}")
+        else:
+            print(message)
         return 0
     except SandboxError as error:
         if evidence_output and manifest_path.exists():

@@ -18,7 +18,7 @@ Follow the current official Quickstart. A typical local path begins with:
 
 ```powershell
 python -m pip install --upgrade pip wheel setuptools
-python -m pip install --upgrade acryl-datahub
+python -m pip install --upgrade "acryl-datahub==1.6.0.14" uv
 datahub docker quickstart
 ```
 
@@ -66,13 +66,18 @@ Edit `.env`:
 
 ```dotenv
 CONTEXTSEAL_MODE=datahub
+CONTEXTSEAL_HOST=127.0.0.1
 DATAHUB_MCP_TRANSPORT=stdio
 DATAHUB_MCP_COMMAND=uvx
 DATAHUB_MCP_ARGS=["mcp-server-datahub@0.6.0"]
 DATAHUB_GMS_URL=http://localhost:8080
 DATAHUB_GMS_TOKEN=LOCAL_TOKEN_ONLY
 DATAHUB_MCP_MUTATIONS_ENABLED=false
+CONTEXTSEAL_OPERATOR_TOKEN=
+CONTEXTSEAL_ALLOWED_TARGET_URNS=["urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)"]
 ```
+
+Before starting the live server, set `CONTEXTSEAL_OPERATOR_TOKEN` in `.env` to a long random local bearer value. The server will not start in live mode until that setting is non-empty and `CONTEXTSEAL_ALLOWED_TARGET_URNS` is a non-empty JSON array. Every live API request must send `Authorization: Bearer <CONTEXTSEAL_OPERATOR_TOKEN>`.
 
 Preflight the property-definition bootstrap:
 
@@ -92,8 +97,15 @@ npm run datahub:properties:apply
 
 ## Read-only verification
 
-1. Start ContextSeal.
-2. Analyze a target that exists in the local catalog.
+1. Start ContextSeal with `npm start`.
+2. Submit an allowed target through the API with the operator bearer token.
+
+```powershell
+$headers = @{ Authorization = "Bearer $env:CONTEXTSEAL_OPERATOR_TOKEN"; "Content-Type" = "application/json" }
+$body = Get-Content examples/retail-change-request.json -Raw
+Invoke-RestMethod -Method Post -Uri http://127.0.0.1:4173/api/analyze -Headers $headers -Body $body
+```
+
 3. Inspect the created run or invoke the live-evidence refresh endpoint for an undecided run.
 4. Inspect `.contextseal/runs/<run-id>.json`.
 5. Confirm the raw MCP evidence includes `get_entities`, one or more unfiltered `list_schema_fields` pages, `get_lineage`, one `get_lineage_paths_between` call per discovered downstream target, and `get_dataset_queries`.

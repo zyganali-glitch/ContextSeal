@@ -7,7 +7,8 @@ const DEFAULT_OPTIONS = {
   sandboxEvidencePath: "examples/outputs/sandbox/generated-sandbox-evidence.json",
   aiNotePath: "examples/outputs/generated/ai/contextseal-ai-output.md",
   outputDir: "examples/outputs/pr",
-  baseBranch: "main"
+  baseBranch: "main",
+  check: false
 };
 
 function parseArgs(argv) {
@@ -23,6 +24,10 @@ function parseArgs(argv) {
 
   for (let index = 0; index < argv.length; index += 1) {
     const flag = argv[index];
+    if (flag === "--check") {
+      options.check = true;
+      continue;
+    }
     const key = aliases.get(flag);
     if (!key) throw new Error(`Unknown argument: ${flag}`);
     const value = argv[index + 1];
@@ -67,6 +72,17 @@ async function readOptionalText(root, relativePath) {
     if (error && error.code === "ENOENT") return null;
     throw error;
   }
+}
+
+async function assertTextMatches(root, relativePath, expected) {
+  let actual;
+  try {
+    actual = await readFile(path.join(root, relativePath), "utf8");
+  } catch (error) {
+    if (error?.code === "ENOENT") throw new Error(`Missing committed PR artifact: ${relativePath}`);
+    throw error;
+  }
+  if (actual !== expected) throw new Error(`Committed PR artifact differs from deterministic bundle output: ${relativePath}`);
 }
 
 function deriveBranchName(changeType, entityName, runId) {
@@ -274,8 +290,6 @@ const bodyPath = `${outputDir}/pr-body.md`;
 const checklistPath = `${outputDir}/pr-checklist.md`;
 const payloadPath = `${outputDir}/pr-payload.json`;
 
-await mkdir(path.join(root, outputDir), { recursive: true });
-
 const body = buildBody({
   run,
   manifest,
@@ -302,8 +316,17 @@ const payload = buildPayload({
   draftPrSupported: true
 });
 
-await writeFile(path.join(root, bodyPath), body);
-await writeFile(path.join(root, checklistPath), checklist);
-await writeFile(path.join(root, payloadPath), `${JSON.stringify(payload, null, 2)}\n`);
+const payloadText = `${JSON.stringify(payload, null, 2)}\n`;
 
-console.log(`PASS pr-bundle ${run.runId}: wrote ${bodyPath}, ${checklistPath}, and ${payloadPath}`);
+if (options.check) {
+  await assertTextMatches(root, bodyPath, body);
+  await assertTextMatches(root, checklistPath, checklist);
+  await assertTextMatches(root, payloadPath, payloadText);
+  console.log(`PASS pr-bundle check ${run.runId}: committed PR artifacts match deterministic bundle output`);
+} else {
+  await mkdir(path.join(root, outputDir), { recursive: true });
+  await writeFile(path.join(root, bodyPath), body);
+  await writeFile(path.join(root, checklistPath), checklist);
+  await writeFile(path.join(root, payloadPath), payloadText);
+  console.log(`PASS pr-bundle ${run.runId}: wrote ${bodyPath}, ${checklistPath}, and ${payloadPath}`);
+}

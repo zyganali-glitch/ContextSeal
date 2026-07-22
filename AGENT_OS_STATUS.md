@@ -2,7 +2,7 @@
 
 ## Gate
 
-FAIL - missing: .agent/workflows/session-bootstrap.md, plans/completed, .agent/workflows/continue.md or .agent/workflows/devam.md
+PASS - required workflow and archive surfaces are present for the active living-plan workflow
 
 ## Required Surfaces
 
@@ -13,9 +13,10 @@ FAIL - missing: .agent/workflows/session-bootstrap.md, plans/completed, .agent/w
 - [x] AGENT_ARCHITECTURE_AND_PATTERNS.md
 - [x] AGENT_ENVIRONMENT_AND_API.md
 - [x] AGENT_USER_PREFERENCES.md
-- [ ] .agent/workflows/session-bootstrap.md
+- [x] .agent/workflows/session-bootstrap.md
 - [x] plans
-- [ ] plans/completed
+- [x] plans/completed
+- [x] .agent/workflows/continue.md
 
 ## Helpful Optional Surfaces
 

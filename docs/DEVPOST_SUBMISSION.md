@@ -74,7 +74,7 @@ Context is most valuable when it changes an action, not when it only improves an
 - Recapture disposable-local live DataHub proof from the reconciled final HEAD and re-run `npm run evidence:check`
 - Keep the upstream `datahub-schema-change-certification` contribution truthful until PR #35 is reviewed or merged
 - Add target-derived normalization for more DataHub entity types
-- Add signed reviewer identities and replay protection
+- Add signed reviewer identities and stronger reviewer-auth provenance
 - Exercise the optional token-gated draft PR path against a real GitHub branch after explicit approval
 - Add warehouse-specific sandbox executors
 - Extend from column changes to dbt model and pipeline schedule changes

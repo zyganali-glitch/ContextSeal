@@ -1,8 +1,9 @@
 name: ContextSeal CI
 
 on:
+  workflow_dispatch:
   push:
-    branches: [main, "agent/**", "codex/**"]
+    branches: [main, "agent/**", "codex/**", "reconcile/**"]
   pull_request:
 
 permissions:

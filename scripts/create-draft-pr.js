@@ -5,7 +5,7 @@ import path from "node:path";
 const DEFAULT_OPTIONS = {
   payloadPath: "examples/outputs/pr/pr-payload.json",
   dryRun: false,
-  repo: process.env.GITHUB_REPO || null,
+  repo: process.env.GITHUB_REPOSITORY || process.env.GITHUB_REPO || null,
   head: null,
   baseBranch: null,
   bodyPath: null,
@@ -143,7 +143,7 @@ const payload = await readJson(root, payloadPath, "PR payload");
 assert(payload.draftPrSupported, `Draft PR creation is not marked supported in ${payloadPath}`);
 
 const repo = options.repo || inferRepoFromOrigin(root);
-assert(repo, "GitHub repository could not be inferred. Provide --repo owner/name or set GITHUB_REPO.");
+assert(repo, "GitHub repository could not be inferred. Provide --repo owner/name or set GITHUB_REPOSITORY (or GITHUB_REPO).");
 
 const bodyPath = toPosixPath(options.bodyPath || payload.bodyPath);
 const body = await readText(root, bodyPath);

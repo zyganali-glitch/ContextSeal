@@ -2,7 +2,8 @@
 
 ## Runtime and validation
 
-- Required validation command: `npm run validate`
+- Required read-only validation command: `npm run validate`
+- Explicit artifact generation commands: `npm run demo:generate`, `npm run sandbox:generate`, `npm run pr:bundle`
 - Local server command: `npm start`
 - Default local app URL: `http://127.0.0.1:4173`
 - Default mode without `.env`: `fixture`
@@ -10,15 +11,20 @@
 ## DataHub boundaries
 
 - Live mode is enabled with `CONTEXTSEAL_MODE=datahub`
+- Live API startup also requires `CONTEXTSEAL_HOST`, `CONTEXTSEAL_OPERATOR_TOKEN`, and a non-empty JSON `CONTEXTSEAL_ALLOWED_TARGET_URNS` allowlist
 - MCP read/write boundaries are controlled by `DATAHUB_MCP_TRANSPORT`, `DATAHUB_MCP_COMMAND`, `DATAHUB_MCP_ARGS`, `DATAHUB_GMS_URL`, `DATAHUB_GMS_TOKEN`, and `DATAHUB_MCP_MUTATIONS_ENABLED`
+- Seed/property helpers stay on the pinned free path `uv run --with acryl-datahub==1.6.0.14`
+- Remote bootstrap is opt-in only and uses `CONTEXTSEAL_REMOTE_DATAHUB_BOOTSTRAP`, `CONTEXTSEAL_REMOTE_DATAHUB_ALLOWED_GMS_URLS`, `CONTEXTSEAL_REMOTE_DATAHUB_SEED_URNS`, and `CONTEXTSEAL_REMOTE_DATAHUB_PROPERTY_URNS`
 - Credentials, tokens, and source rows must never be logged, committed, or copied into docs
 
 ## Optional GitHub PR path
 
 - Offline packet refresh command: `npm run pr:bundle`
+- Offline packet verification command: `npm run pr:bundle:check`
 - Token-free request validation command: `npm run pr:draft -- --dry-run`
 - Live draft PR creation requires `GITHUB_TOKEN`
-- `GITHUB_REPO` is optional; when absent, `scripts/create-draft-pr.js` infers `owner/name` from `origin`
+- `GITHUB_REPOSITORY` is optional; when absent, `scripts/create-draft-pr.js` infers `owner/name` from `origin`
+- `GITHUB_REPO` remains a legacy alias accepted by `scripts/create-draft-pr.js`
 - The source branch named in `examples/outputs/pr/pr-payload.json` must already exist on GitHub before a non-dry-run draft PR call
 - The draft PR path must remain additive; no token value may be written to repository artifacts or logs
 

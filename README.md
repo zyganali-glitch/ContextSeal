@@ -119,12 +119,15 @@ Copy `.env.example` to `.env`, then set:
 
 ```dotenv
 CONTEXTSEAL_MODE=datahub
+CONTEXTSEAL_HOST=127.0.0.1
 DATAHUB_MCP_TRANSPORT=stdio
 DATAHUB_MCP_COMMAND=uvx
 DATAHUB_MCP_ARGS=["mcp-server-datahub@0.6.0"]
 DATAHUB_GMS_URL=http://localhost:8080
 DATAHUB_GMS_TOKEN=your-local-token
 DATAHUB_MCP_MUTATIONS_ENABLED=false
+CONTEXTSEAL_OPERATOR_TOKEN=
+CONTEXTSEAL_ALLOWED_TARGET_URNS=["urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)"]
 ```
 
 Keep mutations disabled while validating search, entity, lineage, and query evidence. Enable them only for the final, approved write-back demonstration:
@@ -135,12 +138,16 @@ DATAHUB_MCP_MUTATIONS_ENABLED=true
 
 ContextSeal launches the official local MCP process for each bounded operation and passes the mutation setting explicitly. Credentials must never be committed. For DataHub Cloud, set `DATAHUB_MCP_TRANSPORT=http` and provide the tenant MCP URL.
 
+When `CONTEXTSEAL_MODE=datahub`, set a long random local bearer token in `CONTEXTSEAL_OPERATOR_TOKEN` before starting the server. The server will refuse to start unless that value is non-empty and `CONTEXTSEAL_ALLOWED_TARGET_URNS` is a non-empty JSON array. Live API requests must send `Authorization: Bearer <CONTEXTSEAL_OPERATOR_TOKEN>`.
+
 ### 3. Install ContextSeal structured properties
 
 ```bash
-datahub properties upsert -f config/contextseal-structured-properties.yml
 npm run datahub:seed
+npm run datahub:properties
 ```
+
+The `datahub:seed*` and `datahub:properties*` scripts wrap the pinned free helper path `uv run --with acryl-datahub==1.6.0.14`.
 
 ### 4. Run
 
@@ -187,8 +194,14 @@ docs/tr/        beginner-safe Turkish operator, Devpost, and video guides
 ## Validation
 
 ```bash
+npm run demo:generate
+npm run sandbox:generate
+npm run pr:bundle
 npm run validate
+git diff --exit-code
 ```
+
+`npm run validate` is read-only against committed artifacts. Generation is explicit and separate.
 
 ## Optional local AI copilot
 
@@ -212,12 +225,13 @@ ContextSeal now includes a reviewer-ready PR handoff contract in [PR Review Pack
 
 ```bash
 npm run pr:bundle
+npm run pr:bundle:check
 npm run pr:draft -- --dry-run
 ```
 
 `npm run pr:draft -- --dry-run` prepares the exact GitHub draft-PR request without using a token. A live draft PR call remains optional and explicit: the branch named in `examples/outputs/pr/pr-payload.json` must already exist on GitHub, and `GITHUB_TOKEN` is required before running `npm run pr:draft` without `--dry-run`.
 
-This runs repository-integrity checks, the deterministic Node test suite, and a fresh end-to-end fixture certification. CI also builds the container.
+The read-only validation suite re-checks repository integrity, Python mutation safety, the full Node suite, deterministic demo and sandbox artifacts, fixture HTTP smoke, PR bundle parity, and draft-PR dry-run behavior without rewriting committed artifacts.
 
 `npm run validate` now covers repository integrity, Python mutation-safety tests, the full Node regression suite, demo regeneration, sandbox proof, fixture HTTP smoke, and PR handoff refresh. The stricter live-proof validator remains a separate command:
 
