@@ -8,7 +8,7 @@
 
 ## Use of DataHub
 
-- MCP reads entity context, downstream lineage, and observed queries.
+- MCP reads entity context, authoritative schema fields, downstream lineage, exact lineage paths, and observed queries through `get_entities`, `list_schema_fields`, `get_lineage`, `get_lineage_paths_between`, and `get_dataset_queries`.
 - Risk decisions use ownership, governance signals, quality, incidents, and lineage.
 - Approved outcomes write structured properties, description context, and a passport document back to DataHub.
 - The write-back makes the next agent inherit the decision rather than starting from an empty chat.
@@ -26,6 +26,7 @@
 - Destructive requests produce non-destructive migration artifacts.
 - Generated artifacts are manifest-linked to request, lineage, policy, downstream-owner, and migration-rule grounding inputs; `npm run sandbox` checks the committed bundle's hashes and conformance contract without claiming warehouse execution.
 - `npm run pr:bundle` creates the committed reviewer packet without a token; `npm run pr:draft -- --dry-run` validates the draft-PR request, while a live GitHub call remains explicit and token-gated.
+- `npm run validate` is the read-only confidence gate for the committed repo surfaces and dry-run delivery request.
 - Passport hashes bind request, context, artifacts, evidence, and approval.
 - MCP failures and disabled mutations fail closed.
 - CI runs integrity checks, tests, demo generation, and container build.

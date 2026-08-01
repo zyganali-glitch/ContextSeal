@@ -63,9 +63,9 @@ if (!packageJson.scripts?.["demo:check"]?.includes("run-demo.js --check")) failu
 if (!packageJson.scripts?.["sandbox:check"]?.includes("run-generated-sandbox.py --check")) failures.push("sandbox:check must compare committed sandbox evidence without writing.");
 if (!packageJson.scripts?.["pr:bundle:check"]?.includes("build-pr-bundle.js --check")) failures.push("pr:bundle:check must compare committed PR artifacts without writing.");
 if (!packageJson.scripts?.check?.includes("npm run plan:check")) failures.push("check must include plan:check before repository checks.");
-if (!packageJson.scripts?.validate?.includes("npm run demo")) failures.push("validate must regenerate the demo artifacts.");
-if (!packageJson.scripts?.validate?.includes("npm run sandbox")) failures.push("validate must regenerate sandbox evidence.");
-if (!packageJson.scripts?.validate?.includes("npm run pr:bundle")) failures.push("validate must regenerate PR bundle artifacts.");
+if (!packageJson.scripts?.validate?.includes("npm run demo:check")) failures.push("validate must use demo:check.");
+if (!packageJson.scripts?.validate?.includes("npm run sandbox:check")) failures.push("validate must use sandbox:check.");
+if (!packageJson.scripts?.validate?.includes("npm run pr:bundle:check")) failures.push("validate must use pr:bundle:check.");
 if (packageJson.scripts?.["datahub:seed"] !== "node scripts/run-datahub-seed.js") failures.push("datahub:seed must run the disposable-local seed helper.");
 if (!packageJson.scripts?.["datahub:seed:preflight"]?.includes('uv run --with acryl-datahub==1.6.0.14')) failures.push("datahub:seed:preflight must use the pinned acryl-datahub helper path.");
 if (!packageJson.scripts?.["datahub:properties"]?.includes('uv run --with acryl-datahub==1.6.0.14')) failures.push("datahub:properties must use the pinned acryl-datahub helper path.");

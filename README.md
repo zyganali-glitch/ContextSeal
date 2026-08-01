@@ -157,7 +157,9 @@ The repository includes a completed disposable-local proof under `examples/outpu
 Read path:
 
 - `get_entities`
+- `list_schema_fields`
 - `get_lineage`
+- `get_lineage_paths_between`
 - `get_dataset_queries`
 
 Approved write-back path:
@@ -187,6 +189,8 @@ docs/tr/        beginner-safe Turkish operator, Devpost, and video guides
 ```bash
 npm run validate
 ```
+
+For submission review, `npm run validate` is the read-only confidence gate for the committed repo surfaces and dry-run delivery request.
 
 ## Optional local AI copilot
 

@@ -1,15 +1,15 @@
 {
   "status": "PASS",
-  "validatedAt": "2026-08-01T18:44:21Z",
+  "validatedAt": "2026-07-22T06:39:37Z",
   "evidenceBoundary": "Deterministic local conformance harness for generated ContextSeal artifacts; not warehouse execution.",
   "command": "python scripts/run-generated-sandbox.py --evidence-output examples/outputs/sandbox/generated-sandbox-evidence.json",
   "manifestPath": "examples/outputs/generated/ARTIFACT_MANIFEST.json",
   "manifestVersion": "1.0",
-  "generatedFromRunId": "csr_41df3f4cb2298184",
+  "generatedFromRunId": "csr_4ab7ef5169bd2e0dcbfd64669646933a",
   "passportContext": {
-    "passportId": "csp_3e012992b8511cfcd629",
-    "manifestHash": "3e012992b8511cfcd6291c022d570a768e3eb4f1e1c34e7462c3099055a70340",
-    "validUntil": "2026-08-02T18:44:20.880Z",
+    "passportId": "csp_60ce7207989fff37fdf8",
+    "manifestHash": "60ce7207989fff37fdf8c37f256fb16a9fd4fa6adf0f926c136008a428f3e963",
+    "validUntil": "2026-07-23T06:39:36.469Z",
     "status": "CERTIFIED",
     "artifactGroundingContractVersion": "1.0",
     "artifactGroundingRuleId": "RENAME_COLUMN_REQUIRES_COMPATIBILITY_FIELD"
@@ -40,7 +40,7 @@
     {
       "path": "generated/rollback/gold_customers.sql",
       "kind": "ROLLBACK",
-      "sha256": "8b9cdd8d9e3a02e9a18382fa2bf6f9bcaf15ba587a03a5b9dc8bbd10f0a8eb17",
+      "sha256": "69e5d94459c9c804495577b71f62e430bfeccf05841137e3f8b009dec74cf2ee",
       "groundingRefs": [
         "target",
         "schemaInputs",

@@ -59,6 +59,7 @@ The hardest design problem was separating a risky original request from a safe g
 - Inspectable grounded AI input/output artifacts, plus honest `NOT_ENABLED` / `UNAVAILABLE` fallback states
 - A deterministic local sandbox harness that validates the generated artifact bundle against its manifest and grounding contract
 - A reviewer-ready PR bundle and token-free draft-PR request validation, while live GitHub creation remains optional and token-gated
+- A hardened five-tool live read contract using `get_entities`, `list_schema_fields`, `get_lineage`, `get_lineage_paths_between`, and `get_dataset_queries` before any deterministic package or mutation claim
 - Fail-closed DataHub write-back gates and a completed disposable-local proof
 - A typed downstream summary retrieved through live MCP: six `DATASET`, two `DATA_JOB`, and two `DASHBOARD` entities across seeded Airflow, Snowflake, Looker, MLflow, and Power BI metadata
 - Four certification properties, an appended passport description, and a standalone decision document written and read back against synthetic metadata

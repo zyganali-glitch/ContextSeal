@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0",
   "product": "ContextSeal",
-  "generatedFromRunId": "csr_7e36d805706e8c33",
+  "generatedFromRunId": "csr_4ab7ef5169bd2e0dcbfd64669646933a",
   "mode": "fixture",
   "runState": "AWAITING_HUMAN",
   "evidenceBoundary": {
@@ -216,9 +216,14 @@
       "artifact": "fixture context snapshot"
     },
     {
+      "claim": "Target field validated in schema",
+      "state": "FIXTURE",
+      "artifact": "fixture schema contract"
+    },
+    {
       "claim": "Downstream impact paths traced",
       "state": "PASS",
-      "artifact": "impact paths"
+      "artifact": "5 assets across exact paths"
     },
     {
       "claim": "Migration artifacts generated",
@@ -237,6 +242,11 @@
     },
     {
       "claim": "DataHub write-back completed",
+      "state": "NOT_RUN",
+      "artifact": null
+    },
+    {
+      "claim": "Durable DataHub read-back verified",
       "state": "NOT_RUN",
       "artifact": null
     }

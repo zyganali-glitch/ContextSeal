@@ -46,7 +46,7 @@
     "check": "npm run plan:check && node scripts/check-repository.js",
     "evidence:check": "node scripts/validate-evidence.js",
     "smoke": "node scripts/smoke-server.js",
-    "validate": "npm run check && npm run datahub:safety:test && npm test && npm run demo && npm run sandbox && npm run smoke && npm run pr:bundle && npm run pr:draft -- --dry-run"
+    "validate": "npm run check && npm run datahub:safety:test && npm test && npm run demo:check && npm run sandbox:check && npm run smoke && npm run pr:bundle:check && npm run pr:draft -- --dry-run"
   },
   "keywords": [
     "datahub",

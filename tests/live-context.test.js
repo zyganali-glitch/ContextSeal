@@ -56,25 +56,19 @@ test("live context preserves three raw MCP reads and marks only retrieval as liv
               returned: 3,
               offset: 0,
               hasMore: false,
-              downstreams: {
-                total: 3,
-                returned: 3,
-                offset: 0,
-                hasMore: false,
-                facets: [{
-                  field: "_entityType",
-                  aggregations: [
-                    { value: "DATASET", count: 1 },
-                    { value: "DATA_JOB", count: 1 },
-                    { value: "DASHBOARD", count: 1 }
-                  ]
-                }],
-                searchResults: [
-                  { entity: { urn: "urn:li:dataset:(urn:li:dataPlatform:db,segments,PROD)", type: "DATASET", properties: { name: "segments" }, platform: { name: "snowflake" } }, degree: 1 },
-                  { entity: { urn: "urn:li:dataJob:(urn:li:dataFlow:(airflow,customer_360,PROD),build_segments)", type: "DATA_JOB", properties: { name: "build_segments" }, platform: { name: "airflow" } }, degree: 2 },
-                  { entity: { urn: "urn:li:dashboard:(looker,executive_customer_health)", type: "DASHBOARD", properties: { name: "Executive Customer Health" }, platform: { name: "looker" } }, degree: 3 }
+              facets: [{
+                field: "_entityType",
+                aggregations: [
+                  { value: "DATASET", count: 1 },
+                  { value: "DATA_JOB", count: 1 },
+                  { value: "DASHBOARD", count: 1 }
                 ]
-              }
+              }],
+              searchResults: [
+                { entity: { urn: "urn:li:dataset:(urn:li:dataPlatform:db,segments,PROD)", type: "DATASET", properties: { name: "segments" }, platform: { name: "snowflake" } }, degree: 1 },
+                { entity: { urn: "urn:li:dataJob:(urn:li:dataFlow:(airflow,customer_360,PROD),build_segments)", type: "DATA_JOB", properties: { name: "build_segments" }, platform: { name: "airflow" } }, degree: 2 },
+                { entity: { urn: "urn:li:dashboard:(looker,executive_customer_health)", type: "DASHBOARD", properties: { name: "Executive Customer Health" }, platform: { name: "looker" } }, degree: 3 }
+              ]
             }
           }
         };

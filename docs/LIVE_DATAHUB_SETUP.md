@@ -89,6 +89,14 @@ npm run datahub:capture
 
 10. Only after the read-only capture passes, follow the mutation verification steps below and export the approved run record.
 
+If you want to exercise the server contract manually instead of using the UI, wrap the request object before sending it:
+
+```powershell
+$request = Get-Content examples/retail-change-request.json -Raw | ConvertFrom-Json
+$body = @{ request = $request } | ConvertTo-Json -Depth 10
+Invoke-RestMethod -Method Post -Uri http://127.0.0.1:4173/api/analyze -ContentType application/json -Body $body
+```
+
 If you want ContextSeal to handle the recovery sequence for you on Windows, use the helper below. It self-elevates when needed, performs safe VHDX compaction, restarts Docker Desktop through the official Docker Desktop CLI when available, initializes local DataHub CLI access, waits for DataHub, refreshes the read-only artifact, and can also refresh the approved write-back artifact:
 
 ```powershell
@@ -146,10 +154,10 @@ datahub properties upsert -f config/contextseal-structured-properties.yml
 ## Read-only verification
 
 1. Start ContextSeal.
-2. Analyze a target that exists in the local catalog. In datahub mode, ContextSeal captures the three raw MCP reads before generating the deterministic package.
+2. Analyze a target that exists in the local catalog. In datahub mode, ContextSeal captures `get_entities`, `list_schema_fields`, `get_lineage`, `get_lineage_paths_between`, and `get_dataset_queries` before generating the deterministic package.
 3. Inspect the run's `liveEvidence.captureStage`; it must be `PRE_ANALYSIS` for the normal datahub-mode analyze path.
 4. Inspect `.contextseal/runs/<run-id>.json`.
-5. Confirm three raw MCP evidence entries exist.
+5. Confirm the raw MCP evidence includes the five read-only tool types and one exact lineage-path response per discovered downstream endpoint.
 6. Keep all mutation evidence `NOT_RUN`.
 
 This read-only check proves raw MCP access. It does not, by itself, upgrade the dashboard's fixture-derived path visualization to live-normalized impact or prove non-zero live query usage.
@@ -174,7 +182,7 @@ Only after read-only verification:
 A disposable local DataHub run was refreshed successfully on `2026-08-01` with synthetic metadata:
 
 - six seeded catalog assets and a typed downstream summary with six `DATASET`, two `DATA_JOB`, and two `DASHBOARD` entities across seeded platforms,
-- three read-only MCP calls, including a saved query read whose exported example currently returns zero observed dataset queries for the target,
+- the five bounded read-only MCP tool types, including complete schema reads and exact lineage-path reads; the saved query example currently returns zero observed dataset queries for the target,
 - a `lineageSummary` block that preserves typed downstream counts and representative downstream entities in the exported read and write-back artifacts,
 - a fail-closed pre-evidence mutation gate,
 - four structured properties written and read back,

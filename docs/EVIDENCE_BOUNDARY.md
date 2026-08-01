@@ -47,12 +47,12 @@ A live DataHub read/write claim requires:
 
 1. `CONTEXTSEAL_MODE=datahub`;
 2. successful DataHub MCP initialization;
-3. stored raw results from `get_entities`, `get_lineage`, and `get_dataset_queries`;
+3. stored raw results from `get_entities`, `list_schema_fields`, `get_lineage`, `get_lineage_paths_between`, and `get_dataset_queries`;
 4. an approved passport before mutation;
 5. `isError: false` individual mutation responses if write-back is claimed;
 6. post-write retrieval for durable fields.
 
-In `CONTEXTSEAL_MODE=datahub`, `/api/analyze` validates the request, captures the three raw MCP reads, closes the MCP client, then generates the deterministic package. This makes the read -> act ordering operational while retaining the public graph and impact paths as `FIXTURE` until a target-derived graph contract exists.
+In `CONTEXTSEAL_MODE=datahub`, `/api/analyze` validates the request, captures the five bounded read-only MCP tool types, closes the MCP client, then generates the deterministic package. This makes the read -> act ordering operational while retaining the public graph and impact paths as `FIXTURE` until a target-derived graph contract exists.
 
 A **live normalized impact** claim additionally requires a target-derived graph contract. The committed local proof has live entity, lineage, query, and mutation evidence, but the dashboard's exact path visualization remains labeled fixture-derived. This distinction is deliberate.
 
