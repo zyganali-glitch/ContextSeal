@@ -14,7 +14,7 @@
 - The write-back makes the next agent inherit the decision rather than starting from an empty chat.
 - The first viewport now surfaces the read -> block -> package -> certify flow, and the next strip explicitly shows how write-back and inheritance fit without overstating fixture-mode behavior.
 - The judge-facing path view is fixture-backed unless a target-derived graph contract is exported separately.
-- Committed live-local evidence proves three reads, a typed downstream summary with six `DATASET`, two `DATA_JOB`, and two `DASHBOARD` entities across seeded platforms, three bounded mutations, and post-write verification on synthetic metadata.
+- Committed live-local evidence proves the five bounded read-only MCP tool types, a typed downstream summary with six `DATASET`, two `DATA_JOB`, and two `DASHBOARD` entities across seeded platforms, three bounded mutations, and post-write verification on synthetic metadata.
 - Live-local MCP evidence does not upgrade the fixture dashboard path into live normalized impact or prove non-zero live query usage.
 
 ## Technical execution

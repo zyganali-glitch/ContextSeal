@@ -8,7 +8,7 @@ Kaydedilmiş yerel kanıtta aşağıdaki işlemler tamamlandı:
 
 - DataHub yerel olarak kuruldu ve `http://localhost:9002` adresi yanıt verdi.
 - Altı sentetik varlık ve beş bağlantı yüklendi.
-- Üç ham MCP okuması yapıldı; kaydedilmiş sorgu okuması hedef için sıfır gözlemlenen sorgu döndürdü.
+- Beş sınırlı salt-okunur MCP araç tipi çalıştı; kaydedilmiş sorgu okuması hedef için sıfır gözlemlenen sorgu döndürdü ve exact lineage-path okumaları keşfedilen downstream uçlarını doğruladı.
 - İnsan onayından sonra dört ContextSeal alanı, açıklama ve pasaport belgesi yazıldı.
 - Sonuçlar DataHub'dan tekrar okunarak doğrulandı.
 
