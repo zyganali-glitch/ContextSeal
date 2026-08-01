@@ -4,17 +4,18 @@
 
 - Primary category: Metadata-Aware Code Generation & Development
 - Secondary support claim: Agents That Do Real Work is now supported by the visible Local AI Copilot panel, bounded fallback, and structured operator outputs; a local-model-backed `PASS` artifact remains environment-dependent
+- Primary-track proof chain: captured DataHub-shaped context and deterministic policy findings ground generated dbt, test, rollback, and owner-brief artifacts; manifest hashes, local sandbox conformance, and a reviewer-ready PR bundle make that generated result inspectable before merge.
 
 ## Use of DataHub
 
-- The hardened live MCP contract requires `get_entities`, every paginated `list_schema_fields` page, `get_lineage`, one `get_lineage_paths_between` result per discovered target, and `get_dataset_queries`.
+- MCP reads entity context, downstream lineage, and observed queries.
 - Risk decisions use ownership, governance signals, quality, incidents, and lineage.
 - Approved outcomes write structured properties, description context, and a passport document back to DataHub.
 - The write-back makes the next agent inherit the decision rather than starting from an empty chat.
 - The first viewport now surfaces the read -> block -> package -> certify flow, and the next strip explicitly shows how write-back and inheritance fit without overstating fixture-mode behavior.
 - The judge-facing path view is fixture-backed unless a target-derived graph contract is exported separately.
-- The reconciled runtime now requires complete paginated schema reads, exact downstream path reads, query-honest normalization, and durable read-back before any live `PASS` claim.
-- The committed live-local artifacts are historical synthetic-local proof from before reconciliation and must be recaptured before they can be presented as final-head live evidence.
+- Committed live-local evidence proves three reads, a typed downstream summary with six `DATASET`, two `DATA_JOB`, and two `DASHBOARD` entities across seeded platforms, three bounded mutations, and post-write verification on synthetic metadata.
+- Live-local MCP evidence does not upgrade the fixture dashboard path into live normalized impact or prove non-zero live query usage.
 
 ## Technical execution
 
@@ -23,10 +24,11 @@
 - Risk findings are versioned and test-covered.
 - Optional local Ollama output can only run after deterministic verdict generation and must satisfy a bounded four-output schema.
 - Destructive requests produce non-destructive migration artifacts.
+- Generated artifacts are manifest-linked to request, lineage, policy, downstream-owner, and migration-rule grounding inputs; `npm run sandbox` checks the committed bundle's hashes and conformance contract without claiming warehouse execution.
+- `npm run pr:bundle` creates the committed reviewer packet without a token; `npm run pr:draft -- --dry-run` validates the draft-PR request, while a live GitHub call remains explicit and token-gated.
 - Passport hashes bind request, context, artifacts, evidence, and approval.
 - MCP failures and disabled mutations fail closed.
-- `npm run validate` is read-only and covers repository integrity, Python safety, the full Node regression suite, deterministic demo parity, committed sandbox-evidence freshness, fixture smoke, PR-bundle parity, and draft-PR request validation.
-- GitHub workflows for Node 20/24, Pages, and container smoke are restored, but exact-head hosted execution still remains a separate final gate.
+- CI runs integrity checks, tests, demo generation, and container build.
 
 ## Originality
 
@@ -42,6 +44,7 @@ The target user is a data platform or analytics engineering team reviewing schem
 - First-viewport blocked-risk hero plus visible inheritance loop
 - Visible AI panel with honest unavailable fallback
 - Clear fixture/live labels
+- Manifest-linked generated bundle, local sandbox evidence, and token-free reviewer packet
 - Under-three-minute shot plan
 - No-install architecture overview
 - Committed AI input/output artifacts
@@ -51,4 +54,4 @@ The target user is a data platform or analytics engineering team reviewing schem
 
 ## Open-source bonus
 
-The repository includes the canonical `datahub-schema-change-certification` skill package and a public upstream PR #35. Its exact status is `OPEN / READY_FOR_REVIEW / NOT_MERGED`.
+The repository includes a reusable DataHub change-certification skill. The intended bonus contribution is an upstream pull request to the DataHub Skills registry after live MCP verification.

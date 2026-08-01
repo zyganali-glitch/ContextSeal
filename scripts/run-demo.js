@@ -2,6 +2,7 @@ import { readFile, mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { analyzeChange, decideRun } from "../src/core/workflow.js";
 import { enrichRunWithAi } from "../src/ai/adapter.js";
+import { loadEnvFile } from "../src/env.js";
 
 const FIXTURE_OBSERVED_AT = "2026-07-22T06:39:36.459Z";
 const FIXTURE_ANALYZE_AT = "2026-07-22T06:39:36.461Z";
@@ -131,6 +132,7 @@ async function assertOutputs(root, outputs) {
 
 const options = parseArgs(process.argv.slice(2));
 const root = path.resolve(".");
+await loadEnvFile(root);
 const { run, approved, outputs } = await buildExpectedOutputs(root);
 
 if (options.check) {

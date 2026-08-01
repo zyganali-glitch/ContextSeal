@@ -102,7 +102,9 @@ function renderInheritanceLoop(run) {
   $("#loopReadState").dataset.state = readState;
   text("#loopReadCopy", readState === "FIXTURE"
     ? "Fixture mode shows the public judge graph from DataHub-shaped context and query evidence."
-    : "Live MCP reads grounded the request before any safe package was proposed.");
+    : run.liveEvidence?.captureStage === "PRE_ANALYSIS"
+      ? "Raw live MCP reads were captured before the deterministic safe package was proposed; displayed impact paths remain fixture-derived."
+      : "Raw live MCP reads were captured after analysis; displayed impact paths remain fixture-derived.");
 
   text("#loopActState", actState);
   $("#loopActState").dataset.state = actState;

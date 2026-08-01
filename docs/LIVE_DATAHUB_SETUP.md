@@ -1,16 +1,15 @@
 # Live DataHub Setup
 
-This path is intentionally separate from the fixture judge demo. It should be completed and recorded before the Devpost submission claims live DataHub evidence.
+This path is intentionally separate from the fixture judge demo. It should be completed and recorded before the Devpost submission claims live DataHub evidence. Successful raw MCP reads and write-back do not turn the fixture dashboard path into live normalized impact.
 
 ## Prerequisites
 
 - Docker Desktop with the engine running
-- Python 3.11+
+- Python 3.10+
 - Node.js 20+
-- `uv` or `uvx` available on `PATH`
 - A local DataHub instance or authorized DataHub Cloud tenant
-- A DataHub token stored outside Git
-- DataHub MCP server `mcp-server-datahub@0.6.0` with mutation tools available
+- For DataHub Cloud or token-protected tenants, a DataHub token stored outside Git. Disposable local quickstart can instead use `datahub init --host http://localhost:8080 --username datahub --password datahub --force`.
+- DataHub MCP server v0.5.0+ with mutation tools available
 
 ## Local DataHub
 
@@ -18,8 +17,14 @@ Follow the current official Quickstart. A typical local path begins with:
 
 ```powershell
 python -m pip install --upgrade pip wheel setuptools
-python -m pip install --upgrade "acryl-datahub==1.6.0.14" uv
+python -m pip install --upgrade acryl-datahub
 datahub docker quickstart
+```
+
+Before running ContextSeal's structured-property or write-back commands against the disposable local instance, initialize the DataHub CLI against the local GMS using the default quickstart credentials:
+
+```powershell
+datahub init --host http://localhost:8080 --username datahub --password datahub --force
 ```
 
 Confirm the DataHub UI loads before continuing. Load an organizer-provided datapack when available:
@@ -28,30 +33,85 @@ Confirm the DataHub UI loads before continuing. Load an organizer-provided datap
 datahub datapack load showcase-ecommerce
 ```
 
-On Windows, or whenever you want the exact ContextSeal-owned synthetic scope, use the fail-closed seed helper instead of hand-editing catalog metadata:
+On Windows, if the upstream datapack loader misreads a drive-letter path, use ContextSeal's reproducible synthetic seed instead:
 
 ```powershell
 npm run datahub:seed
 ```
 
-This default command is read-only preflight. It prints the exact mutation scope and a `certificationPlanSha256`. Apply the seed only after exporting the exact confirmations in the current shell:
+## Windows Docker capacity recovery for W-23
+
+Use this path only when local DataHub recovery is blocked by `C:` exhaustion or when `docker info` stops returning in a non-admin shell. Preserve named Docker volumes. Do not use WSL sparse mode with `--allow-unsafe` without explicit approval.
+
+On `2026-08-01`, this machine recovered from the original blocker state (`IS_ADMIN=False`, `C_FREE_GB=6.59`, `docker_data.vhdx ~= 15.18 GB`, and a non-returning `docker info`) by compacting the Docker VHDX, restarting Docker Desktop, initializing the local DataHub CLI, and refreshing both live evidence artifacts. While the local stack is running, `C:` free space can still fall below `8 GB`, so reclaim headroom before the next cold restore if capacity becomes tight.
+
+1. Quit Docker Desktop and close shells that are still holding `docker` commands open.
+2. Open an elevated PowerShell window.
+3. Shut down WSL before touching the VHDX:
 
 ```powershell
-$env:DATAHUB_MCP_MUTATIONS_ENABLED="true"
-$env:CONTEXTSEAL_DATAHUB_MUTATION_CONFIRMATION="I_UNDERSTAND_THIS_COMMAND_MUTATES_DATAHUB"
-$env:CONTEXTSEAL_SEED_CONFIRMATION="SEED_CONTEXTSEAL_SYNTHETIC_METADATA_V1"
-$env:CONTEXTSEAL_APPROVED_BOOTSTRAP_PLAN_SHA256="<paste the preflight plan hash>"
-npm run datahub:seed:apply
+wsl --shutdown
 ```
+
+4. Record the current Docker disk allocation:
+
+```powershell
+Get-Item "$env:LOCALAPPDATA\Docker\wsl\disk\docker_data.vhdx" |
+	Select-Object FullName,@{Name="SizeGB";Expression={[math]::Round($_.Length / 1GB, 2)}}
+```
+
+5. Prefer offline Hyper-V compaction when the cmdlet is available:
+
+```powershell
+Optimize-VHD -Path "$env:LOCALAPPDATA\Docker\wsl\disk\docker_data.vhdx" -Mode Full
+```
+
+6. If `Optimize-VHD` is unavailable, use elevated `diskpart` instead:
+
+```text
+diskpart
+select vdisk file="C:\Users\<YOUR_USER>\AppData\Local\Docker\wsl\disk\docker_data.vhdx"
+compact vdisk
+exit
+```
+
+7. Restart Docker Desktop and do not continue until `docker info` returns successfully.
+8. Confirm `C:` has safe restore headroom before re-pulling DataHub images. Treat anything materially below `15 GB` free as unsafe for this repo's local DataHub proof path.
+9. Resume the live-proof flow in order:
+
+```powershell
+datahub docker quickstart
+datahub init --host http://localhost:8080 --username datahub --password datahub --force
+datahub properties upsert -f config/contextseal-structured-properties.yml
+npm run datahub:seed
+npm run datahub:capture
+```
+
+10. Only after the read-only capture passes, follow the mutation verification steps below and export the approved run record.
+
+If you want ContextSeal to handle the recovery sequence for you on Windows, use the helper below. It self-elevates when needed, performs safe VHDX compaction, restarts Docker Desktop through the official Docker Desktop CLI when available, initializes local DataHub CLI access, waits for DataHub, refreshes the read-only artifact, and can also refresh the approved write-back artifact:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/recover-w23.ps1
+```
+
+Useful variants:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/recover-w23.ps1 -PlanOnly
+powershell -ExecutionPolicy Bypass -File scripts/recover-w23.ps1 -ReadOnly
+```
+
+The full helper uses `npm run datahub:prove` to drive a non-UI live proof run after the Docker/DataHub prerequisites are healthy again.
 
 ## MCP server
 
-Install `uv`. ContextSeal starts the official open-source MCP server as a child process using the exact pinned package invocation below. Mutation tools remain disabled for the first connectivity test.
+Install `uv`. ContextSeal starts the official open-source MCP server as a child process using the exact package invocation below. Mutation tools remain disabled for the first connectivity test.
 
 Local transport:
 
 ```text
-uvx mcp-server-datahub@0.6.0
+uvx mcp-server-datahub@latest
 ```
 
 `http://localhost:8080` is the GMS URL, not a local MCP HTTP endpoint. Streamable HTTP is supported for DataHub Cloud tenants through their `/integrations/ai/mcp/` URL.
@@ -66,56 +126,33 @@ Edit `.env`:
 
 ```dotenv
 CONTEXTSEAL_MODE=datahub
-CONTEXTSEAL_HOST=127.0.0.1
 DATAHUB_MCP_TRANSPORT=stdio
 DATAHUB_MCP_COMMAND=uvx
-DATAHUB_MCP_ARGS=["mcp-server-datahub@0.6.0"]
+DATAHUB_MCP_ARGS=["mcp-server-datahub@latest"]
 DATAHUB_GMS_URL=http://localhost:8080
 DATAHUB_GMS_TOKEN=LOCAL_TOKEN_ONLY
 DATAHUB_MCP_MUTATIONS_ENABLED=false
-CONTEXTSEAL_OPERATOR_TOKEN=
-CONTEXTSEAL_ALLOWED_TARGET_URNS=["urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)"]
 ```
 
-Before starting the live server, set `CONTEXTSEAL_OPERATOR_TOKEN` in `.env` to a long random local bearer value. The server will not start in live mode until that setting is non-empty and `CONTEXTSEAL_ALLOWED_TARGET_URNS` is a non-empty JSON array. Every live API request must send `Authorization: Bearer <CONTEXTSEAL_OPERATOR_TOKEN>`.
+For the disposable local quickstart path, `DATAHUB_GMS_TOKEN` may remain unset when `datahub init --host http://localhost:8080 --username datahub --password datahub --force` succeeds with the default local `datahub/datahub` credentials. Cloud or token-protected tenants still require a token.
 
-Preflight the property-definition bootstrap:
-
-```powershell
-npm run datahub:properties
-```
-
-Apply those definitions only after the preflight hash and exact confirmations are exported in the same shell:
+Load the property definitions:
 
 ```powershell
-$env:DATAHUB_MCP_MUTATIONS_ENABLED="true"
-$env:CONTEXTSEAL_DATAHUB_MUTATION_CONFIRMATION="I_UNDERSTAND_THIS_COMMAND_MUTATES_DATAHUB"
-$env:CONTEXTSEAL_PROPERTIES_CONFIRMATION="UPSERT_CONTEXTSEAL_STRUCTURED_PROPERTIES_V1"
-$env:CONTEXTSEAL_APPROVED_BOOTSTRAP_PLAN_SHA256="<paste the preflight plan hash>"
-npm run datahub:properties:apply
+datahub init --host http://localhost:8080 --username datahub --password datahub --force
+datahub properties upsert -f config/contextseal-structured-properties.yml
 ```
 
 ## Read-only verification
 
-1. Start ContextSeal with `npm start`.
-2. Submit an allowed target through the API with the operator bearer token.
-
-```powershell
-$headers = @{ Authorization = "Bearer $env:CONTEXTSEAL_OPERATOR_TOKEN"; "Content-Type" = "application/json" }
-$request = Get-Content examples/retail-change-request.json -Raw | ConvertFrom-Json
-$body = @{ request = $request } | ConvertTo-Json -Depth 10
-Invoke-RestMethod -Method Post -Uri http://127.0.0.1:4173/api/analyze -Headers $headers -Body $body
-```
-
-The wrapper is required in live mode: `/api/analyze` accepts the change contract under the top-level `request` property and fails closed on an unwrapped body.
-
-3. Inspect the created run or invoke the live-evidence refresh endpoint for an undecided run.
+1. Start ContextSeal.
+2. Analyze a target that exists in the local catalog. In datahub mode, ContextSeal captures the three raw MCP reads before generating the deterministic package.
+3. Inspect the run's `liveEvidence.captureStage`; it must be `PRE_ANALYSIS` for the normal datahub-mode analyze path.
 4. Inspect `.contextseal/runs/<run-id>.json`.
-5. Confirm the raw MCP evidence includes `get_entities`, one or more unfiltered `list_schema_fields` pages, `get_lineage`, one `get_lineage_paths_between` call per discovered downstream target, and `get_dataset_queries`.
-6. Confirm `run.context.evidenceBoundary` is `LIVE_DATAHUB_MCP_NORMALIZED` and that `run.liveEvidence.rawEvidenceHash` binds the captured call array.
-7. Keep all mutation evidence `NOT_RUN`.
+5. Confirm three raw MCP evidence entries exist.
+6. Keep all mutation evidence `NOT_RUN`.
 
-This read-only check proves hash-bound MCP access plus deterministic live normalization. It still does not upgrade the dashboard's public path visualization beyond its explicit fixture/live labels.
+This read-only check proves raw MCP access. It does not, by itself, upgrade the dashboard's fixture-derived path visualization to live-normalized impact or prove non-zero live query usage.
 
 ## Mutation verification
 
@@ -127,16 +164,24 @@ Only after read-only verification:
 4. Re-analyze with fresh context.
 5. Approve the exact staged scope.
 6. Execute write-back.
-7. Verify structured properties and appended description in DataHub UI or through the read-back envelope.
+7. Verify structured properties and appended description in DataHub UI.
 8. Verify the saved passport document.
-9. Export the local run record without credentials with `node scripts/export-live-run.js`.
-10. Run `npm run evidence:check` to validate the read/write/readback bundle.
-11. Set evidence to PASS only for the operations and read-back checks with named artifacts.
+9. Export the local run record without credentials.
+10. Set evidence to PASS only for the operations with successful tool responses.
 
-## Checked-in live proof status
+## Verified local status
 
-The committed `examples/outputs/live-datahub-read-evidence.json` and `examples/outputs/live-datahub-writeback-evidence.json` files are preserved as historical synthetic-local artifacts from before the reconciled final HEAD.
+A disposable local DataHub run was refreshed successfully on `2026-08-01` with synthetic metadata:
 
-They remain useful for reviewing the disposable-local proof shape, but they are not current final-head `PASS` artifacts. A new final-head live claim requires rerunning seed/property preflight and apply, capturing fresh read evidence, completing bounded write-back plus durable read-back, exporting the run, and passing `npm run evidence:check`.
+- six seeded catalog assets and a typed downstream summary with six `DATASET`, two `DATA_JOB`, and two `DASHBOARD` entities across seeded platforms,
+- three read-only MCP calls, including a saved query read whose exported example currently returns zero observed dataset queries for the target,
+- a `lineageSummary` block that preserves typed downstream counts and representative downstream entities in the exported read and write-back artifacts,
+- a fail-closed pre-evidence mutation gate,
+- four structured properties written and read back,
+- a passport description appended and read back,
+- a standalone decision document created,
+- all successful MCP tool results checked for `isError: false`.
 
-This path does not claim production or customer impact.
+See `examples/outputs/live-datahub-read-evidence.json` and `examples/outputs/live-datahub-writeback-evidence.json`. This does not claim production or customer impact.
+
+The live-local artifacts substantiate raw MCP read and bounded write-back claims only. The default judge flow, generated-artifact sandbox, and reviewer-ready PR packet remain independently reproducible fixture and local-conformance surfaces.

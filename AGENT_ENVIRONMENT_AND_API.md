@@ -39,7 +39,17 @@
 - Locked runtime choice: local Ollama
 - Locked default model: `qwen2.5:7b`
 - Probe command: `npm run ai:probe`
-- Current machine probe on 2026-07-21: `Get-Command ollama` failed, so AI must be treated as unavailable by default here
+- Current machine proof: the official Ollama 0.32.5 installation completed after approved cache cleanup, and `qwen2.5:7b` is installed locally. `npm run ai:probe`, `npm run demo`, and `npm run ai:proof` passed on 2026-08-01.
+- GPU-backed inference is incompatible with the installed CUDA toolchain, so Ollama runs with the user-level `OLLAMA_LLM_LIBRARY=cpu` setting. The direct model check returned `CONTEXTSEAL_LOCAL_MODEL_OK`; the `.env` timeout is `600000` milliseconds for CPU inference.
+
+## Current local DataHub capacity
+
+- Fresh disposable-local DataHub proof completed on `2026-08-01` after elevated non-destructive VHDX compaction recovered enough host capacity to restore the quickstart stack.
+- `scripts/recover-w23.ps1` is now the verified Windows recovery path: it can skip compaction when appropriate, prefers `docker desktop start --detach`, retries `docker info` safely, initializes local DataHub CLI access with `datahub init --host http://localhost:8080 --username datahub --password datahub --force`, and then runs the seed/capture/prove chain.
+- The latest successful local sequence was: `datahub properties upsert -f config/contextseal-structured-properties.yml`, `npm run datahub:seed`, `npm run datahub:capture`, and `npm run datahub:prove`.
+- `.env` still had `DATAHUB_GMS_TOKEN` unset during the successful disposable-local proof. This local path worked because the quickstart accepted default `datahub/datahub` CLI initialization and the MCP path allowed local access without a token.
+- With the local DataHub quickstart stack still running, `C:` free space can fall to about `7.79 GB` and `docker_data.vhdx` to about `15.67 GB`. Reclaim headroom before the next cold restore or image repull.
+- A non-destructive VHDX compact operation still requires an elevated terminal. Prefer offline `Optimize-VHD` or elevated `diskpart` against `docker_data.vhdx`. Do not use WSL sparse mode with `--allow-unsafe` without explicit user approval because WSL warns about possible data corruption.
 - Required fallback behavior: deterministic-only analysis remains fully usable when the runtime or model is absent
-- The repo now ships an optional AI adapter and visible Local AI Copilot panel; on this machine the checked-in demo truthfully shows `NOT_ENABLED` until Ollama is installed and enabled
+- The repo ships an optional AI adapter and visible Local AI Copilot panel; this machine currently produces a local-model-backed `PASS` artifact
 - Current environment variables: `CONTEXTSEAL_AI_ENABLED`, `CONTEXTSEAL_AI_RUNTIME`, `CONTEXTSEAL_AI_MODEL`, `CONTEXTSEAL_AI_BASE_URL`, `CONTEXTSEAL_AI_TIMEOUT_MS`

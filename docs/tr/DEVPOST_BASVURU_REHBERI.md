@@ -11,13 +11,13 @@ Aşağıdakilerin tamamı hazır değilse başvuru formunu doldurabilirsin ama g
 - [ ] GitHub deposu herkese açık.
 - [ ] GitHub ana sayfasında Apache-2.0 lisansı görünüyor.
 - [ ] README dosyası düzgün açılıyor.
-- [ ] Tüm testler geçiyor.
+- [ ] `npm run validate` geçiyor.
 - [ ] Canlı gösterim bağlantısı hazır.
 - [ ] YouTube videosu herkese açık ve üç dakikadan kısa.
 - [ ] Video bağlantısı gizli pencerede açılıyor.
 - [ ] Proje ekran görüntüsü hazır.
 - [ ] Canlı DataHub kanıt durumu `docs/EVIDENCE_MANIFEST.md` ile aynı.
-- [ ] Başvuruda kullanacağımız son metin Codex tarafından kontrol edildi.
+- [ ] Başvuruda kullanacağımız son metin Copilot tarafından kontrol edildi.
 
 ## 1. Devpost’a giriş
 
@@ -69,16 +69,16 @@ Bu cümlenin Türkçe anlamı: “Her veri değişikliği güvenle değil, kanı
 “Which challenge category are you submitting to?” sorusunda şu seçeneği seç:
 
 ```text
-Agents That Do Real Work
-```
-
-Birden fazla seçenek seçilebiliyorsa ayrıca şunu seç:
-
-```text
 Metadata-Aware Code Generation & Development
 ```
 
-Yalnız bir seçenek seçilebiliyorsa **Agents That Do Real Work** kalsın.
+Bu ana kategoridir. Birden fazla seçenek seçilebiliyorsa ikincil uyum olarak ayrıca şunu seç:
+
+```text
+Agents That Do Real Work
+```
+
+Yalnız bir seçenek seçilebiliyorsa **Metadata-Aware Code Generation & Development** seç.
 
 ## 5. Kullanılan DataHub teknolojileri
 
@@ -101,21 +101,25 @@ Devpost genellikle hikâyeyi ayrı başlıklara böler. Aşağıdaki İngilizce 
 ### Inspiration
 
 ```text
-AI coding agents can generate valid SQL and dbt code while missing the organizational context that makes a change safe. A repository does not reveal that one field feeds a dashboard three hops away, powers a model, carries a PII term, or is owned by another team. DataHub already knows those relationships. We built ContextSeal to turn that knowledge into a pre-merge certification boundary.
+AI coding agents can generate valid SQL and dbt code while missing the organizational context that makes a change safe. A repository does not reveal that a field feeds a dashboard three hops away, carries a PII term, or is owned by another team. DataHub holds that context, but a reviewer still needs a safe action, evidence, and an auditable decision. We built ContextSeal to turn DataHub context into a pre-merge certification boundary and a durable change passport.
 ```
 
 ### What it does
 
 ```text
-ContextSeal accepts a proposed column rename, drop, or type change. It reads DataHub entity context, lineage, ownership, governance signals, quality evidence, incidents, and observed queries. A deterministic policy engine reconstructs downstream paths and explains every risk finding. Instead of producing a destructive operation, ContextSeal generates an expand–migrate–contract dbt model, schema tests, rollback, and owner briefing.
+In the 100-second judge demo, ContextSeal blocks a risky rename, shows its deterministic blast radius, surfaces a bounded AI explanation, generates a safe migration package, records scoped approval, and ends on the passport that the next human or agent can inherit.
 
-A human reviewer approves or rejects only that bounded safe scope. ContextSeal then creates a SHA-256 change passport covering the request, DataHub context, risk, generated artifacts, evidence states, approval, and expiration. In live mode it writes certification properties, decision context, and the passport document back to DataHub so the next engineer or agent inherits the decision.
+ContextSeal accepts a proposed column rename, drop, or type change. Its deterministic core uses captured DataHub-shaped target, lineage, ownership, governance, quality, incident, and query context to reconstruct downstream paths and explain every risk finding. Instead of producing a destructive operation, it generates an expand-migrate-contract dbt model, schema tests, rollback, and owner briefing. The committed manifest links each generated file to the request, deterministic findings, downstream-owner context, migration rule, and passport context. A local deterministic sandbox checks that bundle against its hashes and grounding contract; it is a conformance proof, not warehouse SQL execution.
+
+After the deterministic verdict is fixed, an optional local Ollama layer can turn the grounded run into a non-authoritative owner alert, migration rationale, reviewer-note draft, and next-step guidance. The AI receives structured grounded input, cannot alter risk or evidence states, and records NOT_ENABLED or UNAVAILABLE when the local runtime is absent instead of fabricating confidence.
+
+A human reviewer approves or rejects only that bounded safe scope. ContextSeal then creates a SHA-256 change passport covering the request, context, risk, generated artifacts, evidence states, approval, and expiration. The default delivery path refreshes a reviewer-ready PR body, checklist, and payload without a GitHub token; an actual draft PR call is optional and token-gated. In approved live mode, with mutations explicitly enabled, ContextSeal writes certification properties, decision context, and the passport document back to DataHub so the next engineer or agent inherits the decision.
 ```
 
 ### How we built it
 
 ```text
-ContextSeal has a deterministic Node.js core, a dual-transport DataHub MCP client for the official local stdio server and DataHub Cloud streamable HTTP, bounded multi-hop lineage traversal, a versioned policy engine, a dbt artifact generator, a human approval contract, and a SHA-256 passport manifest. The hardened live read contract uses exactly five tool families: get_entities, paginated list_schema_fields, get_lineage, get_lineage_paths_between for every downstream target, and get_dataset_queries. DataHub context then drives deterministic risk and generated artifacts; approved results can be enriched through structured properties, descriptions, and saved passport documents. The dashboard has no frontend runtime dependencies. Docker and GitHub Actions provide reproducible validation.
+ContextSeal has a deterministic Node.js core, a dual-transport DataHub MCP client for the official local stdio server and DataHub Cloud streamable HTTP, bounded multi-hop lineage traversal, a versioned policy engine, a dbt artifact generator, a human approval contract, a SHA-256 passport manifest, and an optional local Ollama adapter with bounded output contracts. DataHub is used for entity, lineage, ownership, governance, quality, incident, and query context, then enriched through structured properties, descriptions, and saved passport documents. The public judge path keeps its exact graph fixture-backed; separate disposable-local artifacts preserve raw MCP reads, bounded mutations, and post-write retrieval on synthetic metadata.
 ```
 
 ### Challenges we ran into
@@ -127,19 +131,19 @@ The hardest design problem was separating a risky original request from a safe g
 ### Accomplishments that we're proud of
 
 ```text
-We built explainable impact paths instead of a flat asset count, deterministic findings that model text cannot overwrite, a non-destructive migration package, a human approval bound to exact evidence hashes, fail-closed DataHub mutations, and a reusable DataHub change-certification skill. A disposable local DataHub proof retrieved five downstream assets through live MCP, then wrote and read back four certification properties, an appended passport description, and a standalone decision document.
+We built explainable fixture impact paths instead of a flat asset count, deterministic findings that model text cannot overwrite, a non-destructive migration package, a human approval bound to exact evidence hashes, inspectable grounded AI artifacts with honest fallback states, manifest-linked sandbox conformance, a reviewer-ready PR bundle, fail-closed DataHub mutations, and a reusable DataHub change-certification skill. A disposable local DataHub proof retrieved a typed downstream summary through live MCP with six DATASET, two DATA_JOB, and two DASHBOARD entities, then wrote and read back four certification properties, an appended passport description, and a standalone decision document on synthetic metadata.
 ```
 
 ### What we learned
 
 ```text
-Context is most valuable when it changes an action, not when it only improves an answer. DataHub makes it possible to move agent safety from prompt instructions into a repeatable workflow grounded in organizational facts. Honest NOT_RUN and FIXTURE states make an agent more credible, not less impressive.
+Context is most valuable when it changes an action, not when it only improves an answer. DataHub makes it possible to move agent safety from prompt instructions into a repeatable workflow grounded in organizational facts. Honest NOT_RUN, FIXTURE, and local-AI availability states make an agent more credible, not less impressive.
 ```
 
 ### What's next
 
 ```text
-Next we will close the mandatory real-dbt proof for rename, type-change, and drop bundles, recapture exact-final-head DataHub read/write/read-back evidence, and attach the final proof surfaces to our open DataHub Skills PR #35. After submission, signed reviewer identities and additional warehouse adapters can extend the same deterministic certification boundary without weakening it.
+Next we will verify and contribute the change-certification skill upstream, add target-derived normalization for more DataHub entity types, add signed reviewer identities and replay protection, exercise the optional token-gated draft PR path after explicit approval, add warehouse-specific sandbox executors, and extend certification from column changes to dbt models and pipeline schedules.
 ```
 
 ## 7. Built with alanı
@@ -262,11 +266,11 @@ Formu kaydet. **Submit** düğmesine basmadan önce şunları yap:
 6. İngilizce metinlerde doldurulmamış bağlantı yer tutucusu kalmadığını ara.
 7. Video ve başvuru iddialarını `docs/EVIDENCE_MANIFEST.md` ile karşılaştır.
 8. Ekran görüntülerinde token veya kişisel bilgi olmadığını kontrol et.
-9. Codex’e başvuru ön izlemesinin ekran görüntülerini gönder.
+9. Copilot’a başvuru ön izlemesinin ekran görüntülerini gönder.
 
 ## 16. Son gönderim
 
-Codex son kontrolü onayladıktan sonra:
+Copilot son kontrolü onayladıktan sonra:
 
 1. Devpost taslağını aç.
 2. En alttaki onay kutularını oku.

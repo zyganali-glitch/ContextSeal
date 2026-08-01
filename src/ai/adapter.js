@@ -1,3 +1,5 @@
+import http from "node:http";
+import https from "node:https";
 import { AI_OUTPUT_DISCLAIMER, buildAiGroundingInput, validateAiOutput } from "./contracts.js";
 
 function toPositiveInteger(value, fallback) {
@@ -73,7 +75,48 @@ function normalizeModelPayload(payload) {
   return null;
 }
 
-export async function generateAiCompanion(run, { env = process.env, fetchImpl = globalThis.fetch } = {}) {
+export function nativeOllamaFetch(url, options = {}) {
+  const target = new URL(url);
+  const transport = target.protocol === "https:" ? https : http;
+  const body = String(options.body ?? "");
+
+  return new Promise((resolve, reject) => {
+    const request = transport.request(target, {
+      method: options.method || "GET",
+      headers: {
+        ...options.headers,
+        "content-length": Buffer.byteLength(body)
+      }
+    }, (response) => {
+      let responseBody = "";
+      response.setEncoding("utf8");
+      response.on("data", (chunk) => {
+        responseBody += chunk;
+      });
+      response.once("error", reject);
+      response.once("end", () => {
+        resolve({
+          ok: response.statusCode >= 200 && response.statusCode < 300,
+          status: response.statusCode || 0,
+          text: async () => responseBody,
+          json: async () => JSON.parse(responseBody)
+        });
+      });
+    });
+
+    const abort = () => {
+      const error = new Error("Local AI request was aborted.");
+      error.name = "AbortError";
+      request.destroy(error);
+    };
+    options.signal?.addEventListener("abort", abort, { once: true });
+    request.once("error", reject);
+    request.once("close", () => options.signal?.removeEventListener("abort", abort));
+    request.end(body);
+  });
+}
+
+export async function generateAiCompanion(run, { env = process.env, fetchImpl } = {}) {
   const config = readAiRuntimeConfig(env);
   const groundingInput = buildAiGroundingInput(run);
 
@@ -91,7 +134,7 @@ export async function generateAiCompanion(run, { env = process.env, fetchImpl = 
     };
   }
 
-  if (typeof fetchImpl !== "function") {
+  if (fetchImpl != null && typeof fetchImpl !== "function") {
     return {
       groundingInput,
       ai: baseAiResult(config, "UNAVAILABLE", "No fetch implementation is available for the local AI runtime.")
@@ -101,7 +144,8 @@ export async function generateAiCompanion(run, { env = process.env, fetchImpl = 
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), config.timeoutMs);
   try {
-    const response = await fetchImpl(`${config.baseUrl}/api/generate`, {
+    const request = fetchImpl || nativeOllamaFetch;
+    const response = await request(`${config.baseUrl}/api/generate`, {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({
@@ -109,7 +153,7 @@ export async function generateAiCompanion(run, { env = process.env, fetchImpl = 
         prompt: buildAiPrompt(groundingInput),
         stream: false,
         format: "json",
-        options: { temperature: 0.2 }
+        options: { temperature: 0.2, num_predict: 800 }
       }),
       signal: controller.signal
     });

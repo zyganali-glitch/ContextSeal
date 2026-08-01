@@ -4,13 +4,13 @@ Bu rehberle İngilizce konuşmadan, ücretsiz araçlarla, üç dakikadan kısa �
 
 ## Son videonun hedefi
 
-- Süre: 2 dakika 35 saniye ile 2 dakika 55 saniye arasında.
+- Süre: yaklaşık 1 dakika 40 saniye; hedef aralık 90-110 saniye.
 - Görüntü: 1920 × 1080.
 - Dil: İngilizce bilgisayar sesi.
 - Altyazı: İngilizce.
 - Müzik: kullanılmayacak.
 - Kişisel bilgi: görünmeyecek.
-- Canlı DataHub kanıtı hazırdır; bunun sentetik verili yerel DataHub olduğunu açıkça söyleyeceğiz.
+- Varsayılan akış fixture tabanlıdır; canlı MCP kanıtı gösterilecekse bunun sentetik verili yerel DataHub olduğunu açıkça söyleyeceğiz.
 
 ## Kullanılacak ücretsiz araçlar
 
@@ -41,49 +41,20 @@ Bu rehberle İngilizce konuşmadan, ücretsiz araçlarla, üç dakikadan kısa �
 ### 3. Tarayıcıyı düzenle
 
 1. Chrome’u aç.
-2. Yalnız şu sekmeleri açık bırak:
-   - ContextSeal,
-   - DataHub hedef varlık,
-   - DataHub’da ContextSeal özellikleri veya pasaport belgesi.
+2. Varsayılan kayıt için yalnız ContextSeal sekmesini açık bırak. Ayrı canlı yerel DataHub kanıtını yalnız kayıtlı artefaktla eşleşiyorsa son dört saniyede göster.
 3. Diğer sekmeleri kapat.
 4. `Ctrl+L` ile adres çubuğunu seç.
 5. Tam ekran görünüm için `F11` tuşuna bas.
 6. Yazılar küçükse `Ctrl` ve `+` ile yakınlaştır. Genellikle yüzde 100 veya yüzde 110 uygundur.
 
-### 3A. Hazır DataHub kanıt sekmelerini aç
+### 3A. İsteğe bağlı canlı yerel kanıt sekmesi
 
-1. Chrome'da yeni sekme aç.
-2. Adres çubuğuna şunu yaz ve `Enter` tuşuna bas:
+Bu bölüm varsayılan 100 saniyelik kaydın zorunlu parçası değildir. Yalnız `examples/outputs/live-datahub-read-evidence.json` ve `examples/outputs/live-datahub-writeback-evidence.json` ile eşleşen, sentetik metadata içeren yerel DataHub kanıtı hazırsa kullan.
 
-   ```text
-   http://localhost:9002
-   ```
-
-3. Giriş ekranı açılırsa kullanıcı adına `datahub`, parolaya `datahub` yaz ve giriş düğmesine bas.
-4. Sayfanın üstündeki arama kutusuna şunu yaz:
-
-   ```text
-   gold_customers
-   ```
-
-5. Sonuçlarda Snowflake işareti bulunan `gold_customers` satırına bas.
-6. Varlık sayfasında `Properties` veya `Structured Properties` bölümünü bul. Burada şu değerler hazır olmalı:
-
-   - `ContextSeal Status`: `CERTIFIED`
-   - `ContextSeal Risk Score`: `80`
-   - `ContextSeal Passport ID`: `csp_910a779e1ca2e29e9b88`
-   - `ContextSeal Valid Until`: `2026-07-15`
-
-7. Aynı sayfadaki açıklama bölümünde `ContextSeal passport` ile başlayan ek satırı bul.
-8. Bu sekmeyi kapatma.
-9. Yeni bir DataHub sekmesi aç ve üst arama alanına pasaport numarasını yapıştır:
-
-   ```text
-   csp_910a779e1ca2e29e9b88
-   ```
-
-10. `Change Passport csp_910a779e1ca2e29e9b88` adlı belgeyi aç. Arama sonucu gecikirse sayfayı bir kez `Ctrl+R` ile yenile.
-11. Bu sekmeyi de kapatma.
+1. Chrome'da yeni sekme aç ve `http://localhost:9002` adresine git.
+2. Güncel Quickstart çıktısının verdiği kimlik bilgilerini kullan; tahmin etme veya gizli bilgi gösterme.
+3. Hedef varlığın ContextSeal özelliklerini ve pasaport belgesini yalnız birkaç saniye göster.
+4. Bu görüntüde veya seslendirmede, bunun sentetik yerel DataHub kanıtı olduğunu söyle.
 
 ### 4. Demo verisini sıfırla
 
@@ -148,26 +119,16 @@ OBS’nin alt bölümünde **Sources** adlı kutuyu bul.
 ### Çekim sırası
 
 1. OBS’de **Start Recording** düğmesine bas.
-2. Alt görev çubuğundan Chrome’a geç.
-3. ContextSeal başlık ekranını yaklaşık 5 saniye göster.
-4. `customer_email → contact_email` isteğini göster.
-5. **Analyze the demo change** düğmesine bir kez bas.
-6. Sonuçların gelmesini bekle.
-7. Risk puanı görünürken 4 saniye bekle.
-8. Yatay bağlantı zincirini yavaşça göster.
-9. Risk bulgularına doğru aşağı kaydır.
-10. `BREAKING LINEAGE`, `SENSITIVE DATA` ve sorgu kanıtı satırlarında 4 saniye bekle; bunun halka açık akışta fixture kanıtı olduğu görünür kalmalıdır.
-11. Üretilen dört dosyayı göster.
-12. İnsan onayı bölümüne kaydır.
-13. **Approve safe plan** düğmesine bir kez bas.
-14. Pasaport numarası oluşunca 5 saniye bekle.
-15. **Prepare DataHub write-back** düğmesine bas. Bu halka açık fixture gösteriminde ekranda hiçbir kataloğun değiştirilmediği yazmalıdır.
-16. Yalnız final SHA üzerinde taze write-back/read-back kanıtı `PASS` ise o DataHub sekmesine geç; aksi halde fixture ekranında kal.
-17. Eklenen ContextSeal alanlarını göster.
-18. Pasaport belgesini göster.
-19. ContextSeal ana başlığına geri dön.
-20. Yaklaşık 3 saniye bekle.
-21. OBS’ye dön ve **Stop Recording** düğmesine bas.
+2. ContextSeal başlık ekranını ve `customer_email → contact_email` isteğini göster.
+3. **Analyze the demo change** düğmesine bir kez bas.
+4. Risk puanını, fixture rozetiyle birlikte beş aşağı yönlü varlığı ve bulguları göster.
+5. Local AI Copilot panelini göster; AI'nın sadece açıklama yaptığı ve `NOT_ENABLED` durumunun dürüstçe göründüğü anı kaydet.
+6. Üretilen dört dosyayı, sandbox kanıtını ve PR inceleme paketini göster.
+7. İnsan onayı bölümüne kaydır ve **Approve safe plan** düğmesine bir kez bas.
+8. Pasaport numarası ve manifest hash oluşunca birkaç saniye bekle.
+9. **Prepare DataHub write-back** düğmesine bas. Fixture gösteriminde hiçbir kataloğun değiştirilmediği yazmalıdır.
+10. İsteğe bağlı canlı yerel kanıtı yalnız sentetik metadata etiketiyle kısa göster veya fixture kapanışıyla devam et.
+11. OBS’ye dön ve **Stop Recording** düğmesine bas.
 
 ### Kayıt sırasında dikkat et
 
@@ -205,7 +166,7 @@ OBS’nin alt bölümünde **Sources** adlı kutuyu bul.
 
 Clipchamp’te **Record & create** veya **Text to speech** bölümünü bul. Türkçe arayüzde “Kaydet ve oluştur” ya da “Metinden konuşmaya” yazabilir.
 
-Her metni tek parça yerine aşağıdaki yedi bölüm halinde ekle. Böylece görüntüyle eşleştirmek kolay olur.
+Her metni tek parça yerine aşağıdaki sekiz bölüm halinde ekle. Böylece görüntüyle eşleştirmek kolay olur.
 
 #### Ses 1 — Açılış
 
@@ -218,45 +179,43 @@ Türkçe anlamı: Repo kodu görür; DataHub kodun neyi kıracağını görür. 
 #### Ses 2 — İstek
 
 ```text
-Here, a developer asks to rename customer email directly. ContextSeal validates the request before any code or catalog mutation is allowed.
+Here, a developer requests a direct customer email rename. ContextSeal blocks the risky request before it reaches GitHub.
 ```
 
 #### Ses 3 — DataHub bağlamı
 
 ```text
-The DataHub-shaped judge fixture reveals five downstream assets across an Airflow job, a Snowflake dataset, two dashboards, and a production machine learning model. Every impact includes its lineage path.
+The public fixture shows five downstream assets and the path that explains the blast radius. Separate local evidence records raw DataHub MCP reads on synthetic metadata.
 ```
 
 #### Ses 4 — Risk kararı
 
 ```text
-The deterministic policy blocks the direct change with a risk score of eighty. Fixture query evidence shows usage of the sensitive field, which is connected to critical downstream consumers.
+The deterministic policy blocks the direct change with a risk score of eighty and named lineage, sensitivity, and fixture query-evidence findings.
 ```
 
-#### Ses 5 — Güvenli çözüm
+#### Ses 5 — AI sınırı
 
 ```text
-Instead of generating a destructive rename, ContextSeal creates an expand, migrate, and contract plan: a dbt model, schema tests, rollback, and an owner briefing.
+After the deterministic verdict, the local AI layer creates bounded operator guidance. It can explain the evidence, but it can never change the verdict or evidence state.
 ```
 
-#### Ses 6 — Onay ve pasaport
+#### Ses 6 — Güvenli çözüm
 
 ```text
-A human approves only this safe scope. ContextSeal binds the request, DataHub context, artifacts, evidence, and approval into a SHA two fifty six change passport.
+Instead of a destructive rename, ContextSeal creates an expand, migrate, and contract package: dbt model, schema tests, rollback, owner brief, sandbox evidence, and a reviewer-ready PR packet.
 ```
 
-#### Ses 7 — Kapanış
-
-Yalnız final SHA üzerinde taze canlı DataHub write-back ve read-back görüntüsü `PASS` ise şu kapanış metnini kullan:
+#### Ses 7 — Onay ve pasaport
 
 ```text
-The certified status and passport are written back to DataHub, so the next engineer and agent inherit the decision. ContextSeal: every data change ships with proof, not confidence.
+A human approves only this safe scope. ContextSeal binds the request, context, artifacts, evidence, and approval into a SHA two fifty six change passport.
 ```
 
-Yalnız fixture veya hazırlanmış operasyon gösteriliyorsa bunun yerine:
+#### Ses 8 — Dürüst kapanış
 
 ```text
-In this public fixture, write-back remains not run and no catalog is modified. After a human-approved live run, the passport can be written back and read back from DataHub. ContextSeal keeps every claim honest: every data change ships with proof, not confidence.
+In this public fixture, write-back remains not run and no catalog is modified. Separate disposable local DataHub evidence shows bounded write-back on synthetic metadata, so the next human and agent can inherit the decision.
 ```
 
 ### 5. Ses ayarı
@@ -366,7 +325,7 @@ seçeneğini işaretle.
 
 ## Son video kontrol listesi
 
-- [ ] Video 3:00’dan kısa.
+- [ ] Video 90-110 saniye arasında.
 - [ ] İngilizce ses var.
 - [ ] İngilizce altyazı var.
 - [ ] Telifli müzik yok.
@@ -374,7 +333,9 @@ seçeneğini işaretle.
 - [ ] Kişisel sekmeler görünmüyor.
 - [ ] Fixture/live rozeti görünür.
 - [ ] Risk puanı ve etki zinciri okunuyor.
+- [ ] AI paneli ve açıklama-only sınırı görünür.
 - [ ] Güvenli migration dosyaları gösteriliyor.
+- [ ] Sandbox kanıtı ve PR inceleme paketi gösteriliyor.
 - [ ] İnsan onayı gösteriliyor.
 - [ ] Pasaport gösteriliyor.
 - [ ] DataHub write-back yalnız gerçekten yapıldıysa başarılı anlatılıyor.

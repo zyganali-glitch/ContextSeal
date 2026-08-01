@@ -1,9 +1,10 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import http from "node:http";
 import { readFile } from "node:fs/promises";
 import { analyzeChange } from "../src/core/workflow.js";
 import { AI_OUTPUT_DISCLAIMER } from "../src/ai/contracts.js";
-import { enrichRunWithAi, generateAiCompanion, readAiRuntimeConfig } from "../src/ai/adapter.js";
+import { enrichRunWithAi, generateAiCompanion, nativeOllamaFetch, readAiRuntimeConfig } from "../src/ai/adapter.js";
 
 const fixtureRequest = JSON.parse(await readFile("examples/retail-change-request.json", "utf8"));
 const fixtureContext = JSON.parse(await readFile("examples/retail-context-graph.json", "utf8"));
@@ -17,6 +18,31 @@ test("adapter configuration keeps the local Ollama defaults", () => {
   assert.equal(config.model, "qwen2.5:7b");
   assert.equal(config.baseUrl, "http://127.0.0.1:11434");
   assert.equal(config.timeoutMs, 12000);
+});
+
+test("native Ollama transport returns a fetch-compatible JSON response", async (t) => {
+  const server = http.createServer((request, response) => {
+    let body = "";
+    request.on("data", (chunk) => {
+      body += chunk;
+    });
+    request.on("end", () => {
+      response.writeHead(200, { "content-type": "application/json" });
+      response.end(JSON.stringify({ received: JSON.parse(body).model }));
+    });
+  });
+  await new Promise((resolve) => server.listen(0, "127.0.0.1", resolve));
+  t.after(() => server.close());
+
+  const address = server.address();
+  const response = await nativeOllamaFetch(`http://127.0.0.1:${address.port}/api/generate`, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ model: "qwen2.5:7b" })
+  });
+
+  assert.equal(response.ok, true);
+  assert.deepEqual(await response.json(), { received: "qwen2.5:7b" });
 });
 
 test("adapter falls back cleanly when AI is disabled", async () => {

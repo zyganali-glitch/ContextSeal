@@ -1,14 +1,14 @@
 # Canlı DataHub Kurulumu — Acemi Kullanıcı Rehberi
 
-Bu rehber gerçek DataHub bağlantısını kanıtlamak içindir. Komutların ne anlama geldiğini bilmen gerekmiyor. Her adımdan sonra bekle ve beklenen sonucu görmeden ilerleme.
+Bu rehber canlı DataHub MCP erişimini ve sınırlı geri yazmayı sentetik yerel metadata üzerinde kanıtlamak içindir. Komutların ne anlama geldiğini bilmen gerekmiyor. Her adımdan sonra bekle ve beklenen sonucu görmeden ilerleme. Bu kanıt, varsayılan fixture ekranındaki etki yolunu canlı-normalize grafik haline getirmez.
 
 ## Bu bilgisayardaki mevcut durum
 
-14 Temmuz 2026 tarihinde aşağıdaki işlemler tamamlandı ve tarihsel kanıt olarak saklandı; bu kayıt final SHA kanıtı değildir:
+Kaydedilmiş yerel kanıtta aşağıdaki işlemler tamamlandı:
 
 - DataHub yerel olarak kuruldu ve `http://localhost:9002` adresi yanıt verdi.
 - Altı sentetik varlık ve beş bağlantı yüklendi.
-- Canlı MCP okuması yapıldı.
+- Üç ham MCP okuması yapıldı; kaydedilmiş sorgu okuması hedef için sıfır gözlemlenen sorgu döndürdü.
 - İnsan onayından sonra dört ContextSeal alanı, açıklama ve pasaport belgesi yazıldı.
 - Sonuçlar DataHub'dan tekrar okunarak doğrulandı.
 
@@ -86,7 +86,7 @@ Bir sürüm numarası görürsen kurulum tamamdır. `datahub komutu bulunamadı`
 Yeni bir PowerShell aç. Önce proje klasörüne gir:
 
 ```powershell
-cd "C:\Users\ASUS 6410\.gemini\antigravity\scratch\ContextSeal"
+Set-Location "$HOME\.gemini\antigravity\scratch\ContextSeal"
 ```
 
 Ardından şunu çalıştır:
@@ -102,7 +102,15 @@ npm run datahub:seed
 3. Arama alanında `customer` veya `churn` ara.
 4. `gold_customers`, `customer_segments` veya `churn_prediction` sonuçlarından birini görmen yüklemenin çalıştığını gösterir.
 
-## Aşama 5 — DataHub erişim anahtarı oluştur
+## Aşama 5 — Gerekirse DataHub erişim anahtarı oluştur
+
+Bu aşama disposable local quickstart için zorunlu değildir. Aşağıdaki komut sorunsuz çalışıyorsa token üretmeden devam et:
+
+```powershell
+& "$env:APPDATA\Python\Python311\Scripts\datahub.exe" init --host http://localhost:8080 --username datahub --password datahub --force
+```
+
+Cloud veya token-zorunlu bir DataHub ortamına bağlanıyorsan bu aşamayı uygula.
 
 Ekran adları DataHub sürümüne göre biraz değişebilir. Gizli anahtarı hiçbir ekran görüntüsüne alma.
 
@@ -127,7 +135,7 @@ Ekran adları DataHub sürümüne göre biraz değişebilir. Gizli anahtarı hi�
 2. Adres çubuğuna şunu yapıştır:
 
    ```text
-   C:\Users\ASUS 6410\.gemini\antigravity\scratch\ContextSeal
+   $HOME\.gemini\antigravity\scratch\ContextSeal
    ```
 
 3. `Enter` tuşuna bas.
@@ -141,48 +149,35 @@ Ekran adları DataHub sürümüne göre biraz değişebilir. Gizli anahtarı hi�
 
     ```dotenv
     CONTEXTSEAL_MODE=datahub
-   CONTEXTSEAL_HOST=127.0.0.1
-   DATAHUB_MCP_TRANSPORT=stdio
+    DATAHUB_MCP_TRANSPORT=stdio
    DATAHUB_MCP_COMMAND=uvx
-   DATAHUB_MCP_ARGS=["mcp-server-datahub@0.6.0"]
+    DATAHUB_MCP_ARGS=["mcp-server-datahub@latest"]
     DATAHUB_GMS_URL=http://localhost:8080
-    DATAHUB_GMS_TOKEN=BURAYA_KENDI_GIZLI_ANAHTARIN
+   DATAHUB_GMS_TOKEN=
     DATAHUB_MCP_MUTATIONS_ENABLED=false
-   CONTEXTSEAL_OPERATOR_TOKEN=
-   CONTEXTSEAL_ALLOWED_TARGET_URNS=["urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)"]
     ```
 
-11. `BURAYA_KENDI_GIZLI_ANAHTARIN` bölümünü silip DataHub’ın verdiği anahtarı yapıştır.
-12. `Ctrl+S` ile kaydet.
-13. Not Defteri’ni kapat.
-14. Geçici Not Defteri dosyasındaki anahtarı sil.
+11. Disposable local quickstart kullanıyorsan bu satırı boş bırakabilirsin.
+12. Cloud veya token-zorunlu kurulum kullanıyorsan boş değeri silip DataHub’ın verdiği anahtarı yapıştır.
+13. `Ctrl+S` ile kaydet.
+14. Not Defteri’ni kapat.
+15. Geçici Not Defteri dosyasındaki anahtarı sil.
 
 `.env` dosyası Git tarafından yok sayılır ve GitHub’a gönderilmez.
-
-Sunucu canlı modda ancak `.env` içindeki `CONTEXTSEAL_OPERATOR_TOKEN` boş değilse ve `CONTEXTSEAL_ALLOWED_TARGET_URNS` boş olmayan bir JSON dizi ise açılır. Canlı API çağrılarında `Authorization: Bearer <CONTEXTSEAL_OPERATOR_TOKEN>` başlığı zorunludur.
 
 ## Aşama 7 — ContextSeal alanlarını DataHub’a ekle
 
 PowerShell’de proje klasörüne gir:
 
 ```powershell
-cd "C:\Users\ASUS 6410\.gemini\antigravity\scratch\ContextSeal"
+Set-Location "$HOME\.gemini\antigravity\scratch\ContextSeal"
 ```
 
 Sonra:
 
 ```powershell
-npm run datahub:properties
-```
-
-Bu komut yalnız ön kontrol yapar ve alanda neyin değişeceğini gösterir. Gerçek uygulama için aynı PowerShell penceresinde şu değişkenleri ayarla:
-
-```powershell
-$env:DATAHUB_MCP_MUTATIONS_ENABLED="true"
-$env:CONTEXTSEAL_DATAHUB_MUTATION_CONFIRMATION="I_UNDERSTAND_THIS_COMMAND_MUTATES_DATAHUB"
-$env:CONTEXTSEAL_PROPERTIES_CONFIRMATION="UPSERT_CONTEXTSEAL_STRUCTURED_PROPERTIES_V1"
-$env:CONTEXTSEAL_APPROVED_BOOTSTRAP_PLAN_SHA256="BURAYA_PREFLIGHT_HASHINI_YAPISTIR"
-npm run datahub:properties:apply
+& "$env:APPDATA\Python\Python311\Scripts\datahub.exe" init --host http://localhost:8080 --username datahub --password datahub --force
+& "$env:APPDATA\Python\Python311\Scripts\datahub.exe" properties upsert -f config/contextseal-structured-properties.yml
 ```
 
 Başarılı olursa ContextSeal Status, Risk Score, Passport ID ve Valid Until alanları oluşturulur.
@@ -193,7 +188,7 @@ Başarılı olursa ContextSeal Status, Risk Score, Passport ID ve Valid Until al
 2. Şu komutu çalıştır:
 
    ```powershell
-   python -m pip install --user --upgrade "acryl-datahub==1.6.0.14" uv
+   python -m pip install --user --upgrade uv
    ```
 
 3. Bittiğinde şunu çalıştır:
@@ -204,20 +199,38 @@ Başarılı olursa ContextSeal Status, Risk Score, Passport ID ve Valid Until al
 
 4. Bir sürüm numarası görmelisin. ContextSeal gerektiğinde resmî `mcp-server-datahub` aracını kendisi başlatacak; ayrı bir pencereyi açık tutman gerekmiyor.
 
-`npm run datahub:seed` ve `npm run datahub:properties` komutları arka planda sabitlenmiş ücretsiz yol olan `uv run --with acryl-datahub==1.6.0.14` kullanır.
+İlk bağlantıda yalnız okuma işlemleri açık tutulacak. Şunları kanıtlamadan yazma işlemini açmayacağız:
 
-İlk bağlantıda yalnız okuma işlemleri açık tutulacak. Şu beş araç sözleşmesinin tamamını kanıtlamadan yazma işlemini açmayacağız:
-
-- `get_entities` ile hedef varlık okunuyor,
-- sayfalanmış `list_schema_fields` ile tam şema görüntüsü ve alan kısıtları okunuyor,
-- `get_lineage` ile aşağı akış hedefleri bulunuyor,
-- her hedef için `get_lineage_paths_between` ile tam yol okunuyor,
-- `get_dataset_queries` ile sorgu kanıtı okunuyor; sıfır sonuç da dürüstçe kaydediliyor,
+- hedef varlık okunuyor,
+- bağlantılar okunuyor,
+ - sorgu kanıtı okunuyor,
 - gizli anahtar hiçbir çıktıda görünmüyor.
+
+## Aşama 8A — W-23 kurtarma yardımcısı
+
+Eğer Docker alanı dolduğu için canlı kanıt yolu bloklandıysa, aşağıdaki yardımcı komut Windows tarafındaki toparlamayı ve mümkün olan geri kalan adımları senin yerine yürütür. Gerekirse yönetici izni istemek için kendini yeniden açar:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/recover-w23.ps1
+```
+
+Yalnız planı görmek istersen:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/recover-w23.ps1 -PlanOnly
+```
+
+Yalnız okuma kanıtını tazelemek istersen:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/recover-w23.ps1 -ReadOnly
+```
+
+Tam akışta yardımcı script güvenli VHDX compact işlemini dener, Docker Desktop'ı resmî başlangıç yoluyla yeniden başlatır, yerel DataHub CLI erişimini hazırlar, DataHub quickstart'ı ayağa kaldırır, seed işlemini yapar, `live-datahub-read-evidence.json` dosyasını yeniler ve mümkünse `live-datahub-writeback-evidence.json` dosyasını da tekrar üretir.
 
 ## Aşama 9 — Yazma kapısını aç
 
-Bu aşamayı yalnız Codex “canlı okuma kanıtı tamam” dedikten sonra yap.
+Bu aşamayı yalnız Copilot “canlı okuma kanıtı tamam” dedikten sonra yap.
 
 1. `.env` dosyasını Not Defteri ile aç.
 2. Şu satırı bul:
@@ -250,3 +263,5 @@ Demo videosundan önce şu ekranları ayrı ayrı kaydet:
 8. DataHub’daki pasaport belgesi.
 
 Gizli anahtarın, `.env` dosyasının veya kişisel bilgilerin ekranda bulunmadığını her görüntüde kontrol et.
+
+Başarılı MCP araç sonucu yalnız `isError: false` olduğunda `PASS` sayılır. Hazırlanmış mutation, başarılı write-back değildir; üretim veya müşteri verisi üzerinde işlem yapma.

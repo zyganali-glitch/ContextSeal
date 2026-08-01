@@ -18,16 +18,17 @@ const required = [
   "docs/DEMO_SCRIPT.md", "docs/LIVE_DATAHUB_SETUP.md", "docs/BUILD_PERIOD_DISCLOSURE.md",
   "docs/CLAIM_AUDIT.md", "docs/COMPETITION_REQUIREMENT_MATRIX.md", "docs/AI_RUNTIME_DECISION.md",
   "docs/BRANCH_RECONCILIATION_MATRIX.md", "docs/DATAHUB_SKILL_CONTRIBUTION.md", "docs/PR_REVIEW_PACKET.md",
-  "docs/PRE_SUBMISSION_CHECKLIST.md", "docs/UI_REVIEW.md", "docs/VISUAL_DIRECTION.md",
+  "docs/PRE_SUBMISSION_CHECKLIST.md", "docs/UI_REVIEW.md", "docs/VISUAL_DIRECTION.md", "docs/MAINTAINER_OUTREACH.md",
   "docs/tr/DEVPOST_BASVURU_REHBERI.md", "docs/tr/DEMO_VIDEO_CEKIM_REHBERI.md", "docs/tr/CANLI_DATAHUB_KURULUMU.md", "docs/tr/SORUN_COZME_REHBERI.md",
   "plans/PLAN_20260721_contextseal_hackathon_win.md", "plans/completed/README.md",
   "skills/contextseal-change-certification/SKILL.md", "skills/datahub-schema-change-certification/SKILL.md",
-  "scripts/check-repository.js", "scripts/run-demo.js", "scripts/run-generated-sandbox.py",
+  "scripts/check-repository.js", "scripts/check-plan-integrity.js", "scripts/check-ai-proof.js", "scripts/probe-ai-runtime.js", "scripts/recover-w23.ps1", "scripts/run-demo.js", "scripts/run-generated-sandbox.py",
   "scripts/build-pr-bundle.js", "scripts/create-draft-pr.js", "scripts/seed-datahub.py",
   "scripts/datahub_mutation_safety.py", "scripts/upsert-datahub-properties.py", "scripts/capture-live-evidence.js",
-  "scripts/export-live-run.js", "scripts/validate-evidence.js", "scripts/smoke-server.js",
+  "scripts/export-live-run.js", "scripts/run-datahub-seed.js", "scripts/run-live-proof.js", "scripts/validate-evidence.js", "scripts/smoke-server.js",
+  "src/datahub/analysis.js",
   "src/security/credential-scan.js", "tests/credential-scan.test.js", "tests/live-pipeline.test.js",
-  "tests/server-integration.test.js", "tests/store.test.js", "tests/artifacts.test.js", "tests/evidence-validator.test.js", "tests_py/test_datahub_mutation_safety.py",
+  "tests/server-integration.test.js", "tests/store.test.js", "tests/artifacts.test.js", "tests/evidence-validator.test.js", "tests/ai-proof.test.js", "tests/live-context.test.js", "tests/plan-integrity.test.js", "tests/server-datahub.test.js", "tests_py/test_datahub_mutation_safety.py",
   "examples/outputs/demo-certification.json", "examples/outputs/generated/ARTIFACT_MANIFEST.json",
   "examples/outputs/generated/ai/contextseal-ai-input.json", "examples/outputs/generated/ai/contextseal-ai-output.json", "examples/outputs/generated/ai/contextseal-ai-output.md",
   "examples/outputs/pr/pr-body.md", "examples/outputs/pr/pr-payload.json", "examples/outputs/pr/pr-checklist.md", "examples/outputs/pr/draft-pr-dry-run.json",
@@ -47,10 +48,12 @@ if (packageJson.private !== true) failures.push("package.json must remain privat
 if (packageJson.engines?.node !== ">=20") failures.push("package.json must support the declared Node.js >=20 judge path.");
 
 for (const script of [
-  "check", "evidence:check", "test", "demo", "demo:generate", "demo:check",
+  "plan:check", "check", "evidence:check", "test", "demo", "demo:generate", "demo:check",
   "sandbox", "sandbox:generate", "sandbox:check", "pr:bundle", "pr:bundle:check",
-  "pr:draft", "smoke", "validate", "datahub:seed", "datahub:seed:apply", "datahub:seed:scope",
-  "datahub:properties", "datahub:properties:apply", "datahub:properties:scope", "datahub:safety:test"
+  "pr:draft", "ai:probe", "ai:proof", "smoke", "validate", "datahub:seed",
+  "datahub:seed:preflight", "datahub:seed:apply", "datahub:seed:scope",
+  "datahub:properties", "datahub:properties:apply", "datahub:properties:scope", "datahub:safety:test",
+  "datahub:capture", "datahub:prove", "datahub:export"
 ]) {
   if (!packageJson.scripts?.[script]) failures.push(`package.json script is missing: ${script}`);
 }
@@ -59,12 +62,14 @@ if (packageJson.scripts?.sandbox !== "npm run sandbox:generate") failures.push("
 if (!packageJson.scripts?.["demo:check"]?.includes("run-demo.js --check")) failures.push("demo:check must compare committed demo artifacts without writing.");
 if (!packageJson.scripts?.["sandbox:check"]?.includes("run-generated-sandbox.py --check")) failures.push("sandbox:check must compare committed sandbox evidence without writing.");
 if (!packageJson.scripts?.["pr:bundle:check"]?.includes("build-pr-bundle.js --check")) failures.push("pr:bundle:check must compare committed PR artifacts without writing.");
-if (!packageJson.scripts?.validate?.includes("npm run demo:check")) failures.push("validate must use demo:check.");
-if (!packageJson.scripts?.validate?.includes("npm run sandbox:check")) failures.push("validate must use sandbox:check.");
-if (!packageJson.scripts?.validate?.includes("npm run pr:bundle:check")) failures.push("validate must use pr:bundle:check.");
-if (!packageJson.scripts?.["datahub:seed"]?.includes('uv run --with acryl-datahub==1.6.0.14')) failures.push("datahub:seed must use the pinned acryl-datahub helper path.");
+if (!packageJson.scripts?.check?.includes("npm run plan:check")) failures.push("check must include plan:check before repository checks.");
+if (!packageJson.scripts?.validate?.includes("npm run demo")) failures.push("validate must regenerate the demo artifacts.");
+if (!packageJson.scripts?.validate?.includes("npm run sandbox")) failures.push("validate must regenerate sandbox evidence.");
+if (!packageJson.scripts?.validate?.includes("npm run pr:bundle")) failures.push("validate must regenerate PR bundle artifacts.");
+if (packageJson.scripts?.["datahub:seed"] !== "node scripts/run-datahub-seed.js") failures.push("datahub:seed must run the disposable-local seed helper.");
+if (!packageJson.scripts?.["datahub:seed:preflight"]?.includes('uv run --with acryl-datahub==1.6.0.14')) failures.push("datahub:seed:preflight must use the pinned acryl-datahub helper path.");
 if (!packageJson.scripts?.["datahub:properties"]?.includes('uv run --with acryl-datahub==1.6.0.14')) failures.push("datahub:properties must use the pinned acryl-datahub helper path.");
-if (!packageJson.scripts?.["datahub:seed"]?.includes("--preflight")) failures.push("datahub:seed must remain read-only preflight by default.");
+if (!packageJson.scripts?.["datahub:seed:preflight"]?.includes("--preflight")) failures.push("datahub:seed:preflight must remain read-only by default.");
 if (!packageJson.scripts?.["datahub:properties"]?.includes("--preflight")) failures.push("datahub:properties must remain read-only preflight by default.");
 if (!packageJson.scripts?.["datahub:seed:apply"]?.includes("--apply")) failures.push("datahub:seed:apply must be an explicitly named apply command.");
 if (!packageJson.scripts?.["datahub:properties:apply"]?.includes("--apply")) failures.push("datahub:properties:apply must be an explicitly named apply command.");

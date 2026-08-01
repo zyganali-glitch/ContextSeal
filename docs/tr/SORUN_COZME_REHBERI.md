@@ -1,6 +1,6 @@
 # Sorun Çözme Rehberi
 
-Bir hata olduğunda aynı komutu art arda çalıştırma. Önce aşağıdaki karşılığı bul. Çözülmezse ekran görüntüsüyle Codex’e bildir.
+Bir hata olduğunda aynı komutu art arda çalıştırma. Önce aşağıdaki karşılığı bul. Çözülmezse ekran görüntüsüyle Copilot’a bildir.
 
 ## Docker “Engine starting” ekranında kalıyor
 
@@ -28,7 +28,7 @@ Kurulum tamamlandıktan sonra bilgisayarı yeniden başlat.
 ## `gh` komutu bulunamıyor
 
 1. GitHub CLI’nin kurulu olduğunu kontrol et.
-2. Codex ve PowerShell’i tamamen kapatıp yeniden aç.
+2. Copilot ve PowerShell’i tamamen kapatıp yeniden aç.
 3. Çalıştır:
 
    ```powershell
@@ -48,7 +48,7 @@ Kurulum tamamlandıktan sonra bilgisayarı yeniden başlat.
 
 ## `npm` komutu bulunamıyor
 
-Node.js kurulu değildir veya uygulama yeniden başlatılmamıştır. Codex’e bildir; rastgele Node.js sürümü kurma.
+Node.js kurulu değildir veya uygulama yeniden başlatılmamıştır. Copilot’a bildir; rastgele Node.js sürümü kurma.
 
 ## `npm start` sonrasında sayfa açılmıyor
 
@@ -104,7 +104,7 @@ uvx --version
 
 ## `npm run validate` kırmızı hata veriyor
 
-Devpost veya video işlemine geçme. PowerShell’deki hatanın başından sonuna ekran görüntüsü al ve Codex’e gönder.
+Devpost veya video işlemine geçme. PowerShell’deki hatanın başından sonuna ekran görüntüsü al ve Copilot’a gönder.
 
 ## DataHub sayfası açılmıyor
 
@@ -144,7 +144,7 @@ Windows gizli/uzantılı dosyaları saklıyor olabilir:
 3. Token’ı DataHub’dan iptal et.
 4. Yeni token oluştur.
 5. `.env` dosyasını güncelle.
-6. GitHub’a token gönderildiyse hemen Codex’e bildir.
+6. GitHub’a token gönderildiyse hemen Copilot’a bildir.
 
 ## GitHub Pages boş veya 404
 
@@ -152,7 +152,7 @@ Windows gizli/uzantılı dosyaları saklıyor olabilir:
 2. **Deploy Judge Demo** çalışmasını bul.
 3. Yeşil onay yoksa ekran görüntüsü al.
 4. **Settings → Pages** bölümünde kaynak olarak GitHub Actions seçili olmalıdır.
-5. Ayar değiştirmeden önce Codex’e bildir.
+5. Ayar değiştirmeden önce Copilot’a bildir.
 
 ## Devpost video bağlantısını kabul etmiyor
 

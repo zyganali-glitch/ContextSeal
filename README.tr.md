@@ -11,7 +11,7 @@ ContextSeal; riskli bir kolon değişikliğini DataHub bağlamıyla inceleyen, e
 - Küçük görünen riskli bir yeniden adlandırma merge olmadan önce durduruluyor.
 - DataHub bağlamı aşağı yöndeki etkiyi ve isimlendirilmiş risk bulgularını açıkça gösteriyor.
 - İsteğe bağlı AI paneli görünür, sınırlı ve runtime yoksa bunu dürüstçe söylüyor.
-- ContextSeal yıkıcı değişikliği değil, güvenli geçiş paketi ve reviewer-ready PR handoff üretir.
+- ContextSeal yıkıcı değişikliği değil, güvenli geçiş paketi ve incelemeye hazır PR paketi üretir.
 - İnsan onayı sonucunda oluşan pasaport, sonraki insan veya ajan tarafından miras alınabilir.
 
 ## İlk dakikada ne görülüyor?
@@ -34,7 +34,7 @@ ContextSeal DataHub’dan şu bilgileri toplar:
 - gizlilik ve hassas veri işaretlerini,
 - kalite kontrollerini,
 - açık olay kayıtlarını,
-- kolonla ilgili gözlemlenen sorgu kanıtlarını.
+- fixture bağlamındaki sorgu kanıtlarını; canlı MCP sorgu okuması ise ayrı ham kanıt olarak tutulur.
 
 Sonra değişikliği doğrudan yapmak yerine güvenli bir geçiş planı üretir. Örneğin eski kolonu hemen silmek yerine yeni kolonu ekler, veriyi taşır, kullanan sistemlerin geçmesini bekler ve eski kolonu daha sonraki ayrı bir değişiklikte kaldırır.
 
@@ -43,9 +43,9 @@ Sonra değişikliği doğrudan yapmak yerine güvenli bir geçiş planı üretir
 PowerShell’de proje klasörüne gir:
 
 ```powershell
-cd "C:\Users\ASUS 6410\.gemini\antigravity\scratch\ContextSeal"
+Set-Location "$HOME\.gemini\antigravity\scratch\ContextSeal"
 npm install
-npm test
+npm run validate
 npm start
 ```
 
@@ -58,28 +58,41 @@ http://127.0.0.1:4173
 Ardından sırasıyla:
 
 1. **Analyze the demo change** düğmesine bas.
-2. Risk puanı, etkilenen varlıkları ve güvenli gösterimdeki etki yollarını incele.
-3. **Approve safe plan** düğmesine bas.
-4. Oluşan pasaport numarasını gör.
-5. **Prepare DataHub write-back** düğmesine bas.
+2. Risk puanını, etkilenen varlıkları, fixture etki yollarını ve Local AI Copilot panelindeki `NOT_ENABLED` durumunu incele.
+3. Üretilen güvenli geçiş dosyalarını incele.
+4. **Approve safe plan** düğmesine bas.
+5. Oluşan pasaport numarasını gör.
+6. **Prepare DataHub write-back** düğmesine bas.
 
 Bu güvenli deneme modunda gerçek DataHub değiştirilmez. Varsayılan ekran DataHub biçimine uyarlanmış sentetik bağlam kullanır; canlı MCP kanıtı ayrı rehberde gösterilir. Ekranda bunun açıkça yazması bilinçli bir güvenlik özelliğidir.
 
-## Istege bagli yerel AI yardimcisi
+## İsteğe bağlı yerel AI yardımcısı
 
-Repo artik istege bagli bir yerel Ollama bagdastiricisi, gorunur bir Local AI Copilot paneli ve incelenebilir AI girdi/cikti artefaktlari iceriyor. Deterministik verdict once hesaplanir. AI kapaliysa veya Ollama yoksa, ContextSeal uydurma metin uretmek yerine `NOT_ENABLED` ya da `UNAVAILABLE` durumu kaydeder.
+Repo artık isteğe bağlı bir yerel Ollama bağdaştırıcısı, görünür bir Local AI Copilot paneli ve incelenebilir AI girdi/çıktı artefaktları içeriyor. Deterministik karar önce hesaplanır. AI kapalıysa veya Ollama yoksa, ContextSeal uydurma metin üretmek yerine `NOT_ENABLED` ya da `UNAVAILABLE` durumu kaydeder.
 
 ```powershell
 npm run ai:probe
 ```
 
-Tam sozlesme icin [AI Runtime Decision](docs/AI_RUNTIME_DECISION.md) dosyasina bak.
+Tam sözleşme için [AI Runtime Decision](docs/AI_RUNTIME_DECISION.md) dosyasına bak.
 
-Kayitli AI artefaktlari:
+Kayıtlı AI artefaktları:
 
 - `examples/outputs/generated/ai/contextseal-ai-input.json`
 - `examples/outputs/generated/ai/contextseal-ai-output.json`
 - `examples/outputs/generated/ai/contextseal-ai-output.md`
+
+## Üretilen paket ve PR kanıtı
+
+`npm run validate`, üretilen dosyaları yeniler; manifest-bağlı yerel sandbox kontrolünü ve token gerektirmeyen PR paketi üretimini çalıştırır. Sandbox, paketin hash ve grounding sözleşmesine uyduğunu kanıtlar; üretim veri ambarında SQL çalıştırıldığını iddia etmez.
+
+```powershell
+npm run sandbox
+npm run pr:bundle
+npm run pr:draft -- --dry-run
+```
+
+Son komut yalnız GitHub taslak PR isteğini hazırlar. Gerçek PR oluşturma, var olan bir dal ve `GITHUB_TOKEN` gerektiren açık bir işlemdir; dış inceleme veya merge kanıtı değildir.
 
 ## Senin için hazırlanmış ayrıntılı rehberler
 

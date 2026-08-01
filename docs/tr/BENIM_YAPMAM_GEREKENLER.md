@@ -1,6 +1,6 @@
 # Benim Yapmam Gerekenler
 
-Bu belge proje sahibinin yapması gereken işleri, yapılma sırasına göre anlatır. Kod yazman veya teknik karar vermen gerekmiyor. Bir adımda hata görürsen sonraki adıma geçme; ekran görüntüsü al ve Codex’e gönder.
+Bu belge proje sahibinin yapması gereken işleri, yapılma sırasına göre anlatır. Kod yazman veya teknik karar vermen gerekmiyor. Bir adımda hata görürsen sonraki adıma geçme; ekran görüntüsü al ve Copilot’a gönder.
 
 ## Şu anda tamamlananlar
 
@@ -13,8 +13,7 @@ Bu belge proje sahibinin yapması gereken işleri, yapılma sırasına göre anl
 - [x] Yerel ContextSeal klasörü oluşturuldu.
 - [x] Yerel DataHub kuruldu ve sağlık kontrolü geçti.
 - [x] Sentetik ContextSeal verileri DataHub'a yüklendi.
-- [x] Tarihsel sentetik-yerel MCP okuma ve sınırlı geri yazma kanıtı oluşturuldu.
-- [ ] Final SHA üzerinde taze MCP okuma, yazma ve tekrar okuma kanıtı oluşturulacak.
+- [x] Canlı MCP okuma ve sınırlı geri yazma kanıtı oluşturuldu.
 
 ## Senin yapacağın işler — kısa liste
 
@@ -74,7 +73,7 @@ Tamamlandığında ekran görüntüsü al.
 
 ## 3. Uygulamayı yerelde doğrula
 
-Codex geliştirmeyi tamamlayıp sana “yerel denemeye hazır” dediğinde:
+Copilot geliştirmeyi tamamlayıp sana “yerel denemeye hazır” dediğinde:
 
 1. Docker Desktop’ın açık olduğunu doğrula.
 2. Başlat menüsünü aç.
@@ -82,7 +81,7 @@ Codex geliştirmeyi tamamlayıp sana “yerel denemeye hazır” dediğinde:
 4. Şu komutu yapıştır:
 
    ```powershell
-   cd "C:\Users\ASUS 6410\.gemini\antigravity\scratch\ContextSeal"
+   Set-Location "$HOME\.gemini\antigravity\scratch\ContextSeal"
    ```
 
 5. `Enter` tuşuna bas.
@@ -116,14 +115,14 @@ Codex geliştirmeyi tamamlayıp sana “yerel denemeye hazır” dediğinde:
 
 ## 4. Canlı DataHub kanıtı
 
-Bu bölüm yarışmadaki en önemli kullanıcı görevidir. Ayrıntılar [Canlı DataHub Kurulumu](CANLI_DATAHUB_KURULUMU.md) belgesindedir. Mevcut kayıt tarihsel kanıttır; video ve final başvuru için exact final SHA üzerinde yeniden yakalanmalıdır. Bu işi yalnız yapmaya çalışma; her ekranı Codex ile birlikte ilerlet.
+Bu bölüm yarışmadaki en önemli kullanıcı görevidir. Ayrıntılar [Canlı DataHub Kurulumu](CANLI_DATAHUB_KURULUMU.md) belgesindedir. Bu işi yalnız yapmaya çalışma; her ekranı Copilot ile birlikte ilerlet. Varsayılan jüri ekranındaki etki yolları fixture kaynaklıdır; canlı kanıt, bunları canlı-normalize grafik olarak yükseltmez.
 
 Canlı kanıt tamamlandığında elimizde şunlar olmalı:
 
 - DataHub ana sayfasının ekran görüntüsü,
 - hedef veri varlığının ekran görüntüsü,
 - ContextSeal canlı mod rozeti,
-- gerçek lineage sonucu,
+- ham MCP okuma kaydı ve sentetik yerel DataHub bağlamı,
 - onay ekranı,
 - DataHub’a eklenen ContextSeal alanları,
 - DataHub’a kaydedilen Change Passport belgesi,

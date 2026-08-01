@@ -20,7 +20,7 @@ The optional local AI layer may explain or improve a migration proposal, but it 
 Generated dbt, rollback, and owner-brief artifacts are currently grounded on these deterministic inputs:
 
 1. the validated request identity: target URN, entity name, change type, source field, destination field, and requested destination type when present;
-2. the captured target asset identity and source-field schema constraint from the DataHub-shaped context;
+2. the captured target asset identity from the DataHub-shaped context;
 3. deterministic lineage results: impacted asset count, impacted asset types, downstream owners, and representative downstream paths;
 4. deterministic policy results: verdict, score, and named finding codes;
 5. the fixed ContextSeal migration rule selected for the request class.
@@ -29,10 +29,15 @@ That grounding contract is persisted at `run.artifacts.grounding` in the analyze
 
 Current non-claims for generated code:
 
-- The generator currently consumes the captured source-field type/nullability needed for constraint-safe test selection; full real-dbt bundle execution remains a separate proof gate.
-- `not_null` is emitted only when the captured source field explicitly declares `nullable: false`; missing or nullable schema metadata never becomes an invented constraint.
+- The generator does not yet ingest a full DataHub field-schema snapshot beyond the requested field names and target model identity.
 - Warehouse execution status does not rewrite generated artifact content.
 - AI output does not author or rewrite the generated dbt, rollback, or owner-brief artifacts.
+
+## Review-delivery boundary
+
+`npm run pr:bundle` produces a reviewer-ready body, checklist, and payload from the approved run, generated-artifact manifest, and sandbox evidence. `npm run pr:draft -- --dry-run` validates the corresponding GitHub request without a token. A live draft-PR request requires an existing branch and `GITHUB_TOKEN`; it remains an explicit, optional operation.
+
+The PR packet proves that the generated result is prepared for review. It does not prove that a GitHub pull request was created, reviewed, merged, or accepted by a third party.
 
 ## Fixture versus live
 
@@ -42,16 +47,18 @@ A live DataHub read/write claim requires:
 
 1. `CONTEXTSEAL_MODE=datahub`;
 2. successful DataHub MCP initialization;
-3. stored raw results from `get_entities`, every paginated `list_schema_fields` page, `get_lineage`, one `get_lineage_paths_between` result for every discovered downstream target, and `get_dataset_queries`;
+3. stored raw results from `get_entities`, `get_lineage`, and `get_dataset_queries`;
 4. an approved passport before mutation;
 5. `isError: false` individual mutation responses if write-back is claimed;
 6. post-write retrieval for durable fields.
 
-A **live normalized impact** claim additionally requires complete paginated schema capture, bounded downstream discovery, exact path coverage for every discovered target, and query-honest normalization. The current runtime enforces that five-tool contract. The checked-in historical local proof predates it, while the public dashboard's default exact-path visualization remains explicitly fixture-derived.
+In `CONTEXTSEAL_MODE=datahub`, `/api/analyze` validates the request, captures the three raw MCP reads, closes the MCP client, then generates the deterministic package. This makes the read -> act ordering operational while retaining the public graph and impact paths as `FIXTURE` until a target-derived graph contract exists.
+
+A **live normalized impact** claim additionally requires a target-derived graph contract. The committed local proof has live entity, lineage, query, and mutation evidence, but the dashboard's exact path visualization remains labeled fixture-derived. This distinction is deliberate.
 
 The public fixture demo may still show field-reference findings because its synthetic query text is bundled directly into the fixture context. The committed live read artifact currently proves that `get_dataset_queries` executed for the target, not that the target returned non-zero observed queries.
 
-The committed seeded local proof also returns downstream results across multiple platforms as dataset-shaped assets. That is valid live read evidence, but it is not the same thing as fully typed cross-entity lineage proof.
+The committed seeded local proof now preserves a typed downstream summary plus representative `DATASET`, `DATA_JOB`, and `DASHBOARD` entities across multiple platforms. That is stronger live read evidence than the earlier single-shape export, but it is still not the same thing as a target-derived normalized graph contract or a fully typed cross-entity path guarantee for the fixture dashboard.
 
 ## Forbidden claim upgrades
 
@@ -60,6 +67,7 @@ The committed seeded local proof also returns downstream results across multiple
 - A prepared mutation is not a completed mutation.
 - A fixture PASS is not a live DataHub PASS.
 - A successful `get_dataset_queries` call with `total: 0` is not proof of live field usage.
-- Dataset-shaped seeded downstream results are not proof of fully typed cross-entity lineage.
+- A typed seeded downstream summary is not, by itself, proof of a target-derived fully typed cross-entity lineage contract.
 - A hash proves integrity of captured bytes, not correctness or security.
 - Passing unit tests are not a production-readiness certificate.
+- A prepared or dry-run PR request is not a created, reviewed, merged, or externally accepted PR.

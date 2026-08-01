@@ -585,6 +585,41 @@ export function normalizeLiveContext({
   };
 }
 
+function summarizeLineage(payload) {
+  const downstreams = payload?.downstreams || payload?.result?.downstreams || payload;
+  if (!downstreams || typeof downstreams !== "object") return null;
+
+  const typeFacet = (downstreams.facets || []).find((facet) => facet?.field === "_entityType" || facet?.field === "entity");
+  const entityTypes = (typeFacet?.aggregations || [])
+    .filter((entry) => typeof entry?.value === "string" && typeof entry?.count === "number")
+    .map((entry) => ({ type: entry.value, count: entry.count }));
+
+  const representativeDownstreams = (downstreams.searchResults || downstreams.results || downstreams.entities || [])
+    .map((item) => {
+      const entity = item?.entity || item;
+      if (!entity?.urn) return null;
+      return {
+        urn: entity.urn,
+        type: entity.type || null,
+        name: entity.properties?.name || entity.name || null,
+        platform: entity.platform?.name || entity.platform?.urn || entity.tool || null,
+        degree: typeof item?.degree === "number" ? item.degree : null
+      };
+    })
+    .filter(Boolean);
+
+  return {
+    downstreamCount: typeof downstreams.total === "number" ? downstreams.total : representativeDownstreams.length,
+    entityTypes,
+    representativeDownstreams
+  };
+}
+
+function lineageArtifactSummary(lineageSummary) {
+  if (!lineageSummary?.entityTypes?.length) return null;
+  return lineageSummary.entityTypes.map(({ type, count }) => `${count} ${type}`).join(", ");
+}
+
 export async function collectLiveEvidence(client, request, {
   maxHops = 5,
   maxResults = 100,
@@ -680,15 +715,30 @@ export async function collectLiveEvidence(client, request, {
     evidence,
     rawEvidenceHash
   });
+  const lineageSummary = summarizeLineage(lineagePayload);
   return {
     observedAt,
     targetUrn: request.targetUrn,
     rawEvidenceHash,
     mcp,
     summary: normalized.summary,
+    lineageSummary,
     tools: normalized.toolTypes,
     evidence,
     evidenceBoundary: "Raw MCP responses are hash-bound; complete paginated target schema and exact bounded entity-level lineage paths are normalized for deterministic analysis.",
     normalizedContext: normalized.normalizedContext
+  };
+}
+
+export function attachLiveEvidence(run, liveEvidence, captureStage = "POST_ANALYSIS") {
+  const capturedBeforeAnalysis = captureStage === "PRE_ANALYSIS";
+  const typedSummary = lineageArtifactSummary(liveEvidence.lineageSummary);
+  const artifact = `${liveEvidence.evidence.length} raw MCP calls captured ${capturedBeforeAnalysis ? "before" : "after"} deterministic analysis${typedSummary ? `; downstream types: ${typedSummary}` : ""}`;
+  return {
+    ...run,
+    liveEvidence: { ...liveEvidence, captureStage },
+    evidence: run.evidence.map((item) => item.claim === "DataHub context retrieved"
+      ? { ...item, state: "PASS", artifact }
+      : item)
   };
 }
