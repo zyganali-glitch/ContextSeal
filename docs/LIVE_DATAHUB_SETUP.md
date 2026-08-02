@@ -183,16 +183,15 @@ Only after read-only verification:
 
 ## Verified local status
 
-A disposable local DataHub run was refreshed successfully on `2026-08-01` with synthetic metadata:
+A disposable local DataHub run was refreshed successfully on `2026-08-02` from source commit `baa61387324868b39427030c447b94c2b9599c03` with synthetic metadata:
 
-- six seeded catalog assets and a typed downstream summary with six `DATASET`, two `DATA_JOB`, and two `DASHBOARD` entities across seeded platforms,
-- the five bounded read-only MCP tool types, including complete schema reads and exact lineage-path reads; the saved query example currently returns zero observed dataset queries for the target,
-- a `lineageSummary` block that preserves typed downstream counts and representative downstream entities in the exported read and write-back artifacts,
-- a fail-closed pre-evidence mutation gate,
-- four structured properties written and read back,
-- a passport description appended and read back,
-- a standalone decision document created,
-- all successful MCP tool results checked for `isError: false`.
+- the certified reset removed 9 current and 4 legacy ContextSeal-owned entities before reseeding the exact synthetic scope,
+- ten MCP reads across the five bounded read-only tool types found six downstream assets: two each of `DATASET`, `DATA_JOB`, and `DASHBOARD`; the saved query example currently returns zero observed dataset queries for the target,
+- a fail-closed pre-evidence mutation gate and four exact structured-property definitions,
+- a first same-passport run with three `APPLIED` operations for properties, description, and decision document,
+- a second same-passport run with three `SKIPPED` `VERIFY_THEN_SKIP` operations,
+- two durable `PASS` read-backs proving four properties, one passport description block, and one bound decision document,
+- all successful MCP tool results checked for `isError: false`, followed by a passing `npm run evidence:check`.
 
 See `examples/outputs/live-datahub-read-evidence.json` and `examples/outputs/live-datahub-writeback-evidence.json`. This does not claim production or customer impact.
 

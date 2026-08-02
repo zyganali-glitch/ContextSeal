@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0",
   "product": "ContextSeal",
-  "generatedFromRunId": "csr_4ab7ef5169bd2e0dcbfd64669646933a",
+  "generatedFromRunId": "csr_e46cd53f1c61e8701ee8d32cda2e5126",
   "mode": "fixture",
   "runState": "AWAITING_HUMAN",
   "evidenceBoundary": {
@@ -188,6 +188,10 @@
         "kind": "DBT_TESTS"
       },
       {
+        "path": "generated/tests/gold_customers_contextseal_rename_parity.sql",
+        "kind": "DBT_DATA_TEST"
+      },
+      {
         "path": "generated/rollback/gold_customers.sql",
         "kind": "ROLLBACK"
       },
@@ -228,7 +232,7 @@
     {
       "claim": "Migration artifacts generated",
       "state": "PASS",
-      "artifact": "4 generated files; grounding contract 1.0"
+      "artifact": "5 generated files; grounding contract 1.0"
     },
     {
       "claim": "Generated SQL executed in warehouse",

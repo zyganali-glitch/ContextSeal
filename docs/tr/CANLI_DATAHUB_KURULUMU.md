@@ -4,15 +4,15 @@ Bu rehber canlı DataHub MCP erişimini ve sınırlı geri yazmayı sentetik yer
 
 ## Bu bilgisayardaki mevcut durum
 
-Kaydedilmiş yerel kanıtta aşağıdaki işlemler tamamlandı:
+Kaydedilmiş yerel `PASS` kanıtta aşağıdaki işlemler tamamlandı:
 
 - DataHub yerel olarak kuruldu ve `http://localhost:9002` adresi yanıt verdi.
-- Altı sentetik varlık ve beş bağlantı yüklendi.
-- Beş sınırlı salt-okunur MCP araç tipi çalıştı; kaydedilmiş sorgu okuması hedef için sıfır gözlemlenen sorgu döndürdü ve exact lineage-path okumaları keşfedilen downstream uçlarını doğruladı.
-- İnsan onayından sonra dört ContextSeal alanı, açıklama ve pasaport belgesi yazıldı.
-- Sonuçlar DataHub'dan tekrar okunarak doğrulandı.
+- Sertifikalı reset, 9 güncel ve 4 legacy ContextSeal varlığını kaldırdıktan sonra yalnız sentetik kapsamı yeniden yükledi.
+- Beş sınırlı salt-okunur MCP araç tipiyle 10 okuma yapıldı; altı downstream varlıkta ikişer `DATASET`, `DATA_JOB` ve `DASHBOARD` bulundu. Kaydedilmiş sorgu okuması hedef için sıfır gözlemlenen sorgu döndürdü.
+- İnsan onayından sonra dört ContextSeal alanı, tek açıklama bloğu ve tek pasaport belgesi için ilk turda üç `APPLIED` işlem yapıldı.
+- Aynı pasaportla ikinci tur, üç işlemi `VERIFY_THEN_SKIP` yoluyla `SKIPPED` olarak doğruladı; iki durable read-back ve `npm run evidence:check` başarıyla tamamlandı.
 
-Bu yüzden aşağıdaki kurulum adımlarını şimdi yeniden yapma. Bunlar sistemi ileride yeniden kurman gerekirse kullanacağın ayrıntılı başvuru adımlarıdır.
+Bu kanıt kaynak commit `baa61387324868b39427030c447b94c2b9599c03` için kaydedildi. Aşağıdaki kurulum adımları, sistemi ileride yeniden kurman veya tam olarak yeni frozen SHA için kanıt üretmen gerekirse kullanacağın ayrıntılı başvuru adımlarıdır.
 
 ## Başlamadan önce
 

@@ -1,3 +1,5 @@
+import { createProofDashboard } from "./dashboard-proof.js";
+
 const $ = (selector) => document.querySelector(selector);
 let currentRun = null;
 let staticDemo = null;
@@ -28,6 +30,14 @@ function formatWorkflowState(state) {
 function evidenceState(run, claim) {
   return run?.evidence?.find((item) => item.claim === claim)?.state || "NOT_RUN";
 }
+
+const { renderArtifacts, renderAgentTrace, renderRecordedProof } = createProofDashboard({
+  select: $,
+  text,
+  evidenceState,
+  formatChangeType,
+  formatStrategy
+});
 
 async function ensureDemoData() {
   return staticDemo ||= await api("./demo-data.json");
@@ -145,26 +155,6 @@ function renderFindings(findings) {
   }
 }
 
-function renderArtifacts(files) {
-  const list = $("#artifacts");
-  list.replaceChildren();
-  for (const file of files) {
-    const row = document.createElement("div");
-    row.className = "artifact";
-    const icon = document.createElement("span");
-    icon.className = "artifact-icon";
-    icon.textContent = "✓";
-    const copy = document.createElement("div");
-    const title = document.createElement("strong");
-    title.textContent = file.path;
-    const kind = document.createElement("p");
-    kind.textContent = file.kind;
-    copy.append(title, kind);
-    row.append(icon, copy);
-    list.append(row);
-  }
-}
-
 function renderEvidence(evidence) {
   const list = $("#evidence");
   list.replaceChildren();
@@ -274,7 +264,8 @@ function renderRun(run) {
   text("#strategy", run.artifacts.strategy.replaceAll("_", " "));
   renderGraph(run);
   renderFindings(run.risk.findings);
-  renderArtifacts(run.artifacts.files);
+  renderArtifacts(run.artifacts.files, run);
+  renderAgentTrace(run);
   renderAi(run);
   renderEvidence(run.evidence);
   if (run.passport) renderPassport(run.passport);
@@ -358,6 +349,12 @@ async function writeback() {
   } catch (error) {
     text("#writebackMessage", error.message);
   }
+}
+
+try {
+  renderRecordedProof((await ensureDemoData()).recordedLiveProof);
+} catch {
+  renderRecordedProof(null);
 }
 
 try {

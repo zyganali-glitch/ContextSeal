@@ -1,6 +1,6 @@
 {
   "analyzed": {
-    "runId": "csr_4ab7ef5169bd2e0dcbfd64669646933a",
+    "runId": "csr_e46cd53f1c61e8701ee8d32cda2e5126",
     "state": "AWAITING_HUMAN",
     "mode": "fixture",
     "createdAt": "2026-07-22T06:39:36.461Z",
@@ -41,8 +41,19 @@
           ],
           "schemaFields": [
             {
+              "fieldPath": "customer_id",
+              "nativeDataType": "varchar",
+              "nullable": false,
+              "unique": true
+            },
+            {
               "fieldPath": "customer_email",
               "nativeDataType": "varchar",
+              "nullable": false
+            },
+            {
+              "fieldPath": "updated_at",
+              "nativeDataType": "timestamp",
               "nullable": false
             }
           ],
@@ -178,8 +189,19 @@
         ],
         "schemaFields": [
           {
+            "fieldPath": "customer_id",
+            "nativeDataType": "varchar",
+            "nullable": false,
+            "unique": true
+          },
+          {
             "fieldPath": "customer_email",
             "nativeDataType": "varchar",
+            "nullable": false
+          },
+          {
+            "fieldPath": "updated_at",
+            "nativeDataType": "timestamp",
             "nullable": false
           }
         ],
@@ -349,7 +371,8 @@
           "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)",
           "entityName": "gold_customers",
           "type": "DATASET",
-          "platform": "snowflake"
+          "platform": "snowflake",
+          "dialect": "snowflake"
         },
         "schemaInputs": {
           "sourceField": "customer_email",
@@ -359,9 +382,30 @@
           "sourceFieldSchema": {
             "fieldPath": "customer_email",
             "nativeDataType": "varchar",
-            "nullable": false
+            "nullable": false,
+            "unique": false
           },
-          "capturedFieldCount": 1,
+          "capturedSchemaFields": [
+            {
+              "fieldPath": "customer_id",
+              "nativeDataType": "varchar",
+              "nullable": false,
+              "unique": true
+            },
+            {
+              "fieldPath": "customer_email",
+              "nativeDataType": "varchar",
+              "nullable": false,
+              "unique": false
+            },
+            {
+              "fieldPath": "updated_at",
+              "nativeDataType": "timestamp",
+              "nullable": false,
+              "unique": false
+            }
+          ],
+          "capturedFieldCount": 3,
           "generatedTests": [
             "not_null"
           ],
@@ -439,28 +483,42 @@
           "Live query proof can raise deterministic risk, but it does not directly rewrite the staged migration rule."
         ]
       },
+      "generation": {
+        "contextsealRunId": "csr_e46cd53f1c61e8701ee8d32cda2e5126",
+        "policyVersion": "2026-07-14",
+        "policyHash": "eadf377cceb74742db8523466ec4fd700574e55e4786bbc993c7985053d31a82",
+        "migrationStrategy": "EXPAND_MIGRATE_CONTRACT",
+        "targetPlatform": "snowflake",
+        "dialect": "snowflake",
+        "intendedDeprecationWindow": "Retain the source field until every known downstream consumer migrates and a later scoped approval authorizes removal."
+      },
       "strategy": "EXPAND_MIGRATE_CONTRACT",
       "summary": "Add contact_email, backfill from customer_email, migrate consumers, then deprecate customer_email.",
       "files": [
         {
           "path": "generated/models/gold_customers_contextseal.sql",
           "kind": "DBT_MODEL",
-          "content": "-- ContextSeal safe expansion: keep the old field during consumer migration\nselect\n  *,\n  customer_email as contact_email\nfrom {{ ref('gold_customers') }}\n"
+          "content": "-- ContextSeal safe expansion: keep the old field during consumer migration\nselect\n  customer_id,\n  customer_email,\n  updated_at,\n  customer_email as contact_email\nfrom {{ ref('gold_customers') }}\n"
         },
         {
           "path": "generated/models/gold_customers_contextseal.yml",
           "kind": "DBT_TESTS",
-          "content": "version: 2\nmodels:\n  - name: gold_customers_contextseal\n    description: \"ContextSeal migration candidate; strategy EXPAND_MIGRATE_CONTRACT.\"\n    columns:\n      - name: contact_email\n        tests:\n          - not_null\n"
+          "content": "version: 2\nmodels:\n  - name: gold_customers_contextseal\n    description: \"ContextSeal migration candidate; strategy EXPAND_MIGRATE_CONTRACT.\"\n    meta:\n      contextseal:\n        run_id: \"csr_e46cd53f1c61e8701ee8d32cda2e5126\"\n        policy_version: \"2026-07-14\"\n        policy_hash: \"eadf377cceb74742db8523466ec4fd700574e55e4786bbc993c7985053d31a82\"\n        migration_strategy: \"EXPAND_MIGRATE_CONTRACT\"\n        target_platform: \"snowflake\"\n        dialect: \"snowflake\"\n        intended_deprecation_window: \"Retain the source field until every known downstream consumer migrates and a later scoped approval authorizes removal.\"\n    columns:\n      - name: customer_email\n        tests:\n          - not_null\n      - name: contact_email\n"
+        },
+        {
+          "path": "generated/tests/gold_customers_contextseal_rename_parity.sql",
+          "kind": "DBT_DATA_TEST",
+          "content": "-- ContextSeal rename parity test: returns rows only when compatibility values diverge\nselect\n  customer_email as source_value,\n  contact_email as compatibility_value\nfrom {{ ref('gold_customers_contextseal') }}\nwhere customer_email is distinct from contact_email\n"
         },
         {
           "path": "generated/rollback/gold_customers.sql",
           "kind": "ROLLBACK",
-          "content": "-- Rollback keeps the original field authoritative\nselect * exclude (contact_email) from {{ ref('gold_customers_contextseal') }}\n"
+          "content": "-- Rollback keeps the original field authoritative\nselect\n  customer_id,\n  customer_email,\n  updated_at\nfrom {{ ref('gold_customers_contextseal') }}\n"
         },
         {
           "path": "generated/IMPACTED_OWNERS.md",
           "kind": "OWNER_BRIEF",
-          "content": "# Impacted owner briefing\n\nRisk verdict: **BLOCKED** (80/100)\nMigration strategy: **EXPAND_MIGRATE_CONTRACT**\n\n- build_segments (DATA_JOB) — owners: urn:li:corpgroup:growth-data\n- customer_segments (DATASET) — owners: urn:li:corpgroup:growth-data\n- Executive Customer Health (DASHBOARD) — owners: urn:li:corpgroup:customer-success\n- churn_prediction (ML_MODEL) — owners: urn:li:corpgroup:ml-platform\n- Retention Campaign (DASHBOARD) — owners: urn:li:corpgroup:marketing-analytics"
+          "content": "# Impacted owner briefing\n\nContextSeal run: `csr_e46cd53f1c61e8701ee8d32cda2e5126`\nPolicy: `2026-07-14` / `eadf377cceb74742db8523466ec4fd700574e55e4786bbc993c7985053d31a82`\nDialect contract: `snowflake` / `snowflake`\nDeprecation window: Retain the source field until every known downstream consumer migrates and a later scoped approval authorizes removal.\n\nRisk verdict: **BLOCKED** (80/100)\nMigration strategy: **EXPAND_MIGRATE_CONTRACT**\n\n- build_segments (DATA_JOB) — owners: urn:li:corpgroup:growth-data\n- customer_segments (DATASET) — owners: urn:li:corpgroup:growth-data\n- Executive Customer Health (DASHBOARD) — owners: urn:li:corpgroup:customer-success\n- churn_prediction (ML_MODEL) — owners: urn:li:corpgroup:ml-platform\n- Retention Campaign (DASHBOARD) — owners: urn:li:corpgroup:marketing-analytics"
         }
       ]
     },
@@ -483,7 +541,7 @@
       {
         "claim": "Migration artifacts generated",
         "state": "PASS",
-        "artifact": "4 generated files; grounding contract 1.0"
+        "artifact": "5 generated files; grounding contract 1.0"
       },
       {
         "claim": "Generated SQL executed in warehouse",
@@ -509,7 +567,7 @@
     "aiGroundingInput": {
       "schemaVersion": "1.0",
       "product": "ContextSeal",
-      "generatedFromRunId": "csr_4ab7ef5169bd2e0dcbfd64669646933a",
+      "generatedFromRunId": "csr_e46cd53f1c61e8701ee8d32cda2e5126",
       "mode": "fixture",
       "runState": "AWAITING_HUMAN",
       "evidenceBoundary": {
@@ -696,6 +754,10 @@
             "kind": "DBT_TESTS"
           },
           {
+            "path": "generated/tests/gold_customers_contextseal_rename_parity.sql",
+            "kind": "DBT_DATA_TEST"
+          },
+          {
             "path": "generated/rollback/gold_customers.sql",
             "kind": "ROLLBACK"
           },
@@ -736,7 +798,7 @@
         {
           "claim": "Migration artifacts generated",
           "state": "PASS",
-          "artifact": "4 generated files; grounding contract 1.0"
+          "artifact": "5 generated files; grounding contract 1.0"
         },
         {
           "claim": "Generated SQL executed in warehouse",
@@ -783,7 +845,7 @@
     }
   },
   "approved": {
-    "runId": "csr_4ab7ef5169bd2e0dcbfd64669646933a",
+    "runId": "csr_e46cd53f1c61e8701ee8d32cda2e5126",
     "state": "APPROVED_FOR_WRITEBACK",
     "mode": "fixture",
     "createdAt": "2026-07-22T06:39:36.461Z",
@@ -824,8 +886,19 @@
           ],
           "schemaFields": [
             {
+              "fieldPath": "customer_id",
+              "nativeDataType": "varchar",
+              "nullable": false,
+              "unique": true
+            },
+            {
               "fieldPath": "customer_email",
               "nativeDataType": "varchar",
+              "nullable": false
+            },
+            {
+              "fieldPath": "updated_at",
+              "nativeDataType": "timestamp",
               "nullable": false
             }
           ],
@@ -961,8 +1034,19 @@
         ],
         "schemaFields": [
           {
+            "fieldPath": "customer_id",
+            "nativeDataType": "varchar",
+            "nullable": false,
+            "unique": true
+          },
+          {
             "fieldPath": "customer_email",
             "nativeDataType": "varchar",
+            "nullable": false
+          },
+          {
+            "fieldPath": "updated_at",
+            "nativeDataType": "timestamp",
             "nullable": false
           }
         ],
@@ -1132,7 +1216,8 @@
           "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)",
           "entityName": "gold_customers",
           "type": "DATASET",
-          "platform": "snowflake"
+          "platform": "snowflake",
+          "dialect": "snowflake"
         },
         "schemaInputs": {
           "sourceField": "customer_email",
@@ -1142,9 +1227,30 @@
           "sourceFieldSchema": {
             "fieldPath": "customer_email",
             "nativeDataType": "varchar",
-            "nullable": false
+            "nullable": false,
+            "unique": false
           },
-          "capturedFieldCount": 1,
+          "capturedSchemaFields": [
+            {
+              "fieldPath": "customer_id",
+              "nativeDataType": "varchar",
+              "nullable": false,
+              "unique": true
+            },
+            {
+              "fieldPath": "customer_email",
+              "nativeDataType": "varchar",
+              "nullable": false,
+              "unique": false
+            },
+            {
+              "fieldPath": "updated_at",
+              "nativeDataType": "timestamp",
+              "nullable": false,
+              "unique": false
+            }
+          ],
+          "capturedFieldCount": 3,
           "generatedTests": [
             "not_null"
           ],
@@ -1222,40 +1328,64 @@
           "Live query proof can raise deterministic risk, but it does not directly rewrite the staged migration rule."
         ]
       },
+      "generation": {
+        "contextsealRunId": "csr_e46cd53f1c61e8701ee8d32cda2e5126",
+        "policyVersion": "2026-07-14",
+        "policyHash": "eadf377cceb74742db8523466ec4fd700574e55e4786bbc993c7985053d31a82",
+        "migrationStrategy": "EXPAND_MIGRATE_CONTRACT",
+        "targetPlatform": "snowflake",
+        "dialect": "snowflake",
+        "intendedDeprecationWindow": "Retain the source field until every known downstream consumer migrates and a later scoped approval authorizes removal."
+      },
       "strategy": "EXPAND_MIGRATE_CONTRACT",
       "summary": "Add contact_email, backfill from customer_email, migrate consumers, then deprecate customer_email.",
       "files": [
         {
           "path": "generated/models/gold_customers_contextseal.sql",
           "kind": "DBT_MODEL",
-          "content": "-- ContextSeal safe expansion: keep the old field during consumer migration\nselect\n  *,\n  customer_email as contact_email\nfrom {{ ref('gold_customers') }}\n"
+          "content": "-- ContextSeal safe expansion: keep the old field during consumer migration\nselect\n  customer_id,\n  customer_email,\n  updated_at,\n  customer_email as contact_email\nfrom {{ ref('gold_customers') }}\n"
         },
         {
           "path": "generated/models/gold_customers_contextseal.yml",
           "kind": "DBT_TESTS",
-          "content": "version: 2\nmodels:\n  - name: gold_customers_contextseal\n    description: \"ContextSeal migration candidate; strategy EXPAND_MIGRATE_CONTRACT.\"\n    columns:\n      - name: contact_email\n        tests:\n          - not_null\n"
+          "content": "version: 2\nmodels:\n  - name: gold_customers_contextseal\n    description: \"ContextSeal migration candidate; strategy EXPAND_MIGRATE_CONTRACT.\"\n    meta:\n      contextseal:\n        run_id: \"csr_e46cd53f1c61e8701ee8d32cda2e5126\"\n        policy_version: \"2026-07-14\"\n        policy_hash: \"eadf377cceb74742db8523466ec4fd700574e55e4786bbc993c7985053d31a82\"\n        migration_strategy: \"EXPAND_MIGRATE_CONTRACT\"\n        target_platform: \"snowflake\"\n        dialect: \"snowflake\"\n        intended_deprecation_window: \"Retain the source field until every known downstream consumer migrates and a later scoped approval authorizes removal.\"\n    columns:\n      - name: customer_email\n        tests:\n          - not_null\n      - name: contact_email\n"
+        },
+        {
+          "path": "generated/tests/gold_customers_contextseal_rename_parity.sql",
+          "kind": "DBT_DATA_TEST",
+          "content": "-- ContextSeal rename parity test: returns rows only when compatibility values diverge\nselect\n  customer_email as source_value,\n  contact_email as compatibility_value\nfrom {{ ref('gold_customers_contextseal') }}\nwhere customer_email is distinct from contact_email\n"
         },
         {
           "path": "generated/rollback/gold_customers.sql",
           "kind": "ROLLBACK",
-          "content": "-- Rollback keeps the original field authoritative\nselect * exclude (contact_email) from {{ ref('gold_customers_contextseal') }}\n"
+          "content": "-- Rollback keeps the original field authoritative\nselect\n  customer_id,\n  customer_email,\n  updated_at\nfrom {{ ref('gold_customers_contextseal') }}\n"
         },
         {
           "path": "generated/IMPACTED_OWNERS.md",
           "kind": "OWNER_BRIEF",
-          "content": "# Impacted owner briefing\n\nRisk verdict: **BLOCKED** (80/100)\nMigration strategy: **EXPAND_MIGRATE_CONTRACT**\n\n- build_segments (DATA_JOB) — owners: urn:li:corpgroup:growth-data\n- customer_segments (DATASET) — owners: urn:li:corpgroup:growth-data\n- Executive Customer Health (DASHBOARD) — owners: urn:li:corpgroup:customer-success\n- churn_prediction (ML_MODEL) — owners: urn:li:corpgroup:ml-platform\n- Retention Campaign (DASHBOARD) — owners: urn:li:corpgroup:marketing-analytics"
+          "content": "# Impacted owner briefing\n\nContextSeal run: `csr_e46cd53f1c61e8701ee8d32cda2e5126`\nPolicy: `2026-07-14` / `eadf377cceb74742db8523466ec4fd700574e55e4786bbc993c7985053d31a82`\nDialect contract: `snowflake` / `snowflake`\nDeprecation window: Retain the source field until every known downstream consumer migrates and a later scoped approval authorizes removal.\n\nRisk verdict: **BLOCKED** (80/100)\nMigration strategy: **EXPAND_MIGRATE_CONTRACT**\n\n- build_segments (DATA_JOB) — owners: urn:li:corpgroup:growth-data\n- customer_segments (DATASET) — owners: urn:li:corpgroup:growth-data\n- Executive Customer Health (DASHBOARD) — owners: urn:li:corpgroup:customer-success\n- churn_prediction (ML_MODEL) — owners: urn:li:corpgroup:ml-platform\n- Retention Campaign (DASHBOARD) — owners: urn:li:corpgroup:marketing-analytics"
         }
       ],
       "manifest": {
         "manifestVersion": "1.0",
-        "generatedFromRunId": "csr_4ab7ef5169bd2e0dcbfd64669646933a",
+        "generatedFromRunId": "csr_e46cd53f1c61e8701ee8d32cda2e5126",
         "passportContext": {
-          "passportId": "csp_6612513f5f952e97ba94",
-          "manifestHash": "6612513f5f952e97ba94dcdd6619a2b9a8ee35b4ee67b3a240dd89ebeaa6d474",
+          "passportId": "csp_7cb1e5659501734e6205",
+          "manifestHash": "7cb1e5659501734e62055e51050b62d112a4f0010def8ddf6eb0c9c0bb2ebf28",
           "validUntil": "2026-07-23T06:39:36.469Z",
           "status": "CERTIFIED",
           "artifactGroundingContractVersion": "1.0",
           "artifactGroundingRuleId": "RENAME_COLUMN_REQUIRES_COMPATIBILITY_FIELD"
+        },
+        "deliveryMetadata": {
+          "contextsealRunId": "csr_e46cd53f1c61e8701ee8d32cda2e5126",
+          "passportId": "csp_7cb1e5659501734e6205",
+          "policyVersion": "2026-07-14",
+          "policyHash": "eadf377cceb74742db8523466ec4fd700574e55e4786bbc993c7985053d31a82",
+          "migrationStrategy": "EXPAND_MIGRATE_CONTRACT",
+          "targetPlatform": "snowflake",
+          "dialect": "snowflake",
+          "intendedDeprecationWindow": "Retain the source field until every known downstream consumer migrates and a later scoped approval authorizes removal."
         },
         "grounding": {
           "contractVersion": "1.0",
@@ -1263,7 +1393,8 @@
             "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)",
             "entityName": "gold_customers",
             "type": "DATASET",
-            "platform": "snowflake"
+            "platform": "snowflake",
+            "dialect": "snowflake"
           },
           "schemaInputs": {
             "sourceField": "customer_email",
@@ -1273,9 +1404,30 @@
             "sourceFieldSchema": {
               "fieldPath": "customer_email",
               "nativeDataType": "varchar",
-              "nullable": false
+              "nullable": false,
+              "unique": false
             },
-            "capturedFieldCount": 1,
+            "capturedSchemaFields": [
+              {
+                "fieldPath": "customer_id",
+                "nativeDataType": "varchar",
+                "nullable": false,
+                "unique": true
+              },
+              {
+                "fieldPath": "customer_email",
+                "nativeDataType": "varchar",
+                "nullable": false,
+                "unique": false
+              },
+              {
+                "fieldPath": "updated_at",
+                "nativeDataType": "timestamp",
+                "nullable": false,
+                "unique": false
+              }
+            ],
+            "capturedFieldCount": 3,
             "generatedTests": [
               "not_null"
             ],
@@ -1357,7 +1509,7 @@
           {
             "path": "generated/models/gold_customers_contextseal.sql",
             "kind": "DBT_MODEL",
-            "sha256": "58ebc7618645c7fcbcf98ecf975c40364b93c2f20a7c340f98b5f9dceabb8f81",
+            "sha256": "d8fd23e6e7d6dc946879eac2a70f2303119a8b85c8fa6a46d2c78ba98d1dfcd9",
             "groundingRefs": [
               "target",
               "schemaInputs",
@@ -1368,7 +1520,17 @@
           {
             "path": "generated/models/gold_customers_contextseal.yml",
             "kind": "DBT_TESTS",
-            "sha256": "e8efd6111df11548bd6890f2225ea3ebc5dc217f34c35b4a204a41db48d17a65",
+            "sha256": "c5987232067d8463f6c9df95c6671f9e779a9a3fb101cbef4f028e33153d9c31",
+            "groundingRefs": [
+              "target",
+              "schemaInputs",
+              "migrationRule"
+            ]
+          },
+          {
+            "path": "generated/tests/gold_customers_contextseal_rename_parity.sql",
+            "kind": "DBT_DATA_TEST",
+            "sha256": "0be4abe1ada50a6c7f7ce2836e29f9b4b267e378a8f4bd655bfe0d71413ee41e",
             "groundingRefs": [
               "target",
               "schemaInputs",
@@ -1378,7 +1540,7 @@
           {
             "path": "generated/rollback/gold_customers.sql",
             "kind": "ROLLBACK",
-            "sha256": "e7ab0ad5cb311080f08d1b210c9564d5a17bdf3af4ec2d4e41e7f31bfd771485",
+            "sha256": "768ccad327f17a7b2a4ab2841fd1067d6922b0beab0a8fe80c60d61eaf69742c",
             "groundingRefs": [
               "target",
               "schemaInputs",
@@ -1388,7 +1550,7 @@
           {
             "path": "generated/IMPACTED_OWNERS.md",
             "kind": "OWNER_BRIEF",
-            "sha256": "bd44e015d978bb77264bcc3cacf7de479f7854cb937c5d6ae492178425555ea1",
+            "sha256": "d1a227e8455927615e5cf3a78c1e5005681f106afefe854744d4889af681710f",
             "groundingRefs": [
               "lineageInputs",
               "policyInputs",
@@ -1417,7 +1579,7 @@
       {
         "claim": "Migration artifacts generated",
         "state": "PASS",
-        "artifact": "4 generated files; grounding contract 1.0"
+        "artifact": "5 generated files; grounding contract 1.0"
       },
       {
         "claim": "Generated SQL executed in warehouse",
@@ -1443,7 +1605,7 @@
     "aiGroundingInput": {
       "schemaVersion": "1.0",
       "product": "ContextSeal",
-      "generatedFromRunId": "csr_4ab7ef5169bd2e0dcbfd64669646933a",
+      "generatedFromRunId": "csr_e46cd53f1c61e8701ee8d32cda2e5126",
       "mode": "fixture",
       "runState": "AWAITING_HUMAN",
       "evidenceBoundary": {
@@ -1630,6 +1792,10 @@
             "kind": "DBT_TESTS"
           },
           {
+            "path": "generated/tests/gold_customers_contextseal_rename_parity.sql",
+            "kind": "DBT_DATA_TEST"
+          },
+          {
             "path": "generated/rollback/gold_customers.sql",
             "kind": "ROLLBACK"
           },
@@ -1670,7 +1836,7 @@
         {
           "claim": "Migration artifacts generated",
           "state": "PASS",
-          "artifact": "4 generated files; grounding contract 1.0"
+          "artifact": "5 generated files; grounding contract 1.0"
         },
         {
           "claim": "Generated SQL executed in warehouse",
@@ -1724,13 +1890,13 @@
     },
     "passport": {
       "passportVersion": "2.0",
-      "runId": "csr_4ab7ef5169bd2e0dcbfd64669646933a",
+      "runId": "csr_e46cd53f1c61e8701ee8d32cda2e5126",
       "createdAt": "2026-07-22T06:39:36.461Z",
       "status": "CERTIFIED",
       "mode": "fixture",
       "targetUrn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)",
       "requestHash": "a0bd0168caa39e82d232eac2a3a9f3ebeeaf9a0b7dc3dac7ef84e05d6bb281f9",
-      "contextHash": "de3e5c8ccd78f5149a3d167584f2c2db88aa30ba1bdfcce8f0d2eeabb07eaf32",
+      "contextHash": "d730085ba53b8773e93e449670ef59dff2551d55f24cee269097ac5c02381758",
       "policy": {
         "version": "2026-07-14",
         "sha256": "eadf377cceb74742db8523466ec4fd700574e55e4786bbc993c7985053d31a82"
@@ -1756,7 +1922,7 @@
           "ML_MODEL": 1
         }
       },
-      "impactHash": "db6e767b2b95f7b9d7e52c042a61204afc83f8ea6eeb119c7c08673ba5f40c19",
+      "impactHash": "695d178cdd6709bbaff1bbf457de60da6fbbd1bbb89965a8e27b78da8da03792",
       "migrationStrategy": "EXPAND_MIGRATE_CONTRACT",
       "migrationSummary": "Add contact_email, backfill from customer_email, migrate consumers, then deprecate customer_email.",
       "artifactGroundingContractVersion": "1.0",
@@ -1764,19 +1930,23 @@
       "artifactHashes": [
         {
           "path": "generated/models/gold_customers_contextseal.sql",
-          "sha256": "58ebc7618645c7fcbcf98ecf975c40364b93c2f20a7c340f98b5f9dceabb8f81"
+          "sha256": "d8fd23e6e7d6dc946879eac2a70f2303119a8b85c8fa6a46d2c78ba98d1dfcd9"
         },
         {
           "path": "generated/models/gold_customers_contextseal.yml",
-          "sha256": "e8efd6111df11548bd6890f2225ea3ebc5dc217f34c35b4a204a41db48d17a65"
+          "sha256": "c5987232067d8463f6c9df95c6671f9e779a9a3fb101cbef4f028e33153d9c31"
+        },
+        {
+          "path": "generated/tests/gold_customers_contextseal_rename_parity.sql",
+          "sha256": "0be4abe1ada50a6c7f7ce2836e29f9b4b267e378a8f4bd655bfe0d71413ee41e"
         },
         {
           "path": "generated/rollback/gold_customers.sql",
-          "sha256": "e7ab0ad5cb311080f08d1b210c9564d5a17bdf3af4ec2d4e41e7f31bfd771485"
+          "sha256": "768ccad327f17a7b2a4ab2841fd1067d6922b0beab0a8fe80c60d61eaf69742c"
         },
         {
           "path": "generated/IMPACTED_OWNERS.md",
-          "sha256": "bd44e015d978bb77264bcc3cacf7de479f7854cb937c5d6ae492178425555ea1"
+          "sha256": "d1a227e8455927615e5cf3a78c1e5005681f106afefe854744d4889af681710f"
         }
       ],
       "evidence": [
@@ -1798,7 +1968,7 @@
         {
           "claim": "Migration artifacts generated",
           "state": "PASS",
-          "artifact": "4 generated files; grounding contract 1.0"
+          "artifact": "5 generated files; grounding contract 1.0"
         },
         {
           "claim": "Generated SQL executed in warehouse",
@@ -1829,14 +1999,14 @@
         "decidedAt": "2026-07-22T06:39:36.469Z"
       },
       "validUntil": "2026-07-23T06:39:36.469Z",
-      "passportId": "csp_6612513f5f952e97ba94",
-      "manifestHash": "6612513f5f952e97ba94dcdd6619a2b9a8ee35b4ee67b3a240dd89ebeaa6d474"
+      "passportId": "csp_7cb1e5659501734e6205",
+      "manifestHash": "7cb1e5659501734e62055e51050b62d112a4f0010def8ddf6eb0c9c0bb2ebf28"
     }
   },
   "aiGroundingInput": {
     "schemaVersion": "1.0",
     "product": "ContextSeal",
-    "generatedFromRunId": "csr_4ab7ef5169bd2e0dcbfd64669646933a",
+    "generatedFromRunId": "csr_e46cd53f1c61e8701ee8d32cda2e5126",
     "mode": "fixture",
     "runState": "AWAITING_HUMAN",
     "evidenceBoundary": {
@@ -2023,6 +2193,10 @@
           "kind": "DBT_TESTS"
         },
         {
+          "path": "generated/tests/gold_customers_contextseal_rename_parity.sql",
+          "kind": "DBT_DATA_TEST"
+        },
+        {
           "path": "generated/rollback/gold_customers.sql",
           "kind": "ROLLBACK"
         },
@@ -2063,7 +2237,7 @@
       {
         "claim": "Migration artifacts generated",
         "state": "PASS",
-        "artifact": "4 generated files; grounding contract 1.0"
+        "artifact": "5 generated files; grounding contract 1.0"
       },
       {
         "claim": "Generated SQL executed in warehouse",
@@ -2160,5 +2334,111 @@
         ]
       }
     }
+  },
+  "recordedLiveProof": {
+    "status": "PASS",
+    "label": "RECORDED LIVE-LOCAL PROOF",
+    "note": "Recorded disposable-local synthetic DataHub evidence. This page is not connected to a live catalog.",
+    "observedAt": "2026-08-02T20:45:59.024Z",
+    "targetUrn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)",
+    "rawEvidenceHash": "f24da9bbb35d7ccf42c72ee6b0ccd1f91997ab428ace8947de671dc9a53feb8e",
+    "sourceProvenance": {
+      "commitSha": "baa61387324868b39427030c447b94c2b9599c03",
+      "initialRawEvidenceHash": "4b57e4a146c557b1cee095528676f83b48526b91a523fd60a06136681cc18b3e",
+      "finalRawEvidenceHash": "f24da9bbb35d7ccf42c72ee6b0ccd1f91997ab428ace8947de671dc9a53feb8e"
+    },
+    "mcp": {
+      "serverName": "datahub",
+      "serverVersion": "3.4.5",
+      "launcherPackage": "mcp-server-datahub@0.6.0"
+    },
+    "read": {
+      "toolCount": 10,
+      "toolNames": [
+        "get_entities",
+        "list_schema_fields",
+        "get_lineage",
+        "get_lineage_paths_between",
+        "get_dataset_queries"
+      ],
+      "downstreamAssetCount": 6,
+      "queryCount": 0,
+      "entityTypeCounts": {
+        "DATASET": 2,
+        "DATA_JOB": 2,
+        "DASHBOARD": 2
+      },
+      "maxHops": 5
+    },
+    "writeback": {
+      "state": "PASS",
+      "mutationReceiptCount": 3,
+      "receiptStates": [
+        {
+          "tool": "add_structured_properties",
+          "action": "APPLIED",
+          "state": "PASS"
+        },
+        {
+          "tool": "update_description",
+          "action": "APPLIED",
+          "state": "PASS"
+        },
+        {
+          "tool": "save_document",
+          "action": "APPLIED",
+          "state": "PASS"
+        }
+      ],
+      "firstRunActions": [
+        {
+          "tool": "add_structured_properties",
+          "action": "APPLIED",
+          "state": "PASS"
+        },
+        {
+          "tool": "update_description",
+          "action": "APPLIED",
+          "state": "PASS"
+        },
+        {
+          "tool": "save_document",
+          "action": "APPLIED",
+          "state": "PASS"
+        }
+      ],
+      "secondRunActions": [
+        {
+          "tool": "add_structured_properties",
+          "action": "SKIPPED",
+          "state": "PASS"
+        },
+        {
+          "tool": "update_description",
+          "action": "SKIPPED",
+          "state": "PASS"
+        },
+        {
+          "tool": "save_document",
+          "action": "SKIPPED",
+          "state": "PASS"
+        }
+      ],
+      "durableReadbackState": "PASS",
+      "idempotencyStrategy": "VERIFY_THEN_SKIP",
+      "exactOneDescription": {
+        "state": "PASS",
+        "count": 1
+      },
+      "exactOneDocument": {
+        "state": "PASS",
+        "verified": true
+      },
+      "documentBindingState": "PASS"
+    },
+    "evidencePaths": [
+      "examples/outputs/live-datahub-read-evidence.json",
+      "examples/outputs/live-datahub-writeback-evidence.json"
+    ]
   }
 }

@@ -4,13 +4,14 @@ Bu rehberle İngilizce konuşmadan, ücretsiz araçlarla, üç dakikadan kısa �
 
 ## Son videonun hedefi
 
-- Süre: yaklaşık 1 dakika 40 saniye; hedef aralık 90-110 saniye.
+- Süre: yaklaşık 2 dakika 20 saniye; hedef aralık 2 dakika 15 saniye ile 2 dakika 30 saniye.
 - Görüntü: 1920 × 1080.
 - Dil: İngilizce bilgisayar sesi.
 - Altyazı: İngilizce.
 - Müzik: kullanılmayacak.
 - Kişisel bilgi: görünmeyecek.
 - Varsayılan akış fixture tabanlıdır; canlı MCP kanıtı gösterilecekse bunun sentetik verili yerel DataHub olduğunu açıkça söyleyeceğiz.
+- Her ürün karesinde fixture rozeti görünür kalmalı; kayıtlı kanıt bölümü gösterilirse `RECORDED LIVE-LOCAL PROOF` etiketi de kadrajda kalmalı.
 
 ## Kullanılacak ücretsiz araçlar
 
@@ -49,7 +50,7 @@ Bu rehberle İngilizce konuşmadan, ücretsiz araçlarla, üç dakikadan kısa �
 
 ### 3A. İsteğe bağlı canlı yerel kanıt sekmesi
 
-Bu bölüm varsayılan 100 saniyelik kaydın zorunlu parçası değildir. Yalnız `examples/outputs/live-datahub-read-evidence.json` ve `examples/outputs/live-datahub-writeback-evidence.json` ile eşleşen, sentetik metadata içeren yerel DataHub kanıtı hazırsa kullan.
+Bu bölüm varsayılan 2 dakika 20 saniyelik kaydın zorunlu parçası değildir. Yalnız `examples/outputs/live-datahub-read-evidence.json` ve `examples/outputs/live-datahub-writeback-evidence.json` ile eşleşen, sentetik metadata içeren yerel DataHub kanıtı hazırsa kullan.
 
 1. Chrome'da yeni sekme aç ve `http://localhost:9002` adresine git.
 2. Güncel Quickstart çıktısının verdiği kimlik bilgilerini kullan; tahmin etme veya gizli bilgi gösterme.
@@ -123,11 +124,11 @@ OBS’nin alt bölümünde **Sources** adlı kutuyu bul.
 3. **Analyze the demo change** düğmesine bir kez bas.
 4. Risk puanını, fixture rozetiyle birlikte beş aşağı yönlü varlığı ve bulguları göster.
 5. Local AI Copilot panelini göster; AI'nın sadece açıklama yaptığı ve `NOT_ENABLED` durumunun dürüstçe göründüğü anı kaydet.
-6. Üretilen dört dosyayı, sandbox kanıtını ve PR inceleme paketini göster.
+6. Agent Run Trace'i, üretilen beş dosyayı, rename diff'i, sandbox kanıtını ve PR inceleme paketini göster.
 7. İnsan onayı bölümüne kaydır ve **Approve safe plan** düğmesine bir kez bas.
 8. Pasaport numarası ve manifest hash oluşunca birkaç saniye bekle.
 9. **Prepare DataHub write-back** düğmesine bas. Fixture gösteriminde hiçbir kataloğun değiştirilmediği yazmalıdır.
-10. İsteğe bağlı canlı yerel kanıtı yalnız sentetik metadata etiketiyle kısa göster veya fixture kapanışıyla devam et.
+10. `RECORDED LIVE-LOCAL PROOF` receipt'ini yalnız sentetik metadata etiketiyle kısa göster veya fixture kapanışıyla devam et; bunu aktif canlı katalog bağlantısı diye anlatma.
 11. OBS’ye dön ve **Stop Recording** düğmesine bas.
 
 ### Kayıt sırasında dikkat et
@@ -136,7 +137,7 @@ OBS’nin alt bölümünde **Sources** adlı kutuyu bul.
 - Metin okurken ekranda en az 3 saniye kal.
 - Yanlış düğmeye basarsan kaydı durdurup yeniden başla.
 - Hata mesajını gizleyip devam etme.
-- Fixture modundaysan üstteki fixture rozetini görüntüden çıkarma.
+- Fixture modundaysan üstteki fixture rozetini görüntüden çıkarma; recorded proof görünürse onun etiketini de görüntüden çıkarma.
 
 ## Bölüm D — Clipchamp ile videoyu düzenle
 
@@ -197,13 +198,13 @@ The deterministic policy blocks the direct change with a risk score of eighty an
 #### Ses 5 — AI sınırı
 
 ```text
-After the deterministic verdict, the local AI layer creates bounded operator guidance. It can explain the evidence, but it can never change the verdict or evidence state.
+The 12-step agent trace shows evidence moving before action. After the deterministic verdict, the local AI layer creates bounded operator guidance. It can explain the evidence, but it can never change the verdict or evidence state.
 ```
 
 #### Ses 6 — Güvenli çözüm
 
 ```text
-Instead of a destructive rename, ContextSeal creates an expand, migrate, and contract package: dbt model, schema tests, rollback, owner brief, sandbox evidence, and a reviewer-ready PR packet.
+Instead of a destructive rename, ContextSeal exposes an inspectable expand, migrate, and contract package: dbt model, parity test, rollback, owner brief, sandbox evidence, and a reviewer-ready PR packet.
 ```
 
 #### Ses 7 — Onay ve pasaport
@@ -215,7 +216,7 @@ A human approves only this safe scope. ContextSeal binds the request, context, a
 #### Ses 8 — Dürüst kapanış
 
 ```text
-In this public fixture, write-back remains not run and no catalog is modified. Separate disposable local DataHub evidence shows bounded write-back on synthetic metadata, so the next human and agent can inherit the decision.
+In this public fixture, write-back remains not run and no catalog is modified. The separately labeled RECORDED LIVE-LOCAL PROOF shows three bounded write-backs, a skipped idempotent retry, and durable read-back on synthetic metadata; it is not a current live catalog connection.
 ```
 
 ### 5. Ses ayarı
@@ -325,7 +326,7 @@ seçeneğini işaretle.
 
 ## Son video kontrol listesi
 
-- [ ] Video 90-110 saniye arasında.
+- [ ] Video 2 dakika 15 saniye ile 2 dakika 30 saniye arasında.
 - [ ] İngilizce ses var.
 - [ ] İngilizce altyazı var.
 - [ ] Telifli müzik yok.

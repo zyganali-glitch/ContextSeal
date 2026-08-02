@@ -38,6 +38,7 @@ BOUNDARY = {
     "evidence_boundary": "synthetic-local",
 }
 SEED_CONFIRMATION = "SEED_CONTEXTSEAL_SYNTHETIC_METADATA_V1"
+SEED_RESET_CONFIRMATION = "RESET_CONTEXTSEAL_SYNTHETIC_METADATA_V1"
 
 # These are legacy ContextSeal-owned synthetic entities from the first seed
 # format, where every platform was represented as a Dataset. Removing only
@@ -76,13 +77,13 @@ def owner(name: str) -> str:
     return f"urn:li:corpuser:{name}"
 
 
-def remove_owned_legacy_entity(client: DataHubClient, urn: str) -> None:
-    """Delete an old seed entity only after its two ownership markers match."""
+def remove_owned_entity(client: DataHubClient, urn: str) -> bool:
+    """Delete one ContextSeal-owned synthetic entity, leaving foreign entities untouched."""
 
     try:
         entity = client.entities.get(urn)
     except ItemNotFoundError:
-        return
+        return False
     try:
         classify_entity_ownership(
             entity_exists=True,
@@ -94,6 +95,7 @@ def remove_owned_legacy_entity(client: DataHubClient, urn: str) -> None:
             f"Refusing to delete unowned legacy entity {urn}; ContextSeal synthetic markers do not match."
         ) from None
     client.entities.delete(urn, check_exists=True, hard=True)
+    return True
 
 
 def build_seed_entities() -> tuple[list[object], list[object], dict[str, object]]:
@@ -286,6 +288,21 @@ def verify_applied_ownership(client: DataHubClient, entities: list[object]) -> d
     return {"ownedCurrent": len(entities), "absentCleanup": len(LEGACY_URNS)}
 
 
+def reset_owned_seed(client: DataHubClient, entities: list[object]) -> dict[str, int]:
+    """Remove the exact owned graph before re-seeding a clean proof target."""
+
+    removed_current = 0
+    for entity in reversed(entities):
+        removed_current += int(remove_owned_entity(client, str(entity.urn)))
+    removed_legacy = 0
+    for legacy_urn in LEGACY_URNS:
+        removed_legacy += int(remove_owned_entity(client, legacy_urn))
+    for urn in expected_mutation_urns(entities):
+        if inspect_entity_ownership(client, urn) != "ABSENT":
+            raise SafetyError(f"Seed reset read-back still found ContextSeal-owned entity {urn}.")
+    return {"removedCurrent": removed_current, "removedLegacy": removed_legacy}
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Preflight or apply the fixed ContextSeal synthetic DataHub seed."
@@ -293,6 +310,8 @@ def parse_args() -> argparse.Namespace:
     mode = parser.add_mutually_exclusive_group()
     mode.add_argument("--preflight", action="store_true", help="Read-only ownership inspection (default).")
     mode.add_argument("--apply", action="store_true", help="Apply only after every exact gate passes.")
+    mode.add_argument("--reset-preflight", action="store_true", help="Read-only plan for a clean synthetic reset.")
+    mode.add_argument("--reset", action="store_true", help="Reset only owned synthetic entities, then seed a clean graph.")
     mode.add_argument("--print-scope", action="store_true", help="Print the compiled synthetic URN scope only.")
     return parser.parse_args()
 
@@ -309,21 +328,25 @@ def main() -> None:
 
     load_local_env()
     endpoint = parse_gms_endpoint(os.environ.get("DATAHUB_GMS_URL", ""))
+    reset_requested = args.reset or args.reset_preflight
+    operation = "contextseal-synthetic-seed-reset-v1" if reset_requested else "contextseal-synthetic-seed-v1"
+    confirmation_variable = "CONTEXTSEAL_SEED_RESET_CONFIRMATION" if reset_requested else "CONTEXTSEAL_SEED_CONFIRMATION"
+    confirmation = SEED_RESET_CONFIRMATION if reset_requested else SEED_CONFIRMATION
     contract_sha256 = hash_apply_contract({
         "seed-datahub.py": Path(__file__).read_bytes(),
         "datahub_mutation_safety.py": (Path(__file__).parent / "datahub_mutation_safety.py").read_bytes(),
     })
     plan_sha256 = build_certification_plan_hash(
-        operation="contextseal-synthetic-seed-v1",
+        operation=operation,
         endpoint=endpoint,
         expected_urns=scope,
         contract_sha256=contract_sha256,
     )
-    if args.apply:
+    if args.apply or args.reset:
         endpoint = validate_apply_gate(
             os.environ,
-            operation_confirmation_variable="CONTEXTSEAL_SEED_CONFIRMATION",
-            operation_confirmation=SEED_CONFIRMATION,
+            operation_confirmation_variable=confirmation_variable,
+            operation_confirmation=confirmation,
             expected_urns=scope,
             remote_scope_variable="CONTEXTSEAL_REMOTE_DATAHUB_SEED_URNS",
             certification_plan_sha256=plan_sha256,
@@ -334,20 +357,25 @@ def main() -> None:
     client = DataHubClient.from_env()
     ownership = preflight_ownership(client, entities)
 
-    if not args.apply:
+    if not (args.apply or args.reset):
         print(json.dumps({
             "status": "PASS",
             "mutationState": "NOT_RUN",
             "endpointBoundary": "loopback" if endpoint.is_loopback else "remote-read-only",
             "endpointSha256": hashlib.sha256(endpoint.canonical_url.encode("utf-8")).hexdigest(),
             "scopeUrnCount": len(scope),
+            "operation": operation,
             "certificationState": "PASS",
             "approvalState": "NOT_RUN",
             "certificationPlanSha256": plan_sha256,
             "ownership": ownership,
-            "nextStep": "Use --apply only with the documented exact, shell-scoped confirmations.",
+            "nextStep": "Use the matching apply command only with the documented exact, shell-scoped confirmations.",
         }, indent=2))
         return
+
+    reset_result = {"state": "NOT_RUN"}
+    if args.reset:
+        reset_result = {"state": "PASS", **reset_owned_seed(client, entities)}
 
     # Recheck each exact URN immediately before mutation. This protects the
     # bootstrap absent/existing distinction against drift after preflight.
@@ -358,7 +386,7 @@ def main() -> None:
         inspect_entity_ownership(client, str(entity.urn))
         client.entities.upsert(entity)
     for legacy_urn in LEGACY_URNS:
-        remove_owned_legacy_entity(client, legacy_urn)
+        remove_owned_entity(client, legacy_urn)
     ownership_readback = verify_applied_ownership(client, entities)
 
     summary.update({
@@ -368,6 +396,7 @@ def main() -> None:
         "certificationState": "PASS",
         "approvalState": "PASS",
         "certificationPlanSha256": plan_sha256,
+        "reset": reset_result,
         "ownershipPreflight": ownership,
         "ownershipReadbackState": "PASS",
         "ownershipReadback": ownership_readback,

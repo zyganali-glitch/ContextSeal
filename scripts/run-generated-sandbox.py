@@ -1,6 +1,7 @@
 import argparse
 import hashlib
 import json
+import re
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
@@ -78,7 +79,38 @@ def validate_manifest(manifest: dict) -> None:
     grounding = manifest.get("grounding") or {}
     require(passport.get("artifactGroundingContractVersion") == grounding.get("contractVersion"), "passport grounding contract version must match manifest grounding version")
     require(passport.get("artifactGroundingRuleId") == (grounding.get("migrationRule") or {}).get("ruleId"), "passport grounding rule id must match manifest migration rule id")
+    delivery = manifest.get("deliveryMetadata") or {}
+    require(delivery.get("contextsealRunId") == manifest.get("generatedFromRunId"), "delivery metadata run id must match manifest run id")
+    require(delivery.get("passportId") == passport.get("passportId"), "delivery metadata passport id must match manifest passport context")
+    require(delivery.get("migrationStrategy") == (grounding.get("migrationRule") or {}).get("strategy"), "delivery metadata migration strategy must match grounding")
+    require(delivery.get("targetPlatform") == (grounding.get("target") or {}).get("platform"), "delivery metadata target platform must match grounding")
+    require(delivery.get("dialect") == (grounding.get("target") or {}).get("dialect"), "delivery metadata dialect must match grounding")
+    require(isinstance(delivery.get("policyVersion"), str) and delivery["policyVersion"], "delivery metadata must include policy version")
+    require(isinstance(delivery.get("policyHash"), str) and len(delivery["policyHash"]) == 64, "delivery metadata must include policy hash")
+    require(isinstance(delivery.get("intendedDeprecationWindow"), str) and delivery["intendedDeprecationWindow"], "delivery metadata must include deprecation window")
     require(isinstance(manifest.get("artifacts"), list) and manifest["artifacts"], "manifest must include at least one artifact")
+    schema_inputs = grounding.get("schemaInputs") or {}
+    captured_fields = schema_inputs.get("capturedSchemaFields")
+    require(isinstance(captured_fields, list) and captured_fields, "schema grounding must include the authoritative captured schema fields")
+    require(schema_inputs.get("capturedFieldCount") == len(captured_fields), "captured field count must match the authoritative schema fields")
+    require(all(isinstance(field.get("fieldPath"), str) and field["fieldPath"] for field in captured_fields), "captured schema fields must have field paths")
+
+
+def projection_prefix(text: str) -> str:
+    prefix, separator, _ = text.partition("from {{ ref(")
+    require(separator, "SQL projection must select from a dbt model reference")
+    return prefix
+
+
+def require_explicit_projection(text: str, grounding: dict, artifact_name: str) -> None:
+    projection = projection_prefix(text)
+    require("select *" not in projection.lower(), f"{artifact_name} must use the authoritative explicit schema projection")
+    for field in grounding["schemaInputs"]["capturedSchemaFields"]:
+        field_path = field["fieldPath"]
+        require(
+            re.search(rf"(?m)^\s*{re.escape(field_path)}(?:,|\s*$)", projection) is not None,
+            f"{artifact_name} must project authoritative schema field {field_path}"
+        )
 
 
 def validate_model_sql(text: str, grounding: dict) -> None:
@@ -90,24 +122,24 @@ def validate_model_sql(text: str, grounding: dict) -> None:
     normalized = " ".join(text.split())
 
     require(f"ref('{entity}')" in normalized, "DBT model must reference the grounded target model")
+    require_explicit_projection(text, grounding, "DBT model")
     if rule_id == RENAME_RULE:
-                require(destination is not None, "rename rule requires a destination field")
-                require(f"{source} as {destination}" in normalized, "DBT model must backfill the destination field from the source field")
+        require(destination is not None, "rename rule requires a destination field")
+        require(f"{source} as {destination}" in normalized, "DBT model must backfill the destination field from the source field")
     elif rule_id == TYPE_RULE:
-                require(destination_type is not None, "type-change rule requires a destination type")
-                require(f"try_cast({source} as {destination_type}) as {source}_typed" in normalized, "DBT model must cast into the typed compatibility field")
+        require(destination_type is not None, "type-change rule requires a destination type")
+        require(f"try_cast({source} as {destination_type}) as {source}_typed" in normalized, "DBT model must cast into the typed compatibility field")
     elif rule_id == DROP_RULE:
-                require("direct destructive removal is not generated" in text.lower(), "drop-preserving model must keep the explicit non-destructive notice")
-                require(source in normalized, "drop-preserving model should still mention the grounded source field")
+        require("direct destructive removal is not generated" in text.lower(), "drop-preserving model must keep the explicit non-destructive notice")
+        require(source in normalized, "drop-preserving model should still mention the grounded source field")
     else:
-                fail(f"Unsupported migration rule id: {rule_id}")
+        fail(f"Unsupported migration rule id: {rule_id}")
 
 
 def validate_tests_yaml(text: str, grounding: dict) -> None:
     generated_model = grounding["schemaInputs"]["generatedModelName"]
     source = grounding["schemaInputs"]["sourceField"]
     destination = grounding["schemaInputs"]["destinationField"]
-    destination_type = grounding["schemaInputs"]["destinationType"]
     rule_id = grounding["migrationRule"]["ruleId"]
 
     if rule_id == RENAME_RULE:
@@ -120,9 +152,24 @@ def validate_tests_yaml(text: str, grounding: dict) -> None:
         fail(f"Unsupported migration rule id in tests yaml: {rule_id}")
 
     require(f"name: {generated_model}" in text, "tests yaml must name the grounded generated model")
+    require(f"- name: {source}" in text, "tests yaml must cover the grounded source field")
     require(f"- name: {expected_field}" in text, "tests yaml must cover the grounded compatibility field")
     expected_tests = grounding["schemaInputs"].get("generatedTests") or []
-    require(("- not_null" in text) == ("not_null" in expected_tests), "tests yaml not_null must match the grounded schema constraint")
+    source_block_match = re.search(rf"(?ms)^\s*- name: {re.escape(source)}\s*(.*?)(?=^\s*- name: |\Z)", text)
+    require(source_block_match is not None, "tests yaml must preserve the grounded source field block")
+    source_block = source_block_match.group(0)
+    require(("- not_null" in source_block) == ("not_null" in expected_tests), "source not_null test must match the grounded schema constraint")
+    require(("- unique" in source_block) == ("unique" in expected_tests), "source unique test must match the grounded schema constraint")
+
+
+def validate_data_test_sql(text: str, grounding: dict) -> None:
+    source = grounding["schemaInputs"]["sourceField"]
+    destination = grounding["schemaInputs"]["destinationField"]
+    generated_model = grounding["schemaInputs"]["generatedModelName"]
+    normalized = " ".join(text.split())
+    require(grounding["migrationRule"]["ruleId"] == RENAME_RULE, "only rename artifacts may emit a parity data test")
+    require(f"ref('{generated_model}')" in normalized, "parity data test must target the grounded generated model")
+    require(f"{source} is distinct from {destination}" in normalized, "parity data test must compare source and compatibility fields")
 
 
 def validate_rollback_sql(text: str, grounding: dict) -> None:
@@ -132,15 +179,15 @@ def validate_rollback_sql(text: str, grounding: dict) -> None:
     rule_id = grounding["migrationRule"]["ruleId"]
     normalized = " ".join(text.split())
 
+    require_explicit_projection(text, grounding, "rollback")
+
     if rule_id == RENAME_RULE:
         require(destination is not None, "rename rule requires a destination field")
-        require(f"exclude ({destination})" in normalized, "rollback must exclude the grounded compatibility field")
         require(f"ref('{generated_model}')" in normalized, "rollback must target the canonical grounded generated model")
     elif rule_id == TYPE_RULE:
-        require(f"exclude ({source}_typed)" in normalized, "rollback must exclude the typed compatibility field")
         require(f"ref('{generated_model}')" in normalized, "rollback must target the canonical grounded generated model")
     elif rule_id == DROP_RULE:
-        require("select 1;" in text.lower(), "drop-preserving rollback should remain a no-op")
+        require(f"ref('{generated_model}')" in normalized, "drop-preserving rollback must target the canonical grounded generated model")
     else:
         fail(f"Unsupported migration rule id in rollback sql: {rule_id}")
 
@@ -168,6 +215,8 @@ def validate_artifact(artifact: dict, grounding: dict, outputs_root: Path) -> No
         validate_model_sql(text, grounding)
     elif kind == "DBT_TESTS":
         validate_tests_yaml(text, grounding)
+    elif kind == "DBT_DATA_TEST":
+        validate_data_test_sql(text, grounding)
     elif kind == "ROLLBACK":
         validate_rollback_sql(text, grounding)
     elif kind == "OWNER_BRIEF":
@@ -186,6 +235,7 @@ def build_evidence(manifest_path: Path, repo_root: Path, manifest: dict, status:
         "manifestVersion": manifest.get("manifestVersion"),
         "generatedFromRunId": manifest.get("generatedFromRunId"),
         "passportContext": manifest.get("passportContext"),
+        "deliveryMetadata": manifest.get("deliveryMetadata"),
         "artifactCount": len(manifest.get("artifacts") or []),
         "artifacts": manifest.get("artifacts") or [],
         "message": message

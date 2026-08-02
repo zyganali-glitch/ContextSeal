@@ -46,5 +46,5 @@ The separate live path is documented in [LIVE_DATAHUB_SETUP.md](LIVE_DATAHUB_SET
 ## Pre-recorded local DataHub proof
 
 - `examples/outputs/live-datahub-read-evidence.json` preserves the five bounded read-only MCP tool types, including the saved query-read result and exact lineage-path reads for discovered downstream endpoints.
-- `examples/outputs/live-datahub-writeback-evidence.json` preserves the approved run and three successful bounded mutations.
-- Both artifacts are explicitly synthetic-local, never production evidence.
+- `examples/outputs/live-datahub-writeback-evidence.json` is a recorded `PASS` export from source commit `baa61387324868b39427030c447b94c2b9599c03`: it preserves three `APPLIED` receipts, a same-passport retry with three `SKIPPED` receipts, and exact-one durable read-back results.
+- Both artifacts are synthetic-local, never production evidence; `npm run evidence:check` passed for this recorded export, while a final submission freeze still requires evidence from its exact frozen SHA.

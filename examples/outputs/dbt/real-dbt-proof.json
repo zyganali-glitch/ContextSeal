@@ -1,6 +1,6 @@
 {
   "status": "PASS",
-  "validatedAt": "2026-08-02T09:00:54.607Z",
+  "validatedAt": "2026-08-02T20:51:32.588Z",
   "command": "npm run dbt:proof",
   "evidenceBoundary": "Synthetic DuckDB dbt-core/dbt-duckdb execution for ContextSeal generated bundles; not production warehouse execution.",
   "toolchain": {
@@ -10,8 +10,8 @@
     "dbtDuckdbVersion": "1.10.0"
   },
   "sourceImplementation": {
-    "gitHead": "a7b6f659fd7f904585df39c5e863aacfbfb353ad",
-    "generatedArtifactSetSha256": "71cebecc4e31f8c0603408fafd3b02c61a9d3e8d27f9d869b8a79312ae498f41"
+    "gitHead": "baa61387324868b39427030c447b94c2b9599c03",
+    "generatedArtifactSetSha256": "3ec710bd624eecd56aeadfcc7b5922e9e0c7e4715c3f0158a3e4ef4aa1d06867"
   },
   "scenarios": [
     {
@@ -23,85 +23,89 @@
       "generatedTests": [
         "not_null"
       ],
+      "generatedDataTestCount": 1,
       "generatedFileHashes": {
-        "generated/models/gold_customers_contextseal.sql": "58ebc7618645c7fcbcf98ecf975c40364b93c2f20a7c340f98b5f9dceabb8f81",
-        "generated/models/gold_customers_contextseal.yml": "e8efd6111df11548bd6890f2225ea3ebc5dc217f34c35b4a204a41db48d17a65",
-        "generated/rollback/gold_customers.sql": "e7ab0ad5cb311080f08d1b210c9564d5a17bdf3af4ec2d4e41e7f31bfd771485",
-        "generated/IMPACTED_OWNERS.md": "876b49a1dd355e4e1631c02e8faae535e7580b99198aa6b29b86b731e7e2b488"
+        "generated/models/gold_customers_contextseal.sql": "e96db7044a709323d242c71a3dd802f23ef143fc1d99d19a745fc6eead687efc",
+        "generated/models/gold_customers_contextseal.yml": "e31dbe6bc2388906368dc315a58e1ba1c7b9b0b4644899b2a6042613f7b0e7cd",
+        "generated/tests/gold_customers_contextseal_rename_parity.sql": "0be4abe1ada50a6c7f7ce2836e29f9b4b267e378a8f4bd655bfe0d71413ee41e",
+        "generated/rollback/gold_customers.sql": "d5970f8681f0c6d97f87d0153e463372e3ca0fb768f8958aa08fde5b59ac6c80",
+        "generated/IMPACTED_OWNERS.md": "a9d6facae6065466ad4a5f1375c6ab64ae175f509f3ac9d1871f5ba3c118fb9f"
       },
       "commands": [
         {
           "name": "dbt parse",
           "command": "uv run --with dbt-core==1.10.5 --with dbt-duckdb==1.10.0 dbt parse --project-dir <scenario> --profiles-dir <scenario>",
           "exitCode": 0,
-          "stdoutSummary": "08:59:34  Performance info: C:\\Users\\MEHMET\\AppData\\Local\\Temp\\contextseal-dbt-proof-aa9Ijd\\rename_column\\target\\perf_info.json",
+          "stdoutSummary": "20:49:30  Performance info: C:\\Users\\MEHMET\\AppData\\Local\\Temp\\contextseal-dbt-proof-cMENAk\\rename_column\\target\\perf_info.json",
           "outputTail": [
-            "08:59:32  Running with dbt=1.10.5",
-            "08:59:32  Registered adapter: duckdb=1.10.0",
-            "08:59:33  Unable to do partial parsing because saved manifest not found. Starting full parse.",
-            "08:59:34  Performance info: C:\\Users\\MEHMET\\AppData\\Local\\Temp\\contextseal-dbt-proof-aa9Ijd\\rename_column\\target\\perf_info.json"
+            "20:49:26  Running with dbt=1.10.5",
+            "20:49:26  Registered adapter: duckdb=1.10.0",
+            "20:49:27  Unable to do partial parsing because saved manifest not found. Starting full parse.",
+            "20:49:30  Performance info: C:\\Users\\MEHMET\\AppData\\Local\\Temp\\contextseal-dbt-proof-cMENAk\\rename_column\\target\\perf_info.json"
           ]
         },
         {
           "name": "dbt compile",
           "command": "uv run --with dbt-core==1.10.5 --with dbt-duckdb==1.10.0 dbt compile --project-dir <scenario> --profiles-dir <scenario>",
           "exitCode": 0,
-          "stdoutSummary": "08:59:40",
+          "stdoutSummary": "20:49:37",
           "outputTail": [
-            "08:59:39  Running with dbt=1.10.5",
-            "08:59:39  Registered adapter: duckdb=1.10.0",
-            "08:59:40  Found 3 models, 1 test, 443 macros",
-            "08:59:40  ",
-            "08:59:40  Concurrency: 1 threads (target='proof')",
-            "08:59:40"
+            "20:49:35  Running with dbt=1.10.5",
+            "20:49:36  Registered adapter: duckdb=1.10.0",
+            "20:49:37  Found 3 models, 2 data tests, 443 macros",
+            "20:49:37  ",
+            "20:49:37  Concurrency: 1 threads (target='proof')",
+            "20:49:37"
           ]
         },
         {
           "name": "dbt run",
           "command": "uv run --with dbt-core==1.10.5 --with dbt-duckdb==1.10.0 dbt run --project-dir <scenario> --profiles-dir <scenario>",
           "exitCode": 0,
-          "stdoutSummary": "08:59:47  Done. PASS=3 WARN=0 ERROR=0 SKIP=0 NO-OP=0 TOTAL=3",
+          "stdoutSummary": "20:49:47  Done. PASS=3 WARN=0 ERROR=0 SKIP=0 NO-OP=0 TOTAL=3",
           "outputTail": [
-            "08:59:45  Running with dbt=1.10.5",
-            "08:59:45  Registered adapter: duckdb=1.10.0",
-            "08:59:46  Found 3 models, 1 test, 443 macros",
-            "08:59:46  ",
-            "08:59:46  Concurrency: 1 threads (target='proof')",
-            "08:59:46  ",
-            "08:59:46  1 of 3 START sql table model main.gold_customers ............................... [RUN]",
-            "08:59:46  1 of 3 OK created sql table model main.gold_customers .......................... [OK in 0.11s]",
-            "08:59:46  2 of 3 START sql table model main.gold_customers_contextseal ................... [RUN]",
-            "08:59:46  2 of 3 OK created sql table model main.gold_customers_contextseal .............. [OK in 0.09s]",
-            "08:59:46  3 of 3 START sql table model main.gold_customers_contextseal__rollback ......... [RUN]",
-            "08:59:47  3 of 3 OK created sql table model main.gold_customers_contextseal__rollback .... [OK in 0.04s]",
-            "08:59:47  ",
-            "08:59:47  Finished running 3 table models in 0 hours 0 minutes and 0.50 seconds (0.50s).",
-            "08:59:47  ",
-            "08:59:47  Completed successfully",
-            "08:59:47  ",
-            "08:59:47  Done. PASS=3 WARN=0 ERROR=0 SKIP=0 NO-OP=0 TOTAL=3"
+            "20:49:45  Running with dbt=1.10.5",
+            "20:49:46  Registered adapter: duckdb=1.10.0",
+            "20:49:47  Found 3 models, 2 data tests, 443 macros",
+            "20:49:47  ",
+            "20:49:47  Concurrency: 1 threads (target='proof')",
+            "20:49:47  ",
+            "20:49:47  1 of 3 START sql table model main.gold_customers ............................... [RUN]",
+            "20:49:47  1 of 3 OK created sql table model main.gold_customers .......................... [OK in 0.12s]",
+            "20:49:47  2 of 3 START sql table model main.gold_customers_contextseal ................... [RUN]",
+            "20:49:47  2 of 3 OK created sql table model main.gold_customers_contextseal .............. [OK in 0.10s]",
+            "20:49:47  3 of 3 START sql table model main.gold_customers_contextseal__rollback ......... [RUN]",
+            "20:49:47  3 of 3 OK created sql table model main.gold_customers_contextseal__rollback .... [OK in 0.04s]",
+            "20:49:47  ",
+            "20:49:47  Finished running 3 table models in 0 hours 0 minutes and 0.53 seconds (0.53s).",
+            "20:49:47  ",
+            "20:49:47  Completed successfully",
+            "20:49:47  ",
+            "20:49:47  Done. PASS=3 WARN=0 ERROR=0 SKIP=0 NO-OP=0 TOTAL=3"
           ]
         },
         {
           "name": "dbt test",
           "command": "uv run --with dbt-core==1.10.5 --with dbt-duckdb==1.10.0 dbt test --project-dir <scenario> --profiles-dir <scenario> --select gold_customers_contextseal",
           "exitCode": 0,
-          "stdoutSummary": "08:59:53  Done. PASS=1 WARN=0 ERROR=0 SKIP=0 NO-OP=0 TOTAL=1",
+          "stdoutSummary": "20:49:54  Done. PASS=2 WARN=0 ERROR=0 SKIP=0 NO-OP=0 TOTAL=2",
           "outputTail": [
-            "08:59:51  Running with dbt=1.10.5",
-            "08:59:51  Registered adapter: duckdb=1.10.0",
-            "08:59:52  Found 3 models, 1 test, 443 macros",
-            "08:59:52  ",
-            "08:59:52  Concurrency: 1 threads (target='proof')",
-            "08:59:52  ",
-            "08:59:52  1 of 1 START test not_null_gold_customers_contextseal_contact_email ............ [RUN]",
-            "08:59:52  1 of 1 PASS not_null_gold_customers_contextseal_contact_email .................. [PASS in 0.06s]",
-            "08:59:52  ",
-            "08:59:52  Finished running 1 test in 0 hours 0 minutes and 0.27 seconds (0.27s).",
-            "08:59:53  ",
-            "08:59:53  Completed successfully",
-            "08:59:53  ",
-            "08:59:53  Done. PASS=1 WARN=0 ERROR=0 SKIP=0 NO-OP=0 TOTAL=1"
+            "20:49:52  Running with dbt=1.10.5",
+            "20:49:53  Registered adapter: duckdb=1.10.0",
+            "20:49:54  Found 3 models, 2 data tests, 443 macros",
+            "20:49:54  ",
+            "20:49:54  Concurrency: 1 threads (target='proof')",
+            "20:49:54  ",
+            "20:49:54  1 of 2 START test gold_customers_contextseal_rename_parity ..................... [RUN]",
+            "20:49:54  1 of 2 PASS gold_customers_contextseal_rename_parity ........................... [PASS in 0.06s]",
+            "20:49:54  2 of 2 START test not_null_gold_customers_contextseal_customer_email ........... [RUN]",
+            "20:49:54  2 of 2 PASS not_null_gold_customers_contextseal_customer_email ................. [PASS in 0.10s]",
+            "20:49:54  ",
+            "20:49:54  Finished running 2 data tests in 0 hours 0 minutes and 0.39 seconds (0.39s).",
+            "20:49:54  ",
+            "20:49:54  Completed successfully",
+            "20:49:54  ",
+            "20:49:54  Done. PASS=2 WARN=0 ERROR=0 SKIP=0 NO-OP=0 TOTAL=2"
           ]
         }
       ],
@@ -229,7 +233,7 @@
         "rollbackExecuted": true,
         "testsObserved": true
       },
-      "testCount": 1,
+      "testCount": 2,
       "boundary": "Synthetic DuckDB dbt-core/dbt-duckdb execution for ContextSeal generated bundles; not production warehouse execution."
     },
     {
@@ -241,85 +245,89 @@
       "generatedTests": [
         "not_null"
       ],
+      "generatedDataTestCount": 1,
       "generatedFileHashes": {
-        "generated/models/gold_customers_contextseal.sql": "eada75251fccfa32ebfe852045399b05b564dd8ccaca842c6e2fc963ec17c751",
-        "generated/models/gold_customers_contextseal.yml": "6beb445054e1e4070b23f232a18b3f80bf29bae0178e7f97522b1bd2d38c2cdc",
-        "generated/rollback/gold_customers.sql": "e80fc0bf01688b1f0c621df8c21145715c154b7378a52cdf723a70bfefa38049",
-        "generated/IMPACTED_OWNERS.md": "007496fa9743293c7f833c7adf1dd9786d465adf020b7b8e587630e7c1968ee1"
+        "generated/models/gold_customers_contextseal.sql": "b34250c2a8d0a8a83c8186c4b99b6a38db6b374951ac2679df2768ab2c96dcb3",
+        "generated/models/gold_customers_contextseal.yml": "964857c54ca70b6696274be252737484edb5d0c738726db18047d7833bf4ab20",
+        "generated/tests/gold_customers_contextseal_type_cast.sql": "f686d917744b99e2b694a6133e2bbb4b73ed8c41354c8d8f49d7531c750bf367",
+        "generated/rollback/gold_customers.sql": "a55248b5afcccde343c04b6a63f6d7798813dd6158059b6f6d5aeea8c377709a",
+        "generated/IMPACTED_OWNERS.md": "b13c4385905904e94f707c48d51ff59d9ba09fe9d916af05702aa628c8c2854b"
       },
       "commands": [
         {
           "name": "dbt parse",
           "command": "uv run --with dbt-core==1.10.5 --with dbt-duckdb==1.10.0 dbt parse --project-dir <scenario> --profiles-dir <scenario>",
           "exitCode": 0,
-          "stdoutSummary": "09:00:01  Performance info: C:\\Users\\MEHMET\\AppData\\Local\\Temp\\contextseal-dbt-proof-aa9Ijd\\type_change\\target\\perf_info.json",
+          "stdoutSummary": "20:50:05  Performance info: C:\\Users\\MEHMET\\AppData\\Local\\Temp\\contextseal-dbt-proof-cMENAk\\type_change\\target\\perf_info.json",
           "outputTail": [
-            "08:59:59  Running with dbt=1.10.5",
-            "08:59:59  Registered adapter: duckdb=1.10.0",
-            "08:59:59  Unable to do partial parsing because saved manifest not found. Starting full parse.",
-            "09:00:01  Performance info: C:\\Users\\MEHMET\\AppData\\Local\\Temp\\contextseal-dbt-proof-aa9Ijd\\type_change\\target\\perf_info.json"
+            "20:50:02  Running with dbt=1.10.5",
+            "20:50:02  Registered adapter: duckdb=1.10.0",
+            "20:50:03  Unable to do partial parsing because saved manifest not found. Starting full parse.",
+            "20:50:05  Performance info: C:\\Users\\MEHMET\\AppData\\Local\\Temp\\contextseal-dbt-proof-cMENAk\\type_change\\target\\perf_info.json"
           ]
         },
         {
           "name": "dbt compile",
           "command": "uv run --with dbt-core==1.10.5 --with dbt-duckdb==1.10.0 dbt compile --project-dir <scenario> --profiles-dir <scenario>",
           "exitCode": 0,
-          "stdoutSummary": "09:00:07",
+          "stdoutSummary": "20:50:12",
           "outputTail": [
-            "09:00:06  Running with dbt=1.10.5",
-            "09:00:06  Registered adapter: duckdb=1.10.0",
-            "09:00:07  Found 3 models, 1 test, 443 macros",
-            "09:00:07  ",
-            "09:00:07  Concurrency: 1 threads (target='proof')",
-            "09:00:07"
+            "20:50:10  Running with dbt=1.10.5",
+            "20:50:11  Registered adapter: duckdb=1.10.0",
+            "20:50:12  Found 3 models, 2 data tests, 443 macros",
+            "20:50:12  ",
+            "20:50:12  Concurrency: 1 threads (target='proof')",
+            "20:50:12"
           ]
         },
         {
           "name": "dbt run",
           "command": "uv run --with dbt-core==1.10.5 --with dbt-duckdb==1.10.0 dbt run --project-dir <scenario> --profiles-dir <scenario>",
           "exitCode": 0,
-          "stdoutSummary": "09:00:13  Done. PASS=3 WARN=0 ERROR=0 SKIP=0 NO-OP=0 TOTAL=3",
+          "stdoutSummary": "20:50:19  Done. PASS=3 WARN=0 ERROR=0 SKIP=0 NO-OP=0 TOTAL=3",
           "outputTail": [
-            "09:00:12  Running with dbt=1.10.5",
-            "09:00:12  Registered adapter: duckdb=1.10.0",
-            "09:00:13  Found 3 models, 1 test, 443 macros",
-            "09:00:13  ",
-            "09:00:13  Concurrency: 1 threads (target='proof')",
-            "09:00:13  ",
-            "09:00:13  1 of 3 START sql table model main.gold_customers ............................... [RUN]",
-            "09:00:13  1 of 3 OK created sql table model main.gold_customers .......................... [OK in 0.11s]",
-            "09:00:13  2 of 3 START sql table model main.gold_customers_contextseal ................... [RUN]",
-            "09:00:13  2 of 3 OK created sql table model main.gold_customers_contextseal .............. [OK in 0.10s]",
-            "09:00:13  3 of 3 START sql table model main.gold_customers_contextseal__rollback ......... [RUN]",
-            "09:00:13  3 of 3 OK created sql table model main.gold_customers_contextseal__rollback .... [OK in 0.04s]",
-            "09:00:13  ",
-            "09:00:13  Finished running 3 table models in 0 hours 0 minutes and 0.50 seconds (0.50s).",
-            "09:00:13  ",
-            "09:00:13  Completed successfully",
-            "09:00:13  ",
-            "09:00:13  Done. PASS=3 WARN=0 ERROR=0 SKIP=0 NO-OP=0 TOTAL=3"
+            "20:50:17  Running with dbt=1.10.5",
+            "20:50:17  Registered adapter: duckdb=1.10.0",
+            "20:50:18  Found 3 models, 2 data tests, 443 macros",
+            "20:50:18  ",
+            "20:50:18  Concurrency: 1 threads (target='proof')",
+            "20:50:18  ",
+            "20:50:19  1 of 3 START sql table model main.gold_customers ............................... [RUN]",
+            "20:50:19  1 of 3 OK created sql table model main.gold_customers .......................... [OK in 0.11s]",
+            "20:50:19  2 of 3 START sql table model main.gold_customers_contextseal ................... [RUN]",
+            "20:50:19  2 of 3 OK created sql table model main.gold_customers_contextseal .............. [OK in 0.11s]",
+            "20:50:19  3 of 3 START sql table model main.gold_customers_contextseal__rollback ......... [RUN]",
+            "20:50:19  3 of 3 OK created sql table model main.gold_customers_contextseal__rollback .... [OK in 0.06s]",
+            "20:50:19  ",
+            "20:50:19  Finished running 3 table models in 0 hours 0 minutes and 0.60 seconds (0.60s).",
+            "20:50:19  ",
+            "20:50:19  Completed successfully",
+            "20:50:19  ",
+            "20:50:19  Done. PASS=3 WARN=0 ERROR=0 SKIP=0 NO-OP=0 TOTAL=3"
           ]
         },
         {
           "name": "dbt test",
           "command": "uv run --with dbt-core==1.10.5 --with dbt-duckdb==1.10.0 dbt test --project-dir <scenario> --profiles-dir <scenario> --select gold_customers_contextseal",
           "exitCode": 0,
-          "stdoutSummary": "09:00:19  Done. PASS=1 WARN=0 ERROR=0 SKIP=0 NO-OP=0 TOTAL=1",
+          "stdoutSummary": "20:50:26  Done. PASS=2 WARN=0 ERROR=0 SKIP=0 NO-OP=0 TOTAL=2",
           "outputTail": [
-            "09:00:18  Running with dbt=1.10.5",
-            "09:00:18  Registered adapter: duckdb=1.10.0",
-            "09:00:19  Found 3 models, 1 test, 443 macros",
-            "09:00:19  ",
-            "09:00:19  Concurrency: 1 threads (target='proof')",
-            "09:00:19  ",
-            "09:00:19  1 of 1 START test not_null_gold_customers_contextseal_loyalty_points_text_typed  [RUN]",
-            "09:00:19  1 of 1 PASS not_null_gold_customers_contextseal_loyalty_points_text_typed ...... [PASS in 0.06s]",
-            "09:00:19  ",
-            "09:00:19  Finished running 1 test in 0 hours 0 minutes and 0.27 seconds (0.27s).",
-            "09:00:19  ",
-            "09:00:19  Completed successfully",
-            "09:00:19  ",
-            "09:00:19  Done. PASS=1 WARN=0 ERROR=0 SKIP=0 NO-OP=0 TOTAL=1"
+            "20:50:24  Running with dbt=1.10.5",
+            "20:50:24  Registered adapter: duckdb=1.10.0",
+            "20:50:25  Found 3 models, 2 data tests, 443 macros",
+            "20:50:25  ",
+            "20:50:25  Concurrency: 1 threads (target='proof')",
+            "20:50:25  ",
+            "20:50:26  1 of 2 START test gold_customers_contextseal_type_cast ......................... [RUN]",
+            "20:50:26  1 of 2 PASS gold_customers_contextseal_type_cast ............................... [PASS in 0.05s]",
+            "20:50:26  2 of 2 START test not_null_gold_customers_contextseal_loyalty_points_text ...... [RUN]",
+            "20:50:26  2 of 2 PASS not_null_gold_customers_contextseal_loyalty_points_text ............ [PASS in 0.10s]",
+            "20:50:26  ",
+            "20:50:26  Finished running 2 data tests in 0 hours 0 minutes and 0.40 seconds (0.40s).",
+            "20:50:26  ",
+            "20:50:26  Completed successfully",
+            "20:50:26  ",
+            "20:50:26  Done. PASS=2 WARN=0 ERROR=0 SKIP=0 NO-OP=0 TOTAL=2"
           ]
         }
       ],
@@ -447,7 +455,7 @@
         "rollbackExecuted": true,
         "testsObserved": true
       },
-      "testCount": 1,
+      "testCount": 2,
       "boundary": "Synthetic DuckDB dbt-core/dbt-duckdb execution for ContextSeal generated bundles; not production warehouse execution."
     },
     {
@@ -457,75 +465,76 @@
       "status": "PASS",
       "generatedModelName": "gold_customers_contextseal",
       "generatedTests": [],
+      "generatedDataTestCount": 0,
       "generatedFileHashes": {
-        "generated/models/gold_customers_contextseal.sql": "4c7d8ab0b333b3c17703abc177c43da776c9976ca366ae00ba725643f3499041",
-        "generated/models/gold_customers_contextseal.yml": "9150fd0150ef05f6334e7ac1b0f348e864a4040b61836cb41e849df69d8e67ff",
-        "generated/rollback/gold_customers.sql": "6fa7a60b9dd83ea6f315d030d1c291a25a230f42f632a5d44199ce7da149606f",
-        "generated/IMPACTED_OWNERS.md": "859e972d70b0e60e7bbea244f7ae27875a72d502cfb71f0f2bc7b6622bc1e3c1"
+        "generated/models/gold_customers_contextseal.sql": "f4ab4a75ffe4e5ff8cf052d1557c541ddcb0bee5071e0ac867aa1836c8cd1ce1",
+        "generated/models/gold_customers_contextseal.yml": "e13321b5d7b9937d33229073b17e3efad4a55c531e2ca79ac475a75d97437c0c",
+        "generated/rollback/gold_customers.sql": "996708d46c90812ddd9b7caae214ddd0bdc14c1d094096c2ab5edc67f14000d5",
+        "generated/IMPACTED_OWNERS.md": "eae5a737e1bf170b44377eb456e2b7cac4097441231fbec014b439e8b714e984"
       },
       "commands": [
         {
           "name": "dbt parse",
           "command": "uv run --with dbt-core==1.10.5 --with dbt-duckdb==1.10.0 dbt parse --project-dir <scenario> --profiles-dir <scenario>",
           "exitCode": 0,
-          "stdoutSummary": "09:00:28  Performance info: C:\\Users\\MEHMET\\AppData\\Local\\Temp\\contextseal-dbt-proof-aa9Ijd\\drop_column\\target\\perf_info.json",
+          "stdoutSummary": "20:50:35  Performance info: C:\\Users\\MEHMET\\AppData\\Local\\Temp\\contextseal-dbt-proof-cMENAk\\drop_column\\target\\perf_info.json",
           "outputTail": [
-            "09:00:25  Running with dbt=1.10.5",
-            "09:00:26  Registered adapter: duckdb=1.10.0",
-            "09:00:26  Unable to do partial parsing because saved manifest not found. Starting full parse.",
-            "09:00:28  Performance info: C:\\Users\\MEHMET\\AppData\\Local\\Temp\\contextseal-dbt-proof-aa9Ijd\\drop_column\\target\\perf_info.json"
+            "20:50:32  Running with dbt=1.10.5",
+            "20:50:33  Registered adapter: duckdb=1.10.0",
+            "20:50:33  Unable to do partial parsing because saved manifest not found. Starting full parse.",
+            "20:50:35  Performance info: C:\\Users\\MEHMET\\AppData\\Local\\Temp\\contextseal-dbt-proof-cMENAk\\drop_column\\target\\perf_info.json"
           ]
         },
         {
           "name": "dbt compile",
           "command": "uv run --with dbt-core==1.10.5 --with dbt-duckdb==1.10.0 dbt compile --project-dir <scenario> --profiles-dir <scenario>",
           "exitCode": 0,
-          "stdoutSummary": "09:00:33",
+          "stdoutSummary": "20:50:41",
           "outputTail": [
-            "09:00:32  Running with dbt=1.10.5",
-            "09:00:32  Registered adapter: duckdb=1.10.0",
-            "09:00:33  Found 3 models, 443 macros",
-            "09:00:33  ",
-            "09:00:33  Concurrency: 1 threads (target='proof')",
-            "09:00:33"
+            "20:50:40  Running with dbt=1.10.5",
+            "20:50:40  Registered adapter: duckdb=1.10.0",
+            "20:50:41  Found 3 models, 443 macros",
+            "20:50:41  ",
+            "20:50:41  Concurrency: 1 threads (target='proof')",
+            "20:50:41"
           ]
         },
         {
           "name": "dbt run",
           "command": "uv run --with dbt-core==1.10.5 --with dbt-duckdb==1.10.0 dbt run --project-dir <scenario> --profiles-dir <scenario>",
           "exitCode": 0,
-          "stdoutSummary": "09:00:40  Done. PASS=3 WARN=0 ERROR=0 SKIP=0 NO-OP=0 TOTAL=3",
+          "stdoutSummary": "20:50:48  Done. PASS=3 WARN=0 ERROR=0 SKIP=0 NO-OP=0 TOTAL=3",
           "outputTail": [
-            "09:00:38  Running with dbt=1.10.5",
-            "09:00:38  Registered adapter: duckdb=1.10.0",
-            "09:00:39  Found 3 models, 443 macros",
-            "09:00:39  ",
-            "09:00:39  Concurrency: 1 threads (target='proof')",
-            "09:00:39  ",
-            "09:00:39  1 of 3 START sql table model main.gold_customers ............................... [RUN]",
-            "09:00:39  1 of 3 OK created sql table model main.gold_customers .......................... [OK in 0.10s]",
-            "09:00:39  2 of 3 START sql table model main.gold_customers_contextseal__rollback ......... [RUN]",
-            "09:00:40  2 of 3 OK created sql table model main.gold_customers_contextseal__rollback .... [OK in 0.10s]",
-            "09:00:40  3 of 3 START sql table model main.gold_customers_contextseal ................... [RUN]",
-            "09:00:40  3 of 3 OK created sql table model main.gold_customers_contextseal .............. [OK in 0.04s]",
-            "09:00:40  ",
-            "09:00:40  Finished running 3 table models in 0 hours 0 minutes and 0.49 seconds (0.49s).",
-            "09:00:40  ",
-            "09:00:40  Completed successfully",
-            "09:00:40  ",
-            "09:00:40  Done. PASS=3 WARN=0 ERROR=0 SKIP=0 NO-OP=0 TOTAL=3"
+            "20:50:46  Running with dbt=1.10.5",
+            "20:50:47  Registered adapter: duckdb=1.10.0",
+            "20:50:48  Found 3 models, 443 macros",
+            "20:50:48  ",
+            "20:50:48  Concurrency: 1 threads (target='proof')",
+            "20:50:48  ",
+            "20:50:48  1 of 3 START sql table model main.gold_customers ............................... [RUN]",
+            "20:50:48  1 of 3 OK created sql table model main.gold_customers .......................... [OK in 0.11s]",
+            "20:50:48  2 of 3 START sql table model main.gold_customers_contextseal ................... [RUN]",
+            "20:50:48  2 of 3 OK created sql table model main.gold_customers_contextseal .............. [OK in 0.11s]",
+            "20:50:48  3 of 3 START sql table model main.gold_customers_contextseal__rollback ......... [RUN]",
+            "20:50:48  3 of 3 OK created sql table model main.gold_customers_contextseal__rollback .... [OK in 0.05s]",
+            "20:50:48  ",
+            "20:50:48  Finished running 3 table models in 0 hours 0 minutes and 0.54 seconds (0.54s).",
+            "20:50:48  ",
+            "20:50:48  Completed successfully",
+            "20:50:48  ",
+            "20:50:48  Done. PASS=3 WARN=0 ERROR=0 SKIP=0 NO-OP=0 TOTAL=3"
           ]
         },
         {
           "name": "dbt test",
           "command": "uv run --with dbt-core==1.10.5 --with dbt-duckdb==1.10.0 dbt test --project-dir <scenario> --profiles-dir <scenario> --select gold_customers_contextseal",
           "exitCode": 0,
-          "stdoutSummary": "09:00:45  Nothing to do. Try checking your model configs and model specification args",
+          "stdoutSummary": "20:50:54  Nothing to do. Try checking your model configs and model specification args",
           "outputTail": [
-            "09:00:44  Running with dbt=1.10.5",
-            "09:00:44  Registered adapter: duckdb=1.10.0",
-            "09:00:45  Found 3 models, 443 macros",
-            "09:00:45  Nothing to do. Try checking your model configs and model specification args"
+            "20:50:53  Running with dbt=1.10.5",
+            "20:50:53  Registered adapter: duckdb=1.10.0",
+            "20:50:54  Found 3 models, 443 macros",
+            "20:50:54  Nothing to do. Try checking your model configs and model specification args"
           ]
         }
       ],
@@ -595,14 +604,38 @@
       ],
       "rollbackExpectedColumns": [
         {
-          "name": "1",
+          "name": "customer_id",
           "type": "INTEGER"
+        },
+        {
+          "name": "customer_email",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "loyalty_points_text",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "legacy_segment",
+          "type": "VARCHAR"
         }
       ],
       "rollbackActualColumns": [
         {
-          "name": "1",
+          "name": "customer_id",
           "type": "INTEGER"
+        },
+        {
+          "name": "customer_email",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "loyalty_points_text",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "legacy_segment",
+          "type": "VARCHAR"
         }
       ],
       "checks": {
@@ -619,6 +652,112 @@
       "boundary": "Synthetic DuckDB dbt-core/dbt-duckdb execution for ContextSeal generated bundles; not production warehouse execution."
     },
     {
+      "id": "type_change_invalid_cast",
+      "changeType": "type_change",
+      "expectedResult": "FAIL_CLOSED",
+      "status": "PASS",
+      "generatedModelName": "gold_customers_contextseal",
+      "generatedTests": [
+        "not_null"
+      ],
+      "generatedDataTestCount": 1,
+      "generatedFileHashes": {
+        "generated/models/gold_customers_contextseal.sql": "b34250c2a8d0a8a83c8186c4b99b6a38db6b374951ac2679df2768ab2c96dcb3",
+        "generated/models/gold_customers_contextseal.yml": "964857c54ca70b6696274be252737484edb5d0c738726db18047d7833bf4ab20",
+        "generated/tests/gold_customers_contextseal_type_cast.sql": "f686d917744b99e2b694a6133e2bbb4b73ed8c41354c8d8f49d7531c750bf367",
+        "generated/rollback/gold_customers.sql": "a55248b5afcccde343c04b6a63f6d7798813dd6158059b6f6d5aeea8c377709a",
+        "generated/IMPACTED_OWNERS.md": "b13c4385905904e94f707c48d51ff59d9ba09fe9d916af05702aa628c8c2854b"
+      },
+      "commands": [
+        {
+          "name": "dbt parse",
+          "command": "uv run --with dbt-core==1.10.5 --with dbt-duckdb==1.10.0 dbt parse --project-dir <scenario> --profiles-dir <scenario>",
+          "exitCode": 0,
+          "stdoutSummary": "20:51:04  Performance info: C:\\Users\\MEHMET\\AppData\\Local\\Temp\\contextseal-dbt-proof-cMENAk\\type_change_invalid_cast\\target\\perf_info.json",
+          "outputTail": [
+            "20:51:01  Running with dbt=1.10.5",
+            "20:51:02  Registered adapter: duckdb=1.10.0",
+            "20:51:02  Unable to do partial parsing because saved manifest not found. Starting full parse.",
+            "20:51:04  Performance info: C:\\Users\\MEHMET\\AppData\\Local\\Temp\\contextseal-dbt-proof-cMENAk\\type_change_invalid_cast\\target\\perf_info.json"
+          ]
+        },
+        {
+          "name": "dbt compile",
+          "command": "uv run --with dbt-core==1.10.5 --with dbt-duckdb==1.10.0 dbt compile --project-dir <scenario> --profiles-dir <scenario>",
+          "exitCode": 0,
+          "stdoutSummary": "20:51:10",
+          "outputTail": [
+            "20:51:09  Running with dbt=1.10.5",
+            "20:51:09  Registered adapter: duckdb=1.10.0",
+            "20:51:10  Found 3 models, 2 data tests, 443 macros",
+            "20:51:10  ",
+            "20:51:10  Concurrency: 1 threads (target='proof')",
+            "20:51:10"
+          ]
+        },
+        {
+          "name": "dbt run",
+          "command": "uv run --with dbt-core==1.10.5 --with dbt-duckdb==1.10.0 dbt run --project-dir <scenario> --profiles-dir <scenario>",
+          "exitCode": 0,
+          "stdoutSummary": "20:51:17  Done. PASS=3 WARN=0 ERROR=0 SKIP=0 NO-OP=0 TOTAL=3",
+          "outputTail": [
+            "20:51:15  Running with dbt=1.10.5",
+            "20:51:16  Registered adapter: duckdb=1.10.0",
+            "20:51:17  Found 3 models, 2 data tests, 443 macros",
+            "20:51:17  ",
+            "20:51:17  Concurrency: 1 threads (target='proof')",
+            "20:51:17  ",
+            "20:51:17  1 of 3 START sql table model main.gold_customers ............................... [RUN]",
+            "20:51:17  1 of 3 OK created sql table model main.gold_customers .......................... [OK in 0.11s]",
+            "20:51:17  2 of 3 START sql table model main.gold_customers_contextseal ................... [RUN]",
+            "20:51:17  2 of 3 OK created sql table model main.gold_customers_contextseal .............. [OK in 0.10s]",
+            "20:51:17  3 of 3 START sql table model main.gold_customers_contextseal__rollback ......... [RUN]",
+            "20:51:17  3 of 3 OK created sql table model main.gold_customers_contextseal__rollback .... [OK in 0.04s]",
+            "20:51:17  ",
+            "20:51:17  Finished running 3 table models in 0 hours 0 minutes and 0.51 seconds (0.51s).",
+            "20:51:17  ",
+            "20:51:17  Completed successfully",
+            "20:51:17  ",
+            "20:51:17  Done. PASS=3 WARN=0 ERROR=0 SKIP=0 NO-OP=0 TOTAL=3"
+          ]
+        },
+        {
+          "name": "dbt test",
+          "command": "uv run --with dbt-core==1.10.5 --with dbt-duckdb==1.10.0 dbt test --project-dir <scenario> --profiles-dir <scenario> --select gold_customers_contextseal",
+          "exitCode": 1,
+          "stdoutSummary": "20:51:24  Done. PASS=1 WARN=0 ERROR=1 SKIP=0 NO-OP=0 TOTAL=2",
+          "outputTail": [
+            "20:51:23  Registered adapter: duckdb=1.10.0",
+            "20:51:23  Found 3 models, 2 data tests, 443 macros",
+            "20:51:23  ",
+            "20:51:23  Concurrency: 1 threads (target='proof')",
+            "20:51:23  ",
+            "20:51:24  1 of 2 START test gold_customers_contextseal_type_cast ......................... [RUN]",
+            "20:51:24  1 of 2 FAIL 1 gold_customers_contextseal_type_cast ............................. [FAIL 1 in 0.06s]",
+            "20:51:24  2 of 2 START test not_null_gold_customers_contextseal_loyalty_points_text ...... [RUN]",
+            "20:51:24  2 of 2 PASS not_null_gold_customers_contextseal_loyalty_points_text ............ [PASS in 0.09s]",
+            "20:51:24  ",
+            "20:51:24  Finished running 2 data tests in 0 hours 0 minutes and 0.38 seconds (0.38s).",
+            "20:51:24  ",
+            "20:51:24  Completed with 1 error, 0 partial successes, and 0 warnings:",
+            "20:51:24  ",
+            "20:51:24  Failure in test gold_customers_contextseal_type_cast (tests\\gold_customers_contextseal_type_cast.sql)",
+            "20:51:24    Got 1 result, configured to fail if != 0",
+            "20:51:24  ",
+            "20:51:24    compiled code at target\\compiled\\contextseal_dbt_proof\\tests\\gold_customers_contextseal_type_cast.sql",
+            "20:51:24  ",
+            "20:51:24  Done. PASS=1 WARN=0 ERROR=1 SKIP=0 NO-OP=0 TOTAL=2"
+          ]
+        }
+      ],
+      "checks": {
+        "canonicalModelIdentity": true,
+        "invalidCastDataTestObserved": true,
+        "failureObserved": true
+      },
+      "boundary": "Synthetic DuckDB dbt-core/dbt-duckdb execution for ContextSeal generated bundles; not production warehouse execution."
+    },
+    {
       "id": "model_name_collision",
       "changeType": "rename_column",
       "expectedResult": "FAIL_CLOSED",
@@ -628,10 +767,11 @@
         "not_null"
       ],
       "generatedFileHashes": {
-        "generated/models/gold_customers_contextseal.sql": "58ebc7618645c7fcbcf98ecf975c40364b93c2f20a7c340f98b5f9dceabb8f81",
-        "generated/models/gold_customers_contextseal.yml": "e8efd6111df11548bd6890f2225ea3ebc5dc217f34c35b4a204a41db48d17a65",
-        "generated/rollback/gold_customers.sql": "e7ab0ad5cb311080f08d1b210c9564d5a17bdf3af4ec2d4e41e7f31bfd771485",
-        "generated/IMPACTED_OWNERS.md": "876b49a1dd355e4e1631c02e8faae535e7580b99198aa6b29b86b731e7e2b488"
+        "generated/models/gold_customers_contextseal.sql": "e96db7044a709323d242c71a3dd802f23ef143fc1d99d19a745fc6eead687efc",
+        "generated/models/gold_customers_contextseal.yml": "e31dbe6bc2388906368dc315a58e1ba1c7b9b0b4644899b2a6042613f7b0e7cd",
+        "generated/tests/gold_customers_contextseal_rename_parity.sql": "0be4abe1ada50a6c7f7ce2836e29f9b4b267e378a8f4bd655bfe0d71413ee41e",
+        "generated/rollback/gold_customers.sql": "d5970f8681f0c6d97f87d0153e463372e3ca0fb768f8958aa08fde5b59ac6c80",
+        "generated/IMPACTED_OWNERS.md": "a9d6facae6065466ad4a5f1375c6ab64ae175f509f3ac9d1871f5ba3c118fb9f"
       },
       "commands": [
         {
@@ -640,10 +780,10 @@
           "exitCode": 2,
           "stdoutSummary": "  - model.contextseal_dbt_proof.gold_customers_contextseal (models\\collision\\gold_customers_contextseal.sql)",
           "outputTail": [
-            "09:00:51  Running with dbt=1.10.5",
-            "09:00:51  Registered adapter: duckdb=1.10.0",
-            "09:00:52  Unable to do partial parsing because saved manifest not found. Starting full parse.",
-            "09:00:53  Encountered an error:",
+            "20:51:29  Running with dbt=1.10.5",
+            "20:51:29  Registered adapter: duckdb=1.10.0",
+            "20:51:30  Unable to do partial parsing because saved manifest not found. Starting full parse.",
+            "20:51:31  Encountered an error:",
             "Compilation Error",
             "  dbt found two models with the name \"gold_customers_contextseal\".",
             "  ",

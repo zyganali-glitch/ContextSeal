@@ -98,6 +98,12 @@ Analytics Agent kullanmadığımız için seçme.
 
 Devpost genellikle hikâyeyi ayrı başlıklara böler. Aşağıdaki İngilizce metinleri karşılık gelen alanlara yapıştır.
 
+### 30-second judge summary
+
+```text
+ContextSeal stops a breaking schema change before merge by turning DataHub context into a deterministic decision and an inspectable safe migration package. It shows the blocked request, exact fixture-backed downstream paths, generated dbt/model-test/rollback/owner artifacts, and a SHA-256 passport after scoped human approval. A bounded local AI layer explains the fixed verdict without changing it, while a separate recorded disposable-local DataHub proof demonstrates gated write-back and durable read-back on synthetic metadata.
+```
+
 ### Inspiration
 
 ```text
@@ -107,7 +113,7 @@ AI coding agents can generate valid SQL and dbt code while missing the organizat
 ### What it does
 
 ```text
-In the 100-second judge demo, ContextSeal blocks a risky rename, shows its deterministic blast radius, surfaces a bounded AI explanation, generates a safe migration package, records scoped approval, and ends on the passport that the next human or agent can inherit.
+In the 2:20 judge demo, ContextSeal blocks a risky rename, shows its deterministic blast radius and 12-step agent trace, inspects a bounded AI explanation and generated artifact viewer, records scoped approval, and ends on the passport plus a separately labeled recorded live-local proof.
 
 ContextSeal accepts a proposed column rename, drop, or type change. Its deterministic core uses captured DataHub-shaped target, lineage, ownership, governance, quality, incident, and query context to reconstruct downstream paths and explain every risk finding. Instead of producing a destructive operation, it generates an expand-migrate-contract dbt model, schema tests, rollback, and owner briefing. The committed manifest links each generated file to the request, deterministic findings, downstream-owner context, migration rule, and passport context. A local deterministic sandbox checks that bundle against its hashes and grounding contract; it is a conformance proof, not warehouse SQL execution.
 
@@ -131,7 +137,7 @@ The hardest design problem was separating a risky original request from a safe g
 ### Accomplishments that we're proud of
 
 ```text
-We built explainable fixture impact paths instead of a flat asset count, deterministic findings that model text cannot overwrite, a non-destructive migration package, a human approval bound to exact evidence hashes, inspectable grounded AI artifacts with honest fallback states, manifest-linked sandbox conformance, a reviewer-ready PR bundle, fail-closed DataHub mutations, and a reusable DataHub change-certification skill. A disposable local DataHub proof retrieved a typed downstream summary through live MCP with six DATASET, two DATA_JOB, and two DASHBOARD entities, then wrote and read back four certification properties, an appended passport description, and a standalone decision document on synthetic metadata.
+We built explainable fixture impact paths instead of a flat asset count, deterministic findings that model text cannot overwrite, a non-destructive migration package, a human approval bound to exact evidence hashes, inspectable grounded AI artifacts with honest fallback states, manifest-linked sandbox conformance, a reviewer-ready PR bundle, fail-closed DataHub mutations, and a reusable DataHub change-certification skill. A recorded disposable local DataHub proof retrieved ten live MCP reads across six downstream assets: two each of DATASET, DATA_JOB, and DASHBOARD. Its companion write-back export passed provenance-bound durable validation with three APPLIED operations, three skipped verify-then-skip retries, and exact-one checks on synthetic metadata.
 ```
 
 ### What we learned

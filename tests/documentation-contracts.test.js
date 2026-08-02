@@ -46,7 +46,10 @@ test("submission truth surfaces no longer use the old PR review wording or the p
     assert.doesNotMatch(content, /OPEN \/ READY_FOR_REVIEW \/ NOT_MERGED/);
   }
 
-  assert.match(files[0], /OPEN \/ NOT_MERGED \/ NO MAINTAINER REVIEW RECORDED YET/);
+  for (const content of files) {
+    assert.doesNotMatch(content, /OPEN \/ NOT_MERGED \/ NO MAINTAINER REVIEW RECORDED YET/);
+    assert.match(content, /OPEN \/ NOT MERGED \/ AWAITING MAINTAINER REVIEW/);
+  }
   assert.doesNotMatch(files[0], /ADD_PUBLIC_YOUTUBE_URL/);
 });
 
@@ -65,6 +68,71 @@ test("evidence manifest exposes the final truth-lock columns and required pendin
     "Customer impact measured"
   ]) {
     assert.match(manifest, new RegExp(row.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+  }
+});
+
+test("judge-facing docs distinguish the recorded write-back proof from fixture impact", async () => {
+  const [readme, devpost, boundary, judgePath, judgingMap, audit, plan] = await Promise.all([
+    readFile("README.md", "utf8"),
+    readFile("docs/DEVPOST_SUBMISSION.md", "utf8"),
+    readFile("docs/EVIDENCE_BOUNDARY.md", "utf8"),
+    readFile("docs/JUDGE_TEST_PATH.md", "utf8"),
+    readFile("docs/JUDGING_MAP.md", "utf8"),
+    readFile("docs/CLAIM_AUDIT.md", "utf8"),
+    readFile("plans/PLAN_20260721_contextseal_hackathon_win.md", "utf8")
+  ]);
+
+  for (const content of [readme, devpost, boundary, judgePath, judgingMap, audit]) {
+    assert.match(content, /synthetic-local|synthetic metadata/i);
+    assert.match(content, /fixture/i);
+  }
+  assert.match(readme, /three `APPLIED` bounded write-backs, three `SKIPPED` verify-then-skip retries/);
+  assert.match(devpost, /three `APPLIED` operations, and three `SKIPPED` idempotent retry operations/);
+  assert.match(judgePath, /recorded `PASS` export/);
+  assert.match(plan, /Current Write-Back Export Gate[\s\S]*?\| `PASS` \|/);
+  assert.match(plan, /Final Video Duration Gate[\s\S]*?\| `NOT_RUN` \|/);
+  assert.doesNotMatch(plan, /Final 115-125 second/);
+});
+
+test("submission docs lock the canonical skill and immutable same-SHA release order", async () => {
+  const [checklist, manifest, readme, contribution] = await Promise.all([
+    readFile("docs/PRE_SUBMISSION_CHECKLIST.md", "utf8"),
+    readFile("docs/EVIDENCE_MANIFEST.md", "utf8"),
+    readFile("README.md", "utf8"),
+    readFile("docs/DATAHUB_SKILL_CONTRIBUTION.md", "utf8")
+  ]);
+
+  for (const content of [checklist, manifest]) {
+    assert.match(content, /datahub-hackathon-submission-v1/);
+    assert.match(content, /GitHub release/i);
+    assert.match(content, /same SHA|that exact SHA/i);
+  }
+  assert.match(readme, /datahub-schema-change-certification/);
+  assert.match(readme, /legacy compatibility alias/i);
+  assert.match(contribution, /only canonical package name/);
+  assert.match(contribution, /must not fork the canonical workflow/);
+});
+
+test("final video docs require the longer badge-visible recorded-proof path", async () => {
+  const [script, turkishGuide, devpost, turkishDevpost] = await Promise.all([
+    readFile("docs/DEMO_SCRIPT.md", "utf8"),
+    readFile("docs/tr/DEMO_VIDEO_CEKIM_REHBERI.md", "utf8"),
+    readFile("docs/DEVPOST_SUBMISSION.md", "utf8"),
+    readFile("docs/tr/DEVPOST_BASVURU_REHBERI.md", "utf8")
+  ]);
+
+  assert.match(script, /2 minutes 20 seconds/);
+  assert.match(script, /2:15 to 2:30/);
+  assert.match(script, /fixture badge visible/);
+  assert.match(script, /RECORDED LIVE-LOCAL PROOF/);
+  assert.match(script, /12-step Agent Run Trace/);
+  assert.doesNotMatch(script, /1:40 Target|100-second judge demo/);
+  assert.match(turkishGuide, /2 dakika 15 saniye ile 2 dakika 30 saniye/);
+  assert.match(turkishGuide, /RECORDED LIVE-LOCAL PROOF/);
+  assert.doesNotMatch(turkishGuide, /90-110 saniye|100 saniyelik/);
+  for (const content of [devpost, turkishDevpost]) {
+    assert.match(content, /30-second judge summary/);
+    assert.match(content, /In the 2:20 judge demo/);
   }
 });
 

@@ -2,9 +2,9 @@
   "status": "PASS",
   "transport": "stdio",
   "contextsealMutationGateEnabled": false,
-  "observedAt": "2026-08-02T10:58:15.335Z",
+  "observedAt": "2026-08-02T20:45:59.024Z",
   "targetUrn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)",
-  "rawEvidenceHash": "1cb975bae97ee966a85279ad4348cd46ca5b06036c93c1bdbe1c899c69154a03",
+  "rawEvidenceHash": "f24da9bbb35d7ccf42c72ee6b0ccd1f91997ab428ace8947de671dc9a53feb8e",
   "mcp": {
     "protocolVersion": "2025-03-26",
     "serverInfo": {
@@ -17,30 +17,30 @@
     }
   },
   "summary": {
-    "toolCount": 14,
+    "toolCount": 10,
     "targetEntityCount": 1,
     "schemaFieldCount": 3,
     "schemaPageCount": 1,
-    "downstreamAssetCount": 10,
+    "downstreamAssetCount": 6,
     "queryCount": 0,
     "queryTextCount": 0,
-    "pathCount": 10,
-    "pathTargetCount": 10,
+    "pathCount": 6,
+    "pathTargetCount": 6,
     "maxHops": 5
   },
   "lineageSummary": {
-    "downstreamCount": 10,
+    "downstreamCount": 6,
     "entityTypes": [
-      {
-        "type": "DATASET",
-        "count": 6
-      },
       {
         "type": "DATA_JOB",
         "count": 2
       },
       {
         "type": "DASHBOARD",
+        "count": 2
+      },
+      {
+        "type": "DATASET",
         "count": 2
       }
     ],
@@ -72,34 +72,6 @@
         "name": "score_churn",
         "platform": null,
         "degree": 3
-      },
-      {
-        "urn": "urn:li:dataset:(urn:li:dataPlatform:airflow,customer_360.build_segments,PROD)",
-        "type": "DATASET",
-        "name": "build_segments",
-        "platform": "airflow",
-        "degree": 1
-      },
-      {
-        "urn": "urn:li:dataset:(urn:li:dataPlatform:looker,executive_customer_health,PROD)",
-        "type": "DATASET",
-        "name": "Executive Customer Health",
-        "platform": "looker",
-        "degree": 3
-      },
-      {
-        "urn": "urn:li:dataset:(urn:li:dataPlatform:mlflow,churn_prediction,PROD)",
-        "type": "DATASET",
-        "name": "churn_prediction",
-        "platform": "mlflow",
-        "degree": 3
-      },
-      {
-        "urn": "urn:li:dataset:(urn:li:dataPlatform:powerbi,retention_campaign,PROD)",
-        "type": "DATASET",
-        "name": "Retention Campaign",
-        "platform": "powerbi",
-        "degree": 4
       },
       {
         "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.analytics.customer_segments,PROD)",
@@ -142,7 +114,7 @@
               "name": "snowflake"
             },
             "editableProperties": {
-              "description": "Tier-1 customer contact dataset used by the ContextSeal local demonstration.\n\n---\nContextSeal passport **csp_97a3c8fe1a02ce4c8dc1**: Add contact_email, backfill from customer_email, migrate consumers, then deprecate customer_email.\n\n---\nContextSeal passport **csp_d50e81c7484ca620560a**: Add contact_email, backfill from customer_email, migrate consumers, then deprecate customer_email.\n\n---\nContextSeal passport **csp_96a8fc7182a544489f80**: Add contact_email, backfill from customer_email, migrate consumers, then deprecate customer_email."
+              "description": "Tier-1 customer contact dataset for the ContextSeal synthetic-local proof.\n\n---\nContextSeal passport **csp_4b1a91c9d4b5456f8793**: Add contact_email, backfill from customer_email, migrate consumers, then deprecate customer_email."
             },
             "properties": {
               "name": "gold_customers",
@@ -201,7 +173,7 @@
                   },
                   "values": [
                     {
-                      "stringValue": "csp_96a8fc7182a544489f80"
+                      "stringValue": "csp_4b1a91c9d4b5456f8793"
                     }
                   ]
                 },
@@ -262,19 +234,19 @@
                 {
                   "fieldPath": "customer_email",
                   "nativeDataType": "varchar",
-                  "description": "Personal email address",
+                  "description": "Synthetic personal-email field",
                   "nullable": false
                 },
                 {
                   "fieldPath": "customer_id",
                   "nativeDataType": "varchar",
-                  "description": "Stable customer identifier",
+                  "description": "Stable synthetic customer identifier",
                   "nullable": false
                 },
                 {
                   "fieldPath": "updated_at",
                   "nativeDataType": "timestamp",
-                  "description": "Last source update",
+                  "description": "Synthetic source update time",
                   "nullable": false
                 }
               ]
@@ -282,8 +254,15 @@
             "relatedDocuments": {
               "start": 0,
               "count": 10,
-              "total": 9,
+              "total": 10,
               "documents": [
+                {
+                  "urn": "urn:li:document:shared-20f5bc7f-df18-4e46-9296-452fe7ab28b0",
+                  "type": "DOCUMENT",
+                  "info": {
+                    "title": "Change Passport csp_4b1a91c9d4b5456f8793"
+                  }
+                },
                 {
                   "urn": "urn:li:document:shared-43c0d569-eb98-4b40-8e4c-6caa47799e50",
                   "type": "DOCUMENT",
@@ -366,19 +345,19 @@
           {
             "fieldPath": "customer_email",
             "nativeDataType": "varchar",
-            "description": "Personal email address",
+            "description": "Synthetic personal-email field",
             "nullable": false
           },
           {
             "fieldPath": "customer_id",
             "nativeDataType": "varchar",
-            "description": "Stable customer identifier",
+            "description": "Stable synthetic customer identifier",
             "nullable": false
           },
           {
             "fieldPath": "updated_at",
             "nativeDataType": "timestamp",
-            "description": "Last source update",
+            "description": "Synthetic source update time",
             "nullable": false
           }
         ],
@@ -399,7 +378,7 @@
       },
       "payload": {
         "downstreams": {
-          "total": 10,
+          "total": 6,
           "facets": [
             {
               "field": "degree",
@@ -424,15 +403,15 @@
               "displayName": "Type",
               "aggregations": [
                 {
-                  "value": "DATASET",
-                  "count": 6
-                },
-                {
                   "value": "DATA_JOB",
                   "count": 2
                 },
                 {
                   "value": "DASHBOARD",
+                  "count": 2
+                },
+                {
+                  "value": "DATASET",
                   "count": 2
                 }
               ]
@@ -442,22 +421,22 @@
               "displayName": "Platform",
               "aggregations": [
                 {
-                  "value": "urn:li:dataPlatform:mlflow",
+                  "value": "urn:li:dataPlatform:snowflake",
                   "count": 2,
                   "entity": {
-                    "urn": "urn:li:dataPlatform:mlflow"
+                    "urn": "urn:li:dataPlatform:snowflake"
                   }
                 },
                 {
                   "value": "urn:li:dataPlatform:airflow",
-                  "count": 2,
+                  "count": 1,
                   "entity": {
                     "urn": "urn:li:dataPlatform:airflow"
                   }
                 },
                 {
                   "value": "urn:li:dataPlatform:looker",
-                  "count": 2,
+                  "count": 1,
                   "entity": {
                     "urn": "urn:li:dataPlatform:looker"
                   }
@@ -469,13 +448,6 @@
               "displayName": "Tagged With",
               "aggregations": [
                 {
-                  "value": "urn:li:tag:Tier1",
-                  "count": 5,
-                  "entity": {
-                    "urn": "urn:li:tag:Tier1"
-                  }
-                },
-                {
                   "value": "urn:li:tag:Synthetic",
                   "count": 5,
                   "entity": {
@@ -483,10 +455,10 @@
                   }
                 },
                 {
-                  "value": "urn:li:tag:Campaign",
-                  "count": 1,
+                  "value": "urn:li:tag:Tier1",
+                  "count": 4,
                   "entity": {
-                    "urn": "urn:li:tag:Campaign"
+                    "urn": "urn:li:tag:Tier1"
                   }
                 }
               ]
@@ -497,21 +469,21 @@
               "aggregations": [
                 {
                   "value": "urn:li:corpuser:growth-data",
-                  "count": 3,
+                  "count": 2,
                   "entity": {
                     "urn": "urn:li:corpuser:growth-data"
                   }
                 },
                 {
                   "value": "urn:li:corpuser:ml-platform",
-                  "count": 3,
+                  "count": 2,
                   "entity": {
                     "urn": "urn:li:corpuser:ml-platform"
                   }
                 },
                 {
                   "value": "urn:li:corpuser:customer-success",
-                  "count": 2,
+                  "count": 1,
                   "entity": {
                     "urn": "urn:li:corpuser:customer-success"
                   }
@@ -524,7 +496,7 @@
               "aggregations": [
                 {
                   "value": "PROD",
-                  "count": 6
+                  "count": 2
                 }
               ]
             },
@@ -533,15 +505,15 @@
               "displayName": "Type␞Sub Type",
               "aggregations": [
                 {
-                  "value": "DATASET",
-                  "count": 6
-                },
-                {
                   "value": "DATA_JOB",
                   "count": 2
                 },
                 {
                   "value": "DASHBOARD",
+                  "count": 2
+                },
+                {
+                  "value": "DATASET",
                   "count": 2
                 }
               ]
@@ -572,7 +544,7 @@
               "aggregations": [
                 {
                   "value": "DATASET",
-                  "count": 6
+                  "count": 2
                 },
                 {
                   "value": "DATA_JOB",
@@ -906,250 +878,6 @@
             },
             {
               "entity": {
-                "urn": "urn:li:dataset:(urn:li:dataPlatform:airflow,customer_360.build_segments,PROD)",
-                "type": "DATASET",
-                "name": "build_segments",
-                "platform": {
-                  "urn": "urn:li:dataPlatform:airflow",
-                  "name": "airflow"
-                },
-                "editableProperties": {
-                  "description": "Airflow-produced segment build output."
-                },
-                "properties": {
-                  "name": "build_segments",
-                  "customProperties": [
-                    {
-                      "key": "evidence_boundary",
-                      "value": "synthetic-local"
-                    },
-                    {
-                      "key": "contextseal_fixture",
-                      "value": "true"
-                    }
-                  ]
-                },
-                "ownership": {
-                  "owners": [
-                    {
-                      "owner": {
-                        "urn": "urn:li:corpuser:growth-data"
-                      },
-                      "type": "TECHNICAL_OWNER",
-                      "ownershipType": {
-                        "urn": "urn:li:ownershipType:__system__technical_owner",
-                        "type": "CUSTOM_OWNERSHIP_TYPE",
-                        "info": {
-                          "name": "Technical Owner",
-                          "description": "Involved in the production, maintenance, or distribution of the asset(s)."
-                        }
-                      }
-                    }
-                  ]
-                },
-                "tags": {
-                  "tags": [
-                    {
-                      "tag": {
-                        "urn": "urn:li:tag:Tier1"
-                      }
-                    }
-                  ]
-                },
-                "health": [
-                  {
-                    "type": "INCIDENTS",
-                    "status": "PASS"
-                  }
-                ]
-              },
-              "degree": 1
-            },
-            {
-              "entity": {
-                "urn": "urn:li:dataset:(urn:li:dataPlatform:looker,executive_customer_health,PROD)",
-                "type": "DATASET",
-                "name": "Executive Customer Health",
-                "platform": {
-                  "urn": "urn:li:dataPlatform:looker",
-                  "name": "looker"
-                },
-                "editableProperties": {
-                  "description": "Executive customer-health reporting surface."
-                },
-                "properties": {
-                  "name": "Executive Customer Health",
-                  "customProperties": [
-                    {
-                      "key": "evidence_boundary",
-                      "value": "synthetic-local"
-                    },
-                    {
-                      "key": "contextseal_fixture",
-                      "value": "true"
-                    }
-                  ]
-                },
-                "ownership": {
-                  "owners": [
-                    {
-                      "owner": {
-                        "urn": "urn:li:corpuser:customer-success"
-                      },
-                      "type": "TECHNICAL_OWNER",
-                      "ownershipType": {
-                        "urn": "urn:li:ownershipType:__system__technical_owner",
-                        "type": "CUSTOM_OWNERSHIP_TYPE",
-                        "info": {
-                          "name": "Technical Owner",
-                          "description": "Involved in the production, maintenance, or distribution of the asset(s)."
-                        }
-                      }
-                    }
-                  ]
-                },
-                "tags": {
-                  "tags": [
-                    {
-                      "tag": {
-                        "urn": "urn:li:tag:Executive"
-                      }
-                    }
-                  ]
-                },
-                "health": [
-                  {
-                    "type": "INCIDENTS",
-                    "status": "PASS"
-                  }
-                ]
-              },
-              "degree": 3
-            },
-            {
-              "entity": {
-                "urn": "urn:li:dataset:(urn:li:dataPlatform:mlflow,churn_prediction,PROD)",
-                "type": "DATASET",
-                "name": "churn_prediction",
-                "platform": {
-                  "urn": "urn:li:dataPlatform:mlflow",
-                  "name": "mlflow"
-                },
-                "editableProperties": {
-                  "description": "Production churn prediction feature surface."
-                },
-                "properties": {
-                  "name": "churn_prediction",
-                  "customProperties": [
-                    {
-                      "key": "evidence_boundary",
-                      "value": "synthetic-local"
-                    },
-                    {
-                      "key": "contextseal_fixture",
-                      "value": "true"
-                    }
-                  ]
-                },
-                "ownership": {
-                  "owners": [
-                    {
-                      "owner": {
-                        "urn": "urn:li:corpuser:ml-platform"
-                      },
-                      "type": "TECHNICAL_OWNER",
-                      "ownershipType": {
-                        "urn": "urn:li:ownershipType:__system__technical_owner",
-                        "type": "CUSTOM_OWNERSHIP_TYPE",
-                        "info": {
-                          "name": "Technical Owner",
-                          "description": "Involved in the production, maintenance, or distribution of the asset(s)."
-                        }
-                      }
-                    }
-                  ]
-                },
-                "tags": {
-                  "tags": [
-                    {
-                      "tag": {
-                        "urn": "urn:li:tag:Production"
-                      }
-                    }
-                  ]
-                },
-                "health": [
-                  {
-                    "type": "INCIDENTS",
-                    "status": "PASS"
-                  }
-                ]
-              },
-              "degree": 3
-            },
-            {
-              "entity": {
-                "urn": "urn:li:dataset:(urn:li:dataPlatform:powerbi,retention_campaign,PROD)",
-                "type": "DATASET",
-                "name": "Retention Campaign",
-                "platform": {
-                  "urn": "urn:li:dataPlatform:powerbi",
-                  "name": "powerbi"
-                },
-                "editableProperties": {
-                  "description": "Retention campaign reporting surface powered by churn scores."
-                },
-                "properties": {
-                  "name": "Retention Campaign",
-                  "customProperties": [
-                    {
-                      "key": "evidence_boundary",
-                      "value": "synthetic-local"
-                    },
-                    {
-                      "key": "contextseal_fixture",
-                      "value": "true"
-                    }
-                  ]
-                },
-                "ownership": {
-                  "owners": [
-                    {
-                      "owner": {
-                        "urn": "urn:li:corpuser:marketing-analytics"
-                      },
-                      "type": "TECHNICAL_OWNER",
-                      "ownershipType": {
-                        "urn": "urn:li:ownershipType:__system__technical_owner",
-                        "type": "CUSTOM_OWNERSHIP_TYPE",
-                        "info": {
-                          "name": "Technical Owner",
-                          "description": "Involved in the production, maintenance, or distribution of the asset(s)."
-                        }
-                      }
-                    }
-                  ]
-                },
-                "tags": {
-                  "tags": [
-                    {
-                      "tag": {
-                        "urn": "urn:li:tag:Campaign"
-                      }
-                    }
-                  ]
-                },
-                "health": [
-                  {
-                    "type": "INCIDENTS",
-                    "status": "PASS"
-                  }
-                ]
-              },
-              "degree": 4
-            },
-            {
-              "entity": {
                 "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.analytics.customer_segments,PROD)",
                 "type": "DATASET",
                 "name": "customer_segments",
@@ -1158,7 +886,7 @@
                   "name": "snowflake"
                 },
                 "editableProperties": {
-                  "description": "Customer segments consumed by analytics and ML."
+                  "description": "Synthetic customer segments produced by the ContextSeal Airflow job."
                 },
                 "properties": {
                   "name": "customer_segments",
@@ -1277,7 +1005,7 @@
             }
           ],
           "offset": 0,
-          "returned": 10,
+          "returned": 6,
           "hasMore": false
         }
       }
@@ -1486,202 +1214,6 @@
       "tool": "get_lineage_paths_between",
       "arguments": {
         "source_urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)",
-        "target_urn": "urn:li:dataset:(urn:li:dataPlatform:airflow,customer_360.build_segments,PROD)",
-        "direction": "downstream"
-      },
-      "payload": {
-        "metadata": {
-          "queryType": "lineage-path-trace",
-          "direction": "downstream",
-          "pathType": "dataset-level",
-          "fields": {
-            "paths": {
-              "description": "Array of lineage paths showing transformation chains from source to target",
-              "structure": "Each path contains alternating entities (SCHEMA_FIELD or DATASET) and optional transformation QUERY entities"
-            }
-          }
-        },
-        "source": {
-          "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)"
-        },
-        "target": {
-          "urn": "urn:li:dataset:(urn:li:dataPlatform:airflow,customer_360.build_segments,PROD)"
-        },
-        "pathCount": 1,
-        "paths": [
-          {
-            "path": [
-              {
-                "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)",
-                "type": "DATASET"
-              },
-              {
-                "urn": "urn:li:dataset:(urn:li:dataPlatform:airflow,customer_360.build_segments,PROD)",
-                "type": "DATASET"
-              }
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "tool": "get_lineage_paths_between",
-      "arguments": {
-        "source_urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)",
-        "target_urn": "urn:li:dataset:(urn:li:dataPlatform:looker,executive_customer_health,PROD)",
-        "direction": "downstream"
-      },
-      "payload": {
-        "metadata": {
-          "queryType": "lineage-path-trace",
-          "direction": "downstream",
-          "pathType": "dataset-level",
-          "fields": {
-            "paths": {
-              "description": "Array of lineage paths showing transformation chains from source to target",
-              "structure": "Each path contains alternating entities (SCHEMA_FIELD or DATASET) and optional transformation QUERY entities"
-            }
-          }
-        },
-        "source": {
-          "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)"
-        },
-        "target": {
-          "urn": "urn:li:dataset:(urn:li:dataPlatform:looker,executive_customer_health,PROD)"
-        },
-        "pathCount": 1,
-        "paths": [
-          {
-            "path": [
-              {
-                "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)",
-                "type": "DATASET"
-              },
-              {
-                "urn": "urn:li:dataJob:(urn:li:dataFlow:(airflow,contextseal_customer_360,PROD),build_segments)",
-                "type": "DATA_JOB"
-              },
-              {
-                "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.analytics.customer_segments,PROD)",
-                "type": "DATASET"
-              },
-              {
-                "urn": "urn:li:dataset:(urn:li:dataPlatform:looker,executive_customer_health,PROD)",
-                "type": "DATASET"
-              }
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "tool": "get_lineage_paths_between",
-      "arguments": {
-        "source_urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)",
-        "target_urn": "urn:li:dataset:(urn:li:dataPlatform:mlflow,churn_prediction,PROD)",
-        "direction": "downstream"
-      },
-      "payload": {
-        "metadata": {
-          "queryType": "lineage-path-trace",
-          "direction": "downstream",
-          "pathType": "dataset-level",
-          "fields": {
-            "paths": {
-              "description": "Array of lineage paths showing transformation chains from source to target",
-              "structure": "Each path contains alternating entities (SCHEMA_FIELD or DATASET) and optional transformation QUERY entities"
-            }
-          }
-        },
-        "source": {
-          "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)"
-        },
-        "target": {
-          "urn": "urn:li:dataset:(urn:li:dataPlatform:mlflow,churn_prediction,PROD)"
-        },
-        "pathCount": 1,
-        "paths": [
-          {
-            "path": [
-              {
-                "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)",
-                "type": "DATASET"
-              },
-              {
-                "urn": "urn:li:dataJob:(urn:li:dataFlow:(airflow,contextseal_customer_360,PROD),build_segments)",
-                "type": "DATA_JOB"
-              },
-              {
-                "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.analytics.customer_segments,PROD)",
-                "type": "DATASET"
-              },
-              {
-                "urn": "urn:li:dataset:(urn:li:dataPlatform:mlflow,churn_prediction,PROD)",
-                "type": "DATASET"
-              }
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "tool": "get_lineage_paths_between",
-      "arguments": {
-        "source_urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)",
-        "target_urn": "urn:li:dataset:(urn:li:dataPlatform:powerbi,retention_campaign,PROD)",
-        "direction": "downstream"
-      },
-      "payload": {
-        "metadata": {
-          "queryType": "lineage-path-trace",
-          "direction": "downstream",
-          "pathType": "dataset-level",
-          "fields": {
-            "paths": {
-              "description": "Array of lineage paths showing transformation chains from source to target",
-              "structure": "Each path contains alternating entities (SCHEMA_FIELD or DATASET) and optional transformation QUERY entities"
-            }
-          }
-        },
-        "source": {
-          "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)"
-        },
-        "target": {
-          "urn": "urn:li:dataset:(urn:li:dataPlatform:powerbi,retention_campaign,PROD)"
-        },
-        "pathCount": 1,
-        "paths": [
-          {
-            "path": [
-              {
-                "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)",
-                "type": "DATASET"
-              },
-              {
-                "urn": "urn:li:dataJob:(urn:li:dataFlow:(airflow,contextseal_customer_360,PROD),build_segments)",
-                "type": "DATA_JOB"
-              },
-              {
-                "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.analytics.customer_segments,PROD)",
-                "type": "DATASET"
-              },
-              {
-                "urn": "urn:li:dataset:(urn:li:dataPlatform:mlflow,churn_prediction,PROD)",
-                "type": "DATASET"
-              },
-              {
-                "urn": "urn:li:dataset:(urn:li:dataPlatform:powerbi,retention_campaign,PROD)",
-                "type": "DATASET"
-              }
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "tool": "get_lineage_paths_between",
-      "arguments": {
-        "source_urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)",
         "target_urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.analytics.customer_segments,PROD)",
         "direction": "downstream"
       },
@@ -1793,7 +1325,7 @@
   "evidenceBoundary": "Disposable local DataHub with synthetic ContextSeal metadata; no production or customer data. Raw MCP responses are preserved and hash-bound.",
   "normalizedContext": {
     "source": "DataHub MCP live",
-    "observedAt": "2026-08-02T10:58:15.335Z",
+    "observedAt": "2026-08-02T20:45:59.024Z",
     "evidenceBoundary": "LIVE_DATAHUB_MCP_NORMALIZED",
     "targetUrn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)",
     "assets": [
@@ -1906,78 +1438,6 @@
         "reportedDegree": 3
       },
       {
-        "urn": "urn:li:dataset:(urn:li:dataPlatform:airflow,customer_360.build_segments,PROD)",
-        "name": "build_segments",
-        "type": "DATASET",
-        "platform": "airflow",
-        "criticality": "HIGH",
-        "owners": [
-          "urn:li:corpuser:growth-data"
-        ],
-        "tags": [
-          "Tier1"
-        ],
-        "terms": [],
-        "assertions": [],
-        "incidents": [],
-        "schemaFields": [],
-        "reportedDegree": 1
-      },
-      {
-        "urn": "urn:li:dataset:(urn:li:dataPlatform:looker,executive_customer_health,PROD)",
-        "name": "Executive Customer Health",
-        "type": "DATASET",
-        "platform": "looker",
-        "criticality": "MEDIUM",
-        "owners": [
-          "urn:li:corpuser:customer-success"
-        ],
-        "tags": [
-          "Executive"
-        ],
-        "terms": [],
-        "assertions": [],
-        "incidents": [],
-        "schemaFields": [],
-        "reportedDegree": 3
-      },
-      {
-        "urn": "urn:li:dataset:(urn:li:dataPlatform:mlflow,churn_prediction,PROD)",
-        "name": "churn_prediction",
-        "type": "DATASET",
-        "platform": "mlflow",
-        "criticality": "MEDIUM",
-        "owners": [
-          "urn:li:corpuser:ml-platform"
-        ],
-        "tags": [
-          "Production"
-        ],
-        "terms": [],
-        "assertions": [],
-        "incidents": [],
-        "schemaFields": [],
-        "reportedDegree": 3
-      },
-      {
-        "urn": "urn:li:dataset:(urn:li:dataPlatform:powerbi,retention_campaign,PROD)",
-        "name": "Retention Campaign",
-        "type": "DATASET",
-        "platform": "powerbi",
-        "criticality": "MEDIUM",
-        "owners": [
-          "urn:li:corpuser:marketing-analytics"
-        ],
-        "tags": [
-          "Campaign"
-        ],
-        "terms": [],
-        "assertions": [],
-        "incidents": [],
-        "schemaFields": [],
-        "reportedDegree": 4
-      },
-      {
         "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.analytics.customer_segments,PROD)",
         "name": "customer_segments",
         "type": "DATASET",
@@ -2045,31 +1505,11 @@
         "from": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.ml.churn_scores,PROD)",
         "to": "urn:li:dashboard:(powerbi,retention_campaign)",
         "scope": "ENTITY"
-      },
-      {
-        "from": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)",
-        "to": "urn:li:dataset:(urn:li:dataPlatform:airflow,customer_360.build_segments,PROD)",
-        "scope": "ENTITY"
-      },
-      {
-        "from": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.analytics.customer_segments,PROD)",
-        "to": "urn:li:dataset:(urn:li:dataPlatform:looker,executive_customer_health,PROD)",
-        "scope": "ENTITY"
-      },
-      {
-        "from": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.analytics.customer_segments,PROD)",
-        "to": "urn:li:dataset:(urn:li:dataPlatform:mlflow,churn_prediction,PROD)",
-        "scope": "ENTITY"
-      },
-      {
-        "from": "urn:li:dataset:(urn:li:dataPlatform:mlflow,churn_prediction,PROD)",
-        "to": "urn:li:dataset:(urn:li:dataPlatform:powerbi,retention_campaign,PROD)",
-        "scope": "ENTITY"
       }
     ],
     "queries": [],
     "provenance": {
-      "rawEvidenceHash": "1cb975bae97ee966a85279ad4348cd46ca5b06036c93c1bdbe1c899c69154a03",
+      "rawEvidenceHash": "f24da9bbb35d7ccf42c72ee6b0ccd1f91997ab428ace8947de671dc9a53feb8e",
       "toolTypes": [
         "get_entities",
         "list_schema_fields",
@@ -2084,18 +1524,14 @@
         "pageCount": 1
       },
       "lineage": {
-        "discoveredAssetCount": 10,
-        "exactPathCount": 10,
-        "pathTargetCount": 10,
+        "discoveredAssetCount": 6,
+        "exactPathCount": 6,
+        "pathTargetCount": 6,
         "downstreamUrns": [
           "urn:li:dashboard:(looker,executive_customer_health)",
           "urn:li:dashboard:(powerbi,retention_campaign)",
           "urn:li:dataJob:(urn:li:dataFlow:(airflow,contextseal_customer_360,PROD),build_segments)",
           "urn:li:dataJob:(urn:li:dataFlow:(mlflow,contextseal_churn_scoring,PROD),score_churn)",
-          "urn:li:dataset:(urn:li:dataPlatform:airflow,customer_360.build_segments,PROD)",
-          "urn:li:dataset:(urn:li:dataPlatform:looker,executive_customer_health,PROD)",
-          "urn:li:dataset:(urn:li:dataPlatform:mlflow,churn_prediction,PROD)",
-          "urn:li:dataset:(urn:li:dataPlatform:powerbi,retention_campaign,PROD)",
           "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.analytics.customer_segments,PROD)",
           "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.ml.churn_scores,PROD)"
         ],

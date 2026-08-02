@@ -6,7 +6,7 @@ ContextSeal is a DataHub-native certification agent for risky schema changes. It
 
 In the judge path, the first thing you see is the blocked request, the downstream blast radius, the safe review bundle, and the passport payoff. The rest of the product explains why that verdict is grounded.
 
-The demo story is now intentionally compressed to about 100 seconds: block the rename, show the blast radius, show the AI boundary, show the safe package, approve the safe scope, and end on the passport plus inherited decision.
+The demo story is paced for about 2 minutes 20 seconds: block the rename, inspect the grounded artifact package and evidence trace, approve the safe scope, and end with the passport plus clearly labeled recorded live-local proof.
 
 [![CI](https://github.com/zyganali-glitch/ContextSeal/actions/workflows/ci.yml/badge.svg)](https://github.com/zyganali-glitch/ContextSeal/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-Apache--2.0-green.svg)](LICENSE)
@@ -154,7 +154,7 @@ npm start
 
 The application calls DataHub MCP tools for entity context, downstream lineage, observed dataset queries, and bounded metadata mutations. The default judge path keeps the exact graph view fixture-backed unless a target-derived graph contract is exported separately. See [Live DataHub Setup](docs/LIVE_DATAHUB_SETUP.md) for the exact verification path and limitations.
 
-The repository includes a completed disposable-local proof under `examples/outputs/`: a typed downstream summary with six `DATASET`, two `DATA_JOB`, and two `DASHBOARD` entities was returned through live MCP across the seeded local platforms, and the approved status, risk score, passport ID, validity date, appended description, and decision document were written and verified against synthetic DataHub metadata.
+The repository includes a recorded disposable-local `PASS` bundle under `examples/outputs/`, sourced from commit `baa61387324868b39427030c447b94c2b9599c03`. It binds ten MCP reads across five tool types to six downstream assets (`DATASET`, `DATA_JOB`, and `DASHBOARD` counts of two each), then records three `APPLIED` bounded write-backs, three `SKIPPED` verify-then-skip retries, and durable exact-one read-back checks. It remains synthetic-local evidence, not a live dashboard connection, production evidence, or a final-head submission freeze.
 
 ## MCP tools used
 
@@ -172,7 +172,7 @@ Approved write-back path:
 - `update_description`
 - `save_document`
 
-The reusable workflow is also packaged as [`contextseal-change-certification`](skills/contextseal-change-certification/SKILL.md), designed for contribution to the DataHub Skills ecosystem.
+The canonical reusable workflow is [`datahub-schema-change-certification`](skills/datahub-schema-change-certification/SKILL.md), designed for contribution to the DataHub Skills ecosystem. [`contextseal-change-certification`](skills/contextseal-change-certification/SKILL.md) remains a legacy compatibility alias only.
 
 ## Repository map
 
