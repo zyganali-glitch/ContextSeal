@@ -135,6 +135,10 @@ function validBundle() {
     action: "APPLIED",
     result: { isError: false, structuredContent: { success: true, ...(tool === "save_document" ? { urn: savedDocumentUrn } : {}) } }
   }));
+  const secondMutationReceipts = mutationReceipts.map((receipt) => ({
+    ...receipt,
+    action: "SKIPPED"
+  }));
   const readbackEvidence = [
     { tool: "get_entities", arguments: { urns: [targetUrn] }, state: "PASS", payload: { result: [finalEntity] } },
     ...Object.entries({ passportId: passport.passportId, manifestHash: passport.manifestHash, targetUrn }).map(([binding, literal]) => ({
@@ -196,6 +200,45 @@ function validBundle() {
         evidence: readbackEvidence,
         attemptCount: 1,
         attempts: []
+      },
+      secondRun: {
+        startedAt: "2026-07-14T12:03:15.000Z",
+        completedAt: "2026-07-14T12:04:15.000Z",
+        idempotency: {
+          strategy: "VERIFY_THEN_SKIP",
+          state: "PASS",
+          targetUrn,
+          preflight: {
+            structuredProperties: "MATCH",
+            descriptionBlockCount: 1,
+            document: { state: "VERIFIED", urn: savedDocumentUrn, title: `Change Passport ${passport.passportId}` }
+          },
+          operations: {
+            add_structured_properties: { action: "SKIPPED", reason: "EXACT_VALUES_PRESENT" },
+            update_description: { action: "SKIPPED", reason: "EXACT_PASSPORT_MARKER_PRESENT" },
+            save_document: { action: "SKIPPED", reason: "EXACT_DOCUMENT_BINDINGS_VERIFIED", urn: savedDocumentUrn }
+          }
+        },
+        mutationReceipts: secondMutationReceipts,
+        readback: {
+          state: "PASS",
+          observedAt: "2026-07-14T12:04:00.000Z",
+          targetUrn,
+          verified: {
+            structuredProperties: { state: "PASS", properties: [] },
+            description: { state: "PASS", passportIdPresent: true, passportBlockCount: 1 },
+            relatedDocument: {
+              state: "PASS",
+              urn: savedDocumentUrn,
+              title: `Change Passport ${passport.passportId}`,
+              verificationScope: "EXACT_URN_TITLE_AND_LITERAL_BINDINGS",
+              verified: { passportId: true, manifestHash: true, targetUrn: true }
+            }
+          },
+          evidence: readbackEvidence,
+          attemptCount: 1,
+          attempts: []
+        }
       }
     }
   };
@@ -243,7 +286,8 @@ function validBundle() {
         idempotency: {
           strategy: run.writeback.idempotency.strategy,
           state: run.writeback.idempotency.state,
-          operationActions: Object.fromEntries(mutationReceipts.map((receipt) => [receipt.tool, receipt.action]))
+          firstRunActions: Object.fromEntries(mutationReceipts.map((receipt) => [receipt.tool, receipt.action])),
+          secondRunActions: Object.fromEntries(secondMutationReceipts.map((receipt) => [receipt.tool, receipt.action]))
         }
       },
       run
@@ -271,11 +315,29 @@ test("structural evidence validator requires sanitized pinned launcher provenanc
 
 test("structural evidence validator rejects provenance detached from the durable receipts", () => {
   const bundle = validBundle();
-  bundle.writebackEvidence.proofProvenance.idempotency.operationActions.save_document = "SKIPPED";
+  bundle.writebackEvidence.proofProvenance.idempotency.firstRunActions.save_document = "SKIPPED";
   assert.throws(
     () => validateEvidenceBundle(bundle),
     (error) => error instanceof EvidenceValidationError
       && error.details.some((item) => item.includes("proofProvenance idempotency outcome"))
+  );
+});
+
+test("structural evidence validator rejects a missing or mutating idempotent retry", () => {
+  const missingRetry = validBundle();
+  delete missingRetry.writebackEvidence.run.writeback.secondRun;
+  assert.throws(
+    () => validateEvidenceBundle(missingRetry),
+    (error) => error instanceof EvidenceValidationError
+      && error.details.some((item) => item.includes("second idempotent run"))
+  );
+
+  const mutatingRetry = validBundle();
+  mutatingRetry.writebackEvidence.run.writeback.secondRun.mutationReceipts[0].action = "APPLIED";
+  assert.throws(
+    () => validateEvidenceBundle(mutatingRetry),
+    (error) => error instanceof EvidenceValidationError
+      && error.details.some((item) => item.includes("PASS SKIPPED second-run"))
   );
 });
 

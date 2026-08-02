@@ -89,18 +89,27 @@ await store.save({
   writeback: { startedAt: writebackStartedAt, idempotency: null, mutationReceipts: [], readback: null }
 }, "DATAHUB_WRITEBACK_STARTED", { expectedState: "APPROVED_FOR_WRITEBACK" });
 
-let mutationReceipts;
-let readback;
+let firstMutationReceipts;
+let firstReadback;
+let secondMutationReceipts;
+let secondReadback;
 let updated;
 
 try {
   await client.initialize();
-  mutationReceipts = await executeWriteback(client, operations, { run: approved, policy, now: new Date() });
-  const idempotency = mutationReceipts.idempotency || null;
+  firstMutationReceipts = await executeWriteback(client, operations, { run: approved, policy, now: new Date() });
+  const idempotency = firstMutationReceipts.idempotency || null;
   const mutationsCompletedAt = new Date().toISOString();
-  readback = await collectWritebackReadback(client, approved, mutationReceipts, { policy });
+  firstReadback = await collectWritebackReadback(client, approved, firstMutationReceipts, { policy });
+  if (firstReadback.state !== "PASS") {
+    throw new Error("Initial DataHub write-back completed, but durable read-back verification did not PASS.");
+  }
+  const secondStartedAt = new Date().toISOString();
+  secondMutationReceipts = await executeWriteback(client, operations, { run: approved, policy, now: new Date() });
+  const secondIdempotency = secondMutationReceipts.idempotency || null;
+  secondReadback = await collectWritebackReadback(client, approved, secondMutationReceipts, { policy });
   const writebackCompletedAt = new Date().toISOString();
-  const readbackPassed = readback.state === "PASS";
+  const readbackPassed = firstReadback.state === "PASS" && secondReadback.state === "PASS";
   updated = {
     ...approved,
     state: readbackPassed ? "CERTIFIED_AND_WRITTEN_BACK" : "WRITEBACK_VERIFICATION_FAILED",
@@ -110,8 +119,15 @@ try {
       mutationsCompletedAt,
       completedAt: writebackCompletedAt,
       idempotency,
-      mutationReceipts,
-      readback
+      mutationReceipts: firstMutationReceipts,
+      readback: secondReadback,
+      secondRun: {
+        startedAt: secondStartedAt,
+        completedAt: writebackCompletedAt,
+        idempotency: secondIdempotency,
+        mutationReceipts: secondMutationReceipts,
+        readback: secondReadback
+      }
     },
     evidence: approved.evidence.map((item) => {
       if (item.claim === "DataHub write-back completed") {
@@ -119,12 +135,12 @@ try {
           ...item,
           state: readbackPassed ? "PASS" : "FAIL",
           artifact: readbackPassed
-            ? mutationReceipts.map((result) => `${result.tool}:${result.action}`).join(", ")
+            ? `first ${firstMutationReceipts.map((result) => `${result.tool}:${result.action}`).join(", ")}; second ${secondMutationReceipts.map((result) => `${result.tool}:${result.action}`).join(", ")}`
             : "Mutation receipts were captured, but durable read-back did not PASS."
         };
       }
       if (item.claim === "Durable DataHub read-back verified") {
-        return { ...item, state: readback.state, artifact: "structured properties, description, and exact document binding excerpts" };
+        return { ...item, state: secondReadback.state, artifact: "structured properties, one passport description block, and exact document binding excerpts" };
       }
       return item;
     })
@@ -143,12 +159,12 @@ try {
       writeback: {
         startedAt: writebackStartedAt,
         completedAt: new Date().toISOString(),
-        mutationReceipts: error.results,
+        mutationReceipts: error.results || firstMutationReceipts || [],
         readback: error.readback || null
       },
       evidence: approved.evidence.map((item) => {
         if (item.claim === "DataHub write-back completed") {
-          return { ...item, state: "FAIL", artifact: error.results.map((result) => `${result.tool}:${result.status}`).join(", ") };
+          return { ...item, state: "FAIL", artifact: (error.results || firstMutationReceipts || []).map((result) => `${result.tool}:${result.status}`).join(", ") };
         }
         if (item.claim === "Durable DataHub read-back verified") {
           return { ...item, state: error.readback?.state || "NOT_RUN", artifact: null };

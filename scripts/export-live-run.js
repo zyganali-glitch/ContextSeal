@@ -17,11 +17,16 @@ for (const filename of await readdir(runsDirectory)) {
 candidates.sort((a, b) => Date.parse(b.writeback?.at || b.createdAt) - Date.parse(a.writeback?.at || a.createdAt));
 const run = candidates[0];
 if (!run) throw new Error("No completed live DataHub run exists.");
-if (run.writeback?.mutationReceipts?.length !== 3 || run.writeback.mutationReceipts.some((item) => item.status !== "PASS")) {
-  throw new Error("Latest live run does not contain three successful bounded write-back operations.");
+const firstReceipts = run.writeback?.mutationReceipts || [];
+const secondReceipts = run.writeback?.secondRun?.mutationReceipts || [];
+if (firstReceipts.length !== 3 || firstReceipts.some((item) => item.status !== "PASS" || item.action !== "APPLIED")) {
+  throw new Error("Latest live run does not contain three applied bounded write-back operations.");
 }
-if (run.writeback?.readback?.state !== "PASS") {
-  throw new Error("Latest live run does not contain a complete PASS durable read-back.");
+if (secondReceipts.length !== 3 || secondReceipts.some((item) => item.status !== "PASS" || item.action !== "SKIPPED")) {
+  throw new Error("Latest live run does not contain three skipped idempotent retry operations.");
+}
+if (run.writeback?.readback?.state !== "PASS" || run.writeback?.secondRun?.readback?.state !== "PASS") {
+  throw new Error("Latest live run does not contain complete PASS durable read-backs for both attempts.");
 }
 
 const [readEvidence, policy, revision] = await Promise.all([
@@ -48,7 +53,8 @@ const output = {
     idempotency: {
       strategy: run.writeback.idempotency?.strategy,
       state: run.writeback.idempotency?.state,
-      operationActions: Object.fromEntries(run.writeback.mutationReceipts.map((receipt) => [receipt.tool, receipt.action]))
+      firstRunActions: Object.fromEntries(firstReceipts.map((receipt) => [receipt.tool, receipt.action])),
+      secondRunActions: Object.fromEntries(secondReceipts.map((receipt) => [receipt.tool, receipt.action]))
     }
   },
   run

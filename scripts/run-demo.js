@@ -2,6 +2,7 @@ import { readFile, mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { analyzeChange, decideRun } from "../src/core/workflow.js";
+import { assertRenameArtifactContract } from "../src/core/artifact-contract.js";
 import { enrichRunWithAi } from "../src/ai/adapter.js";
 import { AI_PROOF_PATH, validateAiProof } from "../src/ai/proof.js";
 import { loadEnvFile } from "../src/env.js";
@@ -90,7 +91,9 @@ function proofState(value) {
 
 function isCurrentWritebackProof(writebackEvidence) {
   const writeback = writebackEvidence?.run?.writeback || {};
-  const receipts = Array.isArray(writeback.mutationReceipts) ? writeback.mutationReceipts : [];
+  const firstReceipts = Array.isArray(writeback.mutationReceipts) ? writeback.mutationReceipts : [];
+  const secondRun = writeback.secondRun || {};
+  const secondReceipts = Array.isArray(secondRun.mutationReceipts) ? secondRun.mutationReceipts : [];
   const expectedTools = ["add_structured_properties", "update_description", "save_document"];
   return Boolean(
     writebackEvidence?.proofProvenance
@@ -98,8 +101,16 @@ function isCurrentWritebackProof(writebackEvidence) {
     && writeback.idempotency?.state === "PASS"
     && writeback.readback?.state === "PASS"
     && writeback.readback?.verified?.description?.passportBlockCount === 1
-    && receipts.length === expectedTools.length
-    && expectedTools.every((tool, index) => receipts[index]?.tool === tool && receipts[index]?.status === "PASS" && ["APPLIED", "SKIPPED"].includes(receipts[index]?.action))
+    && writeback.readback?.verified?.relatedDocument?.state === "PASS"
+    && secondRun.idempotency?.strategy === "VERIFY_THEN_SKIP"
+    && secondRun.idempotency?.state === "PASS"
+    && secondRun.readback?.state === "PASS"
+    && secondRun.readback?.verified?.description?.passportBlockCount === 1
+    && secondRun.readback?.verified?.relatedDocument?.state === "PASS"
+    && firstReceipts.length === expectedTools.length
+    && secondReceipts.length === expectedTools.length
+    && expectedTools.every((tool, index) => firstReceipts[index]?.tool === tool && firstReceipts[index]?.status === "PASS" && firstReceipts[index]?.action === "APPLIED")
+    && expectedTools.every((tool, index) => secondReceipts[index]?.tool === tool && secondReceipts[index]?.status === "PASS" && secondReceipts[index]?.action === "SKIPPED")
   );
 }
 
@@ -110,9 +121,19 @@ async function readOptionalRecordedLiveProof(root) {
       readFile(path.join(root, "examples", "outputs", "live-datahub-writeback-evidence.json"), "utf8").then(JSON.parse)
     ]);
     const writeback = writebackEvidence?.run?.writeback || {};
-    const receipts = Array.isArray(writeback.mutationReceipts) ? writeback.mutationReceipts : [];
+    const firstReceipts = Array.isArray(writeback.mutationReceipts) ? writeback.mutationReceipts : [];
+    const secondRun = writeback.secondRun || {};
+    const secondReceipts = Array.isArray(secondRun.mutationReceipts) ? secondRun.mutationReceipts : [];
     const relatedDocument = writeback.readback?.verified?.relatedDocument || {};
+    const typeCounts = new Map((readEvidence.lineageSummary?.entityTypes || []).map((item) => [item?.type, item?.count]));
     const current = isCurrentWritebackProof(writebackEvidence);
+    const displayState = (value) => current ? proofState(value) : "STALE";
+    const receiptState = (receipt) => current ? proofState(receipt?.status) : "STALE";
+    const receiptSummary = (receipt) => ({
+      tool: typeof receipt?.tool === "string" ? receipt.tool : "unknown",
+      action: typeof receipt?.action === "string" ? receipt.action : "not recorded",
+      state: receiptState(receipt)
+    });
 
     return {
       status: current ? proofState(readEvidence.status) : "STALE",
@@ -121,6 +142,11 @@ async function readOptionalRecordedLiveProof(root) {
       observedAt: typeof readEvidence.observedAt === "string" ? readEvidence.observedAt : null,
       targetUrn: typeof readEvidence.targetUrn === "string" ? readEvidence.targetUrn : null,
       rawEvidenceHash: typeof readEvidence.rawEvidenceHash === "string" ? readEvidence.rawEvidenceHash : null,
+      sourceProvenance: {
+        commitSha: typeof writebackEvidence.proofProvenance?.commitSha === "string" ? writebackEvidence.proofProvenance.commitSha : null,
+        initialRawEvidenceHash: typeof writebackEvidence.proofProvenance?.rawEvidenceHash === "string" ? writebackEvidence.proofProvenance.rawEvidenceHash : null,
+        finalRawEvidenceHash: typeof writebackEvidence.proofProvenance?.finalReadRawEvidenceHash === "string" ? writebackEvidence.proofProvenance.finalReadRawEvidenceHash : null
+      },
       mcp: {
         serverName: typeof readEvidence.mcp?.serverInfo?.name === "string" ? readEvidence.mcp.serverInfo.name : null,
         serverVersion: typeof readEvidence.mcp?.serverInfo?.version === "string" ? readEvidence.mcp.serverInfo.version : null,
@@ -128,17 +154,29 @@ async function readOptionalRecordedLiveProof(root) {
       },
       read: {
         toolCount: Number.isSafeInteger(readEvidence.summary?.toolCount) ? readEvidence.summary.toolCount : null,
+        toolNames: Array.isArray(readEvidence.tools) ? readEvidence.tools.filter((tool) => typeof tool === "string") : [],
         downstreamAssetCount: Number.isSafeInteger(readEvidence.summary?.downstreamAssetCount) ? readEvidence.summary.downstreamAssetCount : null,
-        queryCount: Number.isSafeInteger(readEvidence.summary?.queryCount) ? readEvidence.summary.queryCount : null
+        queryCount: Number.isSafeInteger(readEvidence.summary?.queryCount) ? readEvidence.summary.queryCount : null,
+        entityTypeCounts: Object.fromEntries(["DATASET", "DATA_JOB", "DASHBOARD"].map((type) => [type, Number.isSafeInteger(typeCounts.get(type)) ? typeCounts.get(type) : null])),
+        maxHops: Number.isSafeInteger(readEvidence.summary?.maxHops) ? readEvidence.summary.maxHops : null
       },
       writeback: {
-        state: current ? proofState(writeback.readback?.state) : "STALE",
-        mutationReceiptCount: receipts.length,
-        receiptStates: receipts.map((receipt) => ({
-          tool: typeof receipt?.tool === "string" ? receipt.tool : "unknown",
-          state: current ? proofState(receipt?.status) : "STALE"
-        })),
-        documentBindingState: current ? proofState(relatedDocument.state) : "STALE"
+        state: displayState(writeback.readback?.state),
+        mutationReceiptCount: firstReceipts.length,
+        receiptStates: firstReceipts.map(receiptSummary),
+        firstRunActions: firstReceipts.map(receiptSummary),
+        secondRunActions: secondReceipts.map(receiptSummary),
+        durableReadbackState: displayState(writeback.readback?.state),
+        idempotencyStrategy: typeof writeback.idempotency?.strategy === "string" ? writeback.idempotency.strategy : "not recorded",
+        exactOneDescription: {
+          state: displayState(writeback.readback?.verified?.description?.state),
+          count: Number.isSafeInteger(writeback.readback?.verified?.description?.passportBlockCount) ? writeback.readback.verified.description.passportBlockCount : null
+        },
+        exactOneDocument: {
+          state: displayState(relatedDocument.state),
+          verified: relatedDocument.state === "PASS" ? current : false
+        },
+        documentBindingState: displayState(relatedDocument.state)
       },
       evidencePaths: [
         "examples/outputs/live-datahub-read-evidence.json",
@@ -170,6 +208,7 @@ export async function buildDeterministicFixtureRun(root, { env = process.env, us
     note: "Approved safe expand-migrate-contract scope only.",
     scopeAccepted: true
   }, new Date(FIXTURE_DECIDE_AT));
+  assertRenameArtifactContract(approved.artifacts.files);
 
   return { run, approved };
 }

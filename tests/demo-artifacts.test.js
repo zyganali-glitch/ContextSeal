@@ -78,8 +78,16 @@ test("deterministic demo generation preserves the recorded AI proof artifact", a
   assert.equal(demoData.recordedLiveProof.note.includes("not connected to a live catalog"), true);
   assert.equal(demoData.recordedLiveProof.status, "STALE");
   assert.equal(demoData.recordedLiveProof.read.toolCount, 14);
+  assert.deepEqual(demoData.recordedLiveProof.read.toolNames, ["get_entities", "list_schema_fields", "get_lineage", "get_lineage_paths_between", "get_dataset_queries"]);
+  assert.deepEqual(demoData.recordedLiveProof.read.entityTypeCounts, { DATASET: 6, DATA_JOB: 2, DASHBOARD: 2 });
+  assert.equal(demoData.recordedLiveProof.read.maxHops, 5);
   assert.equal(demoData.recordedLiveProof.writeback.mutationReceiptCount, 3);
   assert.equal(demoData.recordedLiveProof.writeback.receiptStates.every((receipt) => receipt.state === "STALE"), true);
+  assert.equal(demoData.recordedLiveProof.writeback.firstRunActions.every((receipt) => receipt.state === "STALE"), true);
+  assert.deepEqual(demoData.recordedLiveProof.writeback.secondRunActions, []);
+  assert.equal(demoData.recordedLiveProof.writeback.durableReadbackState, "STALE");
+  assert.equal(demoData.recordedLiveProof.writeback.exactOneDescription.state, "STALE");
+  assert.equal(demoData.recordedLiveProof.sourceProvenance.commitSha, null);
   assert.equal("evidence" in demoData.recordedLiveProof, false);
   assert.deepEqual(demoData.recordedLiveProof.evidencePaths, [
     "examples/outputs/live-datahub-read-evidence.json",

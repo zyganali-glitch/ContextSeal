@@ -76,8 +76,8 @@ export function resolveEvidencePath(root, evidenceOutput) {
   return path.resolve(root, evidenceOutput);
 }
 
-function baseModelSql() {
-  const values = BASE_ROWS
+function baseModelSql(rows = BASE_ROWS) {
+  const values = rows
     .map((row) => `(${row.map(sqlLiteral).join(", ")})`)
     .join(",\n      ");
 
@@ -410,7 +410,7 @@ async function writeProjectFiles(projectDir, scenario, { collision = false } = {
     `      path: ${JSON.stringify(toPosixPath(dbPath))}`,
     "      threads: 1"
   ].join("\n") + "\n";
-  const baseModel = baseModelSql();
+  const baseModel = baseModelSql(scenario.inputRows);
   const generatedModel = scenario.artifacts.files.find((file) => file.kind === "DBT_MODEL");
   const generatedTests = scenario.artifacts.files.find((file) => file.kind === "DBT_TESTS");
   const rollback = scenario.artifacts.files.find((file) => file.kind === "ROLLBACK");
@@ -551,6 +551,60 @@ async function executeCollisionScenario(root, tempRoot, scenario) {
   };
 }
 
+async function executeInvalidCastScenario(root, tempRoot, scenario) {
+  const projectDir = path.join(tempRoot, "type_change_invalid_cast");
+  const invalidScenario = {
+    ...scenario,
+    inputRows: [
+      [1, "ada@example.com", "100", "loyal"],
+      [2, "linus@example.com", "not-a-decimal", null],
+      [3, "grace@example.com", "375", "beta"]
+    ]
+  };
+  await writeProjectFiles(projectDir, invalidScenario);
+  const commands = [];
+
+  for (const [name, extraArgs] of [
+    ["dbt parse", []],
+    ["dbt compile", []],
+    ["dbt run", []]
+  ]) {
+    const result = await runCommand("uv", dbtArgs(name.split(" ")[1], projectDir, ...extraArgs), { cwd: root, projectDir });
+    commands.push({ name, ...result });
+  }
+  const testResult = await runCommand(
+    "uv",
+    dbtArgs("test", projectDir, "--select", scenario.generatedModelName),
+    { cwd: root, projectDir }
+  );
+  commands.push({ name: "dbt test", ...testResult });
+
+  const setupSucceeded = commands.slice(0, 3).every((command) => command.exitCode === 0);
+  const failureObserved = testResult.exitCode !== 0;
+  const typeCastTest = scenario.artifacts.files.find((file) => file.kind === "DBT_DATA_TEST");
+  const invalidCastDataTestObserved = Boolean(
+    typeCastTest?.content.includes(`where ${scenario.request.sourceField} is not null\n  and ${scenario.request.sourceField}_typed is null`)
+  );
+
+  return {
+    id: "type_change_invalid_cast",
+    changeType: scenario.request.changeType,
+    expectedResult: "FAIL_CLOSED",
+    status: setupSucceeded && failureObserved && invalidCastDataTestObserved ? "PASS" : "FAIL",
+    generatedModelName: scenario.generatedModelName,
+    generatedTests: scenario.generatedTests,
+    generatedDataTestCount: scenario.generatedDataTestCount,
+    generatedFileHashes: scenario.generatedFileHashes,
+    commands,
+    checks: {
+      canonicalModelIdentity: scenario.generatedModelName === CANONICAL_GENERATED_MODEL_NAME,
+      invalidCastDataTestObserved,
+      failureObserved
+    },
+    boundary: DBT_PROOF_BOUNDARY
+  };
+}
+
 async function runProof(root) {
   const tempRoot = await mkdtemp(path.join(os.tmpdir(), "contextseal-dbt-proof-"));
   try {
@@ -558,6 +612,9 @@ async function runProof(root) {
     const toolchain = await readToolchainVersions(root);
     const results = [];
     for (const scenario of scenarios) results.push(await executeSuccessScenario(root, tempRoot, scenario));
+    const typeChangeScenario = scenarios.find((scenario) => scenario.request.changeType === "type_change");
+    if (!typeChangeScenario) throw new Error("dbt proof requires a type-change scenario.");
+    results.push(await executeInvalidCastScenario(root, tempRoot, typeChangeScenario));
     results.push(await executeCollisionScenario(root, tempRoot, scenarios[0]));
 
     const status = results.every((result) => result.status === "PASS") ? "PASS" : "FAIL";
@@ -613,6 +670,16 @@ export function validateDbtProofArtifact(proof, expectedScenarios = buildDbtProo
     assert(actual.checks?.notNullGenerated === scenario.nullableShouldGenerateNotNull, `dbt proof scenario '${scenario.id}' not_null generation does not match nullable metadata.`);
     assert(actual.checks?.testsObserved === true, `dbt proof scenario '${scenario.id}' did not record the expected dbt test behavior.`);
   }
+
+  const invalidCast = scenarioMap.get("type_change_invalid_cast");
+  assert(invalidCast, "missing dbt proof scenario 'type_change_invalid_cast'.");
+  assert(invalidCast.status === "PASS", "dbt proof invalid-cast scenario must PASS by failing closed.");
+  assert(invalidCast.expectedResult === "FAIL_CLOSED", "dbt proof invalid-cast scenario must declare FAIL_CLOSED.");
+  assert(invalidCast.generatedModelName === CANONICAL_GENERATED_MODEL_NAME, "dbt proof invalid-cast scenario must use the canonical model identity.");
+  assert(invalidCast.commands?.slice(0, 3).every((command) => command.exitCode === 0), "dbt proof invalid-cast setup commands must succeed.");
+  assert(invalidCast.commands?.find((command) => command.name === "dbt test")?.exitCode > 0, "dbt proof invalid-cast scenario must preserve a failing dbt test.");
+  assert(invalidCast.checks?.invalidCastDataTestObserved === true, "dbt proof invalid-cast scenario must prove the type-cast data test was generated.");
+  assert(invalidCast.checks?.failureObserved === true, "dbt proof invalid-cast scenario must record the expected dbt-test failure.");
 
   const collision = scenarioMap.get("model_name_collision");
   assert(collision, "missing dbt proof scenario 'model_name_collision'.");

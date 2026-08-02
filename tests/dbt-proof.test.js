@@ -48,6 +48,7 @@ function makeScenarioResult(scenario) {
 
 function makeProof() {
   const scenarios = buildDbtProofScenarios();
+  const typeChange = scenarios.find((scenario) => scenario.request.changeType === "type_change");
   return {
     status: "PASS",
     evidenceBoundary: DBT_PROOF_BOUNDARY,
@@ -63,6 +64,27 @@ function makeProof() {
     },
     scenarios: [
       ...scenarios.map(makeScenarioResult),
+      {
+        id: "type_change_invalid_cast",
+        changeType: typeChange.request.changeType,
+        expectedResult: "FAIL_CLOSED",
+        status: "PASS",
+        generatedModelName: typeChange.generatedModelName,
+        generatedTests: typeChange.generatedTests,
+        generatedDataTestCount: typeChange.generatedDataTestCount,
+        generatedFileHashes: typeChange.generatedFileHashes,
+        commands: [
+          { name: "dbt parse", exitCode: 0 },
+          { name: "dbt compile", exitCode: 0 },
+          { name: "dbt run", exitCode: 0 },
+          { name: "dbt test", exitCode: 1 }
+        ],
+        checks: {
+          canonicalModelIdentity: true,
+          invalidCastDataTestObserved: true,
+          failureObserved: true
+        }
+      },
       {
         id: "model_name_collision",
         changeType: scenarios[0].request.changeType,
@@ -94,6 +116,14 @@ test("dbt proof validator rejects PASS artifacts that contain failed execution s
   proof.scenarios[0].commands[2].exitCode = 1;
 
   assert.throws(() => validateDbtProofArtifact(proof, scenarios), /non-zero exit code/);
+});
+
+test("dbt proof validator rejects an invalid-cast safety scenario without a failing dbt test", () => {
+  const scenarios = buildDbtProofScenarios();
+  const proof = makeProof();
+  proof.scenarios.find((scenario) => scenario.id === "type_change_invalid_cast").commands.at(-1).exitCode = 0;
+
+  assert.throws(() => validateDbtProofArtifact(proof, scenarios), /must preserve a failing dbt test/);
 });
 
 test("dbt proof output supports both repo-relative and CI temporary paths", () => {

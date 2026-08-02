@@ -136,11 +136,25 @@ export function createProofDashboard({ select, text, evidenceState, formatChange
 
     const stats = select("#recordedProofStats");
     stats.replaceChildren();
+    const entityTypes = Object.entries(proof.read?.entityTypeCounts || {})
+      .map(([type, count]) => `${type} ${count ?? "not recorded"}`)
+      .join(" · ");
+    const queryCount = proof.read?.queryCount;
     const values = [
-      ["Recorded", formatRecordedTime(proof.observedAt)],
+      ["Observed", formatRecordedTime(proof.observedAt)],
+      ["Target", proof.targetUrn || "not recorded"],
       ["MCP", [proof.mcp?.serverName, proof.mcp?.serverVersion].filter(Boolean).join(" ") || "not recorded"],
-      ["Read tools", proof.read?.toolCount ?? "not recorded"],
-      ["Write receipts", proof.writeback?.mutationReceiptCount ?? "not recorded"]
+      ["Source commit", proof.sourceProvenance?.commitSha || "not recorded"],
+      ["Read tools", proof.read?.toolNames?.join(", ") || "not recorded"],
+      ["Queries", queryCount === 0 ? "0 (PASS with zero results)" : queryCount ?? "not recorded"],
+      ["Entity types", entityTypes || "not recorded"],
+      ["Max hops", proof.read?.maxHops ?? "not recorded"],
+      ["Read hash", proof.sourceProvenance?.initialRawEvidenceHash || proof.rawEvidenceHash || "not recorded"],
+      ["Final read hash", proof.sourceProvenance?.finalRawEvidenceHash || "not recorded"],
+      ["Durable read-back", proof.writeback?.durableReadbackState || "not recorded"],
+      ["Idempotency", proof.writeback?.idempotencyStrategy || "not recorded"],
+      ["One description", proof.writeback?.exactOneDescription?.count == null ? proof.writeback?.exactOneDescription?.state || "not recorded" : `${proof.writeback.exactOneDescription.count} (${proof.writeback.exactOneDescription.state})`],
+      ["One document", proof.writeback?.exactOneDocument?.state || "not recorded"]
     ];
     for (const [label, value] of values) {
       const item = document.createElement("div");
@@ -154,16 +168,18 @@ export function createProofDashboard({ select, text, evidenceState, formatChange
 
     const receipts = select("#recordedProofReceipts");
     receipts.replaceChildren();
-    for (const receipt of proof.writeback?.receiptStates || []) {
+    for (const [runLabel, actions] of [["first", proof.writeback?.firstRunActions || []], ["second", proof.writeback?.secondRunActions || []]]) {
+      for (const receipt of actions) {
       const row = document.createElement("div");
       const tool = document.createElement("code");
-      tool.textContent = receipt.tool;
+      tool.textContent = `${runLabel} ${receipt.tool}: ${receipt.action}`;
       const state = document.createElement("span");
       state.className = "evidence-state";
       state.dataset.state = receipt.state;
       state.textContent = receipt.state;
       row.append(tool, state);
       receipts.append(row);
+      }
     }
 
     const links = select("#recordedProofLinks");

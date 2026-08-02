@@ -10,6 +10,7 @@ import { normalizeLiveContext } from "../src/datahub/live-context.js";
 const ALLOWED_STATES = new Set(["PASS", "WARN", "FAIL", "NOT_RUN", "STALE", "FIXTURE"]);
 const BASE_READ_TOOLS = ["get_entities", "list_schema_fields", "get_lineage", "get_dataset_queries"];
 const MUTATION_TOOLS = ["add_structured_properties", "update_description", "save_document"];
+const REQUIRED_STRUCTURED_PROPERTIES = ["io.contextseal.status", "io.contextseal.riskScore", "io.contextseal.passportId", "io.contextseal.validUntil"];
 const COMMITTED_MCP_PACKAGE = "mcp-server-datahub@0.6.0";
 
 export class EvidenceValidationError extends Error {
@@ -179,7 +180,7 @@ function verificationState(value) {
   return value?.state || null;
 }
 
-function validateProofProvenance(provenance, run, readEvidence, envelope, receipts, errors) {
+function validateProofProvenance(provenance, run, readEvidence, envelope, firstReceipts, secondReceipts, errors) {
   if (!isRecord(provenance)) {
     errors.push("writeback: proofProvenance is required for a committed live evidence export.");
     return;
@@ -202,7 +203,8 @@ function validateProofProvenance(provenance, run, readEvidence, envelope, receip
   const expectedIdempotency = {
     strategy: run.writeback?.idempotency?.strategy,
     state: run.writeback?.idempotency?.state,
-    operationActions: Object.fromEntries((receipts || []).map((receipt) => [receipt.tool, receipt.action]))
+    firstRunActions: Object.fromEntries((firstReceipts || []).map((receipt) => [receipt.tool, receipt.action])),
+    secondRunActions: Object.fromEntries((secondReceipts || []).map((receipt) => [receipt.tool, receipt.action]))
   };
   if (sha256(provenance.idempotency) !== sha256(expectedIdempotency)) {
     errors.push("writeback: proofProvenance idempotency outcome must match durable mutation receipts.");
@@ -405,7 +407,9 @@ export function validateEvidenceBundle({ readEvidence, writebackEvidence, policy
 
   const receipts = run.writeback?.mutationReceipts;
   if (!Array.isArray(receipts) || receipts.length !== MUTATION_TOOLS.length) errors.push("writeback: exactly three bounded mutation receipts are required.");
-  validateProofProvenance(envelope.proofProvenance, run, readEvidence, envelope, receipts, errors);
+  const secondRun = run.writeback?.secondRun;
+  const secondReceipts = secondRun?.mutationReceipts;
+  validateProofProvenance(envelope.proofProvenance, run, readEvidence, envelope, receipts, secondReceipts, errors);
   const idempotency = run.writeback?.idempotency;
   if (idempotency?.strategy !== "VERIFY_THEN_SKIP" || idempotency?.state !== "PASS"
       || idempotency?.targetUrn !== targetUrn || !isRecord(idempotency?.preflight)
@@ -422,11 +426,33 @@ export function validateEvidenceBundle({ readEvidence, writebackEvidence, policy
   for (const tool of MUTATION_TOOLS) {
     const receipt = receipts?.find((item) => item?.tool === tool);
     const planned = idempotency?.operations?.[tool];
-    if (receipt?.status !== "PASS" || !["APPLIED", "SKIPPED"].includes(receipt?.action)
-        || receipt?.action !== planned?.action || receipt?.result?.isError !== false
+    if (receipt?.status !== "PASS" || receipt?.action !== "APPLIED"
+        || planned?.action !== "APPLIED" || receipt?.result?.isError !== false
         || receipt?.result?.structuredContent?.success !== true) {
-      errors.push(`writeback: ${tool} must preserve its PASS VERIFY_THEN_SKIP receipt.`);
+      errors.push(`writeback: ${tool} must preserve its PASS APPLIED first-run VERIFY_THEN_SKIP receipt.`);
     }
+  }
+
+  const secondIdempotency = secondRun?.idempotency;
+  if (!isRecord(secondRun) || secondIdempotency?.strategy !== "VERIFY_THEN_SKIP" || secondIdempotency?.state !== "PASS"
+      || secondIdempotency?.targetUrn !== targetUrn || secondIdempotency?.preflight?.structuredProperties !== "MATCH"
+      || secondIdempotency?.preflight?.descriptionBlockCount !== 1 || secondIdempotency?.preflight?.document?.state !== "VERIFIED") {
+    errors.push("writeback: second idempotent run must preserve a verified VERIFY_THEN_SKIP preflight for the certified target.");
+  }
+  if (!Array.isArray(secondReceipts) || secondReceipts.length !== MUTATION_TOOLS.length) {
+    errors.push("writeback: second idempotent run must preserve exactly three bounded receipts.");
+  }
+  for (const tool of MUTATION_TOOLS) {
+    const receipt = secondReceipts?.find((item) => item?.tool === tool);
+    const planned = secondIdempotency?.operations?.[tool];
+    if (receipt?.status !== "PASS" || receipt?.action !== "SKIPPED" || planned?.action !== "SKIPPED"
+        || receipt?.result?.isError !== false || receipt?.result?.structuredContent?.success !== true) {
+      errors.push(`writeback: ${tool} must preserve its PASS SKIPPED second-run VERIFY_THEN_SKIP receipt.`);
+    }
+  }
+  if (secondRun?.readback?.state !== "PASS" || secondRun.readback?.verified?.description?.passportBlockCount !== 1
+      || verificationState(secondRun.readback?.verified?.relatedDocument) !== "PASS") {
+    errors.push("writeback: second idempotent run must preserve a PASS durable read-back with exactly one passport marker and document.");
   }
 
   const readback = run.writeback?.readback;
@@ -477,9 +503,10 @@ export function validateEvidenceBundle({ readEvidence, writebackEvidence, policy
     ["io.contextseal.validUntil", passport?.validUntil?.slice(0, 10)]
   ]);
   const configuredProperties = policy?.writeback?.structuredProperties;
-  if (!Array.isArray(configuredProperties) || configuredProperties.length === 0
-      || new Set(configuredProperties).size !== configuredProperties.length) {
-    errors.push("writeback: policy structured-property allowlist must be non-empty and unique.");
+  if (!Array.isArray(configuredProperties) || configuredProperties.length !== REQUIRED_STRUCTURED_PROPERTIES.length
+      || new Set(configuredProperties).size !== configuredProperties.length
+      || REQUIRED_STRUCTURED_PROPERTIES.some((name) => !configuredProperties.includes(name))) {
+    errors.push("writeback: policy structured-property allowlist must contain exactly the four ContextSeal certification properties.");
   } else {
     for (const name of configuredProperties) {
       if (!expectedPropertyValues.has(name)) errors.push(`writeback: policy contains unsupported structured property ${name}.`);

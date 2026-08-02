@@ -39,7 +39,7 @@ const risk = { verdict: "BLOCKED", score: 80, findings: [{ code: "DOWNSTREAM_DEP
 
 function filesFor(request) {
   const result = generateArtifacts(request, impact, risk);
-  assert.equal(result.files.length, request.changeType === "rename_column" ? 5 : 4);
+  assert.equal(result.files.length, request.changeType === "drop_column" ? 4 : 5);
   assert.equal(new Set(result.files.map((file) => file.path)).size, result.files.length);
   const files = Object.fromEntries(result.files.map((file) => [file.kind, file]));
   assert.equal(files.ROLLBACK.path, "generated/rollback/gold_customers.sql");
@@ -71,6 +71,7 @@ test("type-change artifacts keep the source, validate the typed field, and roll 
 
   assert.match(files.DBT_MODEL.content, /try_cast\(customer_email as decimal\(18, 2\)\) as customer_email_typed/);
   assert.match(files.DBT_TESTS.content, /name: customer_email_typed/);
+  assert.match(files.DBT_DATA_TEST.content, /where customer_email is not null\n  and customer_email_typed is null/);
   assert.doesNotMatch(files.DBT_MODEL.content, /select\s+\*/i);
   assert.doesNotMatch(files.ROLLBACK.content, /select\s+\*/i);
   assert.match(files.ROLLBACK.content, /ref\('gold_customers_contextseal'\)/);
@@ -82,7 +83,35 @@ test("drop artifacts preserve and test the existing source field", () => {
   assert.match(files.DBT_MODEL.content, /Deliberately preserves customer_email/);
   assert.match(files.DBT_TESTS.content, /name: customer_email/);
   assert.doesNotMatch(files.DBT_TESTS.content, /customer_email_typed/);
+  assert.equal((files.DBT_TESTS.content.match(/- name: customer_email$/gm) || []).length, 1);
   assert.match(files.ROLLBACK.content, /authoritative snapshot/);
+});
+
+test("type-change artifacts reject a collision with the actual typed output field", () => {
+  const collisionImpact = structuredClone(impact);
+  collisionImpact.target.schemaFields.push({ fieldPath: "customer_email_typed", nativeDataType: "decimal(18, 2)", nullable: true });
+
+  assert.throws(
+    () => generateArtifacts({ ...baseRequest, changeType: "type_change", destinationType: "decimal(18, 2)" }, collisionImpact, risk),
+    /Generated compatibility field already exists.*customer_email_typed/
+  );
+});
+
+test("generated YAML quotes string metadata to preserve scalar types", () => {
+  const files = generateArtifacts(
+    { ...baseRequest, changeType: "rename_column", destinationField: "contact_email" },
+    impact,
+    risk,
+    { runId: "2026-08-02", policyVersion: "2026-08-02", policyHash: "abc:123" }
+  ).files;
+  const schema = files.find((file) => file.kind === "DBT_TESTS");
+
+  assert.match(schema.content, /run_id: "2026-08-02"/);
+  assert.match(schema.content, /policy_version: "2026-08-02"/);
+  assert.match(schema.content, /policy_hash: "abc:123"/);
+  assert.match(schema.content, /migration_strategy: "EXPAND_MIGRATE_CONTRACT"/);
+  assert.match(schema.content, /target_platform: "snowflake"/);
+  assert.match(schema.content, /dialect: "snowflake"/);
 });
 
 test("type-change artifacts reject unsafe SQL type text instead of sanitizing it", () => {

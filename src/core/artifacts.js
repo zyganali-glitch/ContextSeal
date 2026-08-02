@@ -99,16 +99,17 @@ function generationMetadata(request, impact, migration, dialectInfo, metadata) {
 }
 
 function yamlMetadata(metadata) {
+  const yamlString = (value) => JSON.stringify(String(value));
   return [
     "    meta:",
     "      contextseal:",
-    `        run_id: ${metadata.contextsealRunId}`,
-    `        policy_version: ${metadata.policyVersion}`,
-    `        policy_hash: ${metadata.policyHash}`,
-    `        migration_strategy: ${metadata.migrationStrategy}`,
-    `        target_platform: ${metadata.targetPlatform}`,
-    `        dialect: ${metadata.dialect}`,
-    `        intended_deprecation_window: ${JSON.stringify(metadata.intendedDeprecationWindow)}`
+    `        run_id: ${yamlString(metadata.contextsealRunId)}`,
+    `        policy_version: ${yamlString(metadata.policyVersion)}`,
+    `        policy_hash: ${yamlString(metadata.policyHash)}`,
+    `        migration_strategy: ${yamlString(metadata.migrationStrategy)}`,
+    `        target_platform: ${yamlString(metadata.targetPlatform)}`,
+    `        dialect: ${yamlString(metadata.dialect)}`,
+    `        intended_deprecation_window: ${yamlString(metadata.intendedDeprecationWindow)}`
   ].join("\n");
 }
 
@@ -208,21 +209,36 @@ export function buildArtifactManifest(run, passport) {
 }
 
 function safeMigration(request, impact) {
+  if (!["rename_column", "type_change", "drop_column"].includes(request.changeType)) {
+    throw new Error(`Unsupported change type: ${request.changeType}`);
+  }
   const source = sqlIdentifier(request.sourceField);
-  const destination = sqlIdentifier(request.destinationField || `${source}_v2`);
   const entity = sqlIdentifier(request.entityName);
   const generatedModelName = `${entity}_contextseal`;
-  const columns = explicitColumns(impact, request, request.changeType === "drop_column" ? null : destination);
+  const generatedField = request.changeType === "type_change"
+    ? `${source}_typed`
+    : request.changeType === "rename_column"
+      ? sqlIdentifier(request.destinationField || `${source}_v2`)
+      : source;
+  const columns = explicitColumns(
+    impact,
+    request,
+    request.changeType === "drop_column" ? null : generatedField
+  );
   if (request.changeType === "rename_column") {
     return {
       ruleId: "RENAME_COLUMN_REQUIRES_COMPATIBILITY_FIELD",
       strategy: "EXPAND_MIGRATE_CONTRACT",
-      summary: `Add ${destination}, backfill from ${source}, migrate consumers, then deprecate ${source}.`,
+      summary: `Add ${generatedField}, backfill from ${source}, migrate consumers, then deprecate ${source}.`,
       safeClaim: "Direct rename requests are converted into a compatibility-field migration so downstream consumers can move before removal.",
       generatedModelName,
-      sql: `-- ContextSeal safe expansion: keep the old field during consumer migration\n${selectProjection(columns, entity, { source, destination })}`,
+      generatedField,
+      sql: `-- ContextSeal safe expansion: keep the old field during consumer migration\n${selectProjection(columns, entity, { source, destination: generatedField })}`,
       rollback: `-- Rollback keeps the original field authoritative\n${selectProjection(columns, generatedModelName)}`,
-      parityTest: `-- ContextSeal rename parity test: returns rows only when compatibility values diverge\nselect\n  ${source} as source_value,\n  ${destination} as compatibility_value\nfrom {{ ref('${generatedModelName}') }}\nwhere ${source} is distinct from ${destination}\n`
+      dataTest: {
+        suffix: "rename_parity",
+        content: `-- ContextSeal rename parity test: returns rows only when compatibility values diverge\nselect\n  ${source} as source_value,\n  ${generatedField} as compatibility_value\nfrom {{ ref('${generatedModelName}') }}\nwhere ${source} is distinct from ${generatedField}\n`
+      }
     };
   }
   if (request.changeType === "type_change") {
@@ -233,11 +249,16 @@ function safeMigration(request, impact) {
       summary: `Create a parallel typed field and retain ${source} until validation completes.`,
       safeClaim: "Type changes create a parallel typed column so the original field stays authoritative during validation.",
       generatedModelName,
+      generatedField,
       sql: selectProjection(columns, entity, {
         expression: `try_cast(${source} as ${destinationType})`,
-        destination: `${source}_typed`
+        destination: generatedField
       }),
-      rollback: selectProjection(columns, generatedModelName)
+      rollback: selectProjection(columns, generatedModelName),
+      dataTest: {
+        suffix: "type_cast",
+        content: `-- ContextSeal type-cast test: returns non-null source values whose typed value is null\nselect\n  ${source} as source_value,\n  ${generatedField} as typed_value\nfrom {{ ref('${generatedModelName}') }}\nwhere ${source} is not null\n  and ${generatedField} is null\n`
+      }
     };
   }
   if (request.changeType === "drop_column") {
@@ -247,6 +268,7 @@ function safeMigration(request, impact) {
       summary: `Mark ${source} deprecated, migrate every known consumer, and drop it only in a later approved change.`,
       safeClaim: "Direct drops are refused; the generator preserves the field and emits a later-drop migration note instead.",
       generatedModelName,
+      generatedField,
       sql: `-- Deliberately preserves ${source}; direct destructive removal is not generated.\n${selectProjection(columns, entity)}`,
       rollback: `-- No destructive operation was generated; rollback preserves the authoritative snapshot.\n${selectProjection(columns, generatedModelName)}`
     };
@@ -257,16 +279,13 @@ export function generateArtifacts(request, impact, risk, metadata = {}) {
   const migration = safeMigration(request, impact);
   const dialectInfo = dialect(impact);
   const generation = generationMetadata(request, impact, migration, dialectInfo, metadata);
-  const field = request.changeType === "rename_column"
-    ? request.destinationField
-    : request.changeType === "type_change"
-      ? `${request.sourceField}_typed`
-      : request.sourceField;
+  const field = migration.generatedField;
   const generatedTests = schemaGrounding(request, impact).generatedTests;
   const testsYaml = generatedTests.length
     ? `\n        tests:\n${generatedTests.map((test) => `          - ${test}`).join("\n")}`
     : "";
-  const schema = `version: 2\nmodels:\n  - name: ${migration.generatedModelName}\n    description: "ContextSeal migration candidate; strategy ${migration.strategy}."\n${yamlMetadata(generation)}\n    columns:\n      - name: ${request.sourceField}${testsYaml}\n      - name: ${field}\n`;
+  const schemaColumns = [request.sourceField, ...(field === request.sourceField ? [] : [field])];
+  const schema = `version: 2\nmodels:\n  - name: ${migration.generatedModelName}\n    description: "ContextSeal migration candidate; strategy ${migration.strategy}."\n${yamlMetadata(generation)}\n    columns:\n${schemaColumns.map((column) => `      - name: ${column}${column === request.sourceField ? testsYaml : ""}`).join("\n")}\n`;
   const ownerBrief = [
     "# Impacted owner briefing",
     "",
@@ -289,7 +308,7 @@ export function generateArtifacts(request, impact, risk, metadata = {}) {
     files: [
       { path: `generated/models/${migration.generatedModelName}.sql`, kind: "DBT_MODEL", content: migration.sql },
       { path: `generated/models/${migration.generatedModelName}.yml`, kind: "DBT_TESTS", content: schema },
-      ...(migration.parityTest ? [{ path: `generated/tests/${migration.generatedModelName}_rename_parity.sql`, kind: "DBT_DATA_TEST", content: migration.parityTest }] : []),
+      ...(migration.dataTest ? [{ path: `generated/tests/${migration.generatedModelName}_${migration.dataTest.suffix}.sql`, kind: "DBT_DATA_TEST", content: migration.dataTest.content }] : []),
       { path: `generated/rollback/${request.entityName}.sql`, kind: "ROLLBACK", content: migration.rollback },
       { path: "generated/IMPACTED_OWNERS.md", kind: "OWNER_BRIEF", content: ownerBrief }
     ]
