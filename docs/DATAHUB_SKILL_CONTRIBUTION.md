@@ -2,7 +2,7 @@
 
 ## Current status
 
-`OPEN / READY_FOR_REVIEW / NOT_MERGED` — the contribution is public as [datahub-project/datahub-skills#35](https://github.com/datahub-project/datahub-skills/pull/35). Review, acceptance, and merge are not claimed.
+`OPEN / NOT_MERGED / NO MAINTAINER REVIEW RECORDED YET` — the contribution is public as [datahub-project/datahub-skills#35](https://github.com/datahub-project/datahub-skills/pull/35). Review, acceptance, and merge are not claimed.
 
 Source directory: [`skills/datahub-schema-change-certification/`](../skills/datahub-schema-change-certification/)
 
@@ -192,4 +192,4 @@ The public pull request exists, is inspectable, and is ready for review. It has 
 
 ## Claim boundary
 
-A real public upstream contribution now exists at [PR #35](https://github.com/datahub-project/datahub-skills/pull/35). It may be presented as an open-source contribution with the exact status `OPEN / READY_FOR_REVIEW / NOT_MERGED`; never imply review, acceptance, or merge until GitHub records it.
+A real public upstream contribution now exists at [PR #35](https://github.com/datahub-project/datahub-skills/pull/35). It may be presented as an open-source contribution with the exact status `OPEN / NOT_MERGED / NO MAINTAINER REVIEW RECORDED YET`; never imply review, acceptance, or merge until GitHub records it.

@@ -184,21 +184,36 @@ function renderEvidence(evidence) {
 
 function renderAi(run) {
   const statusEl = $("#aiStatus");
+  const labelEl = $("#aiProofLabel");
   const reasonEl = $("#aiReason");
+  const boundaryEl = $("#aiBoundaryNote");
   const container = $("#aiCompanion");
   container.replaceChildren();
 
-  const ai = run.ai;
+  const recordedAiProof = staticMode ? staticDemo?.recordedAiProof || null : null;
+  const usingRecordedProof = recordedAiProof?.status === "PASS";
+  const ai = usingRecordedProof ? recordedAiProof : run.ai;
   const aiStatus = ai?.status || "NOT_RUN";
   text("#aiStatus", aiStatus.replaceAll("_", " "));
   statusEl.dataset.aiState = aiStatus;
 
   if (!ai) {
+    labelEl.hidden = true;
+    boundaryEl.textContent = "Explanation only. Deterministic ContextSeal evidence remains authoritative.";
     reasonEl.textContent = "The local AI layer has not been attached to this run.";
     return;
   }
 
-  reasonEl.textContent = ai.reason || ai.disclaimer || "The local AI layer produced a bounded explanation.";
+  if (usingRecordedProof) {
+    labelEl.hidden = false;
+    labelEl.textContent = recordedAiProof.boundary?.label || "RECORDED LOCAL OLLAMA PROOF";
+    reasonEl.textContent = recordedAiProof.boundary?.hostedDemo || "Not live inference on GitHub Pages.";
+    boundaryEl.textContent = recordedAiProof.boundary?.authority || ai.disclaimer || "Deterministic ContextSeal evidence remains authoritative.";
+  } else {
+    labelEl.hidden = true;
+    reasonEl.textContent = ai.reason || ai.disclaimer || "The local AI layer produced a bounded explanation.";
+    boundaryEl.textContent = ai.disclaimer || "Explanation only. Deterministic ContextSeal evidence remains authoritative.";
+  }
 
   if (!ai.output) return;
 

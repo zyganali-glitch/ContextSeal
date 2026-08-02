@@ -23,14 +23,19 @@ const required = [
   "plans/PLAN_20260721_contextseal_hackathon_win.md", "plans/completed/README.md",
   "skills/contextseal-change-certification/SKILL.md", "skills/datahub-schema-change-certification/SKILL.md",
   "scripts/check-repository.js", "scripts/check-plan-integrity.js", "scripts/check-ai-proof.js", "scripts/probe-ai-runtime.js", "scripts/recover-w23.ps1", "scripts/run-demo.js", "scripts/run-generated-sandbox.py",
+  "scripts/capture-ai-proof.js",
+  "scripts/run-dbt-proof.js", "scripts/check-dbt-proof.js",
   "scripts/build-pr-bundle.js", "scripts/create-draft-pr.js", "scripts/seed-datahub.py",
   "scripts/datahub_mutation_safety.py", "scripts/upsert-datahub-properties.py", "scripts/capture-live-evidence.js",
   "scripts/export-live-run.js", "scripts/run-datahub-seed.js", "scripts/run-live-proof.js", "scripts/validate-evidence.js", "scripts/smoke-server.js",
+  "src/ai/proof.js",
   "src/datahub/analysis.js",
   "src/security/credential-scan.js", "tests/credential-scan.test.js", "tests/live-pipeline.test.js",
-  "tests/server-integration.test.js", "tests/store.test.js", "tests/artifacts.test.js", "tests/evidence-validator.test.js", "tests/ai-proof.test.js", "tests/live-context.test.js", "tests/plan-integrity.test.js", "tests/server-datahub.test.js", "tests_py/test_datahub_mutation_safety.py",
+  "tests/server-integration.test.js", "tests/store.test.js", "tests/artifacts.test.js", "tests/evidence-validator.test.js", "tests/ai-proof.test.js", "tests/dbt-proof.test.js", "tests/demo-artifacts.test.js", "tests/documentation-contracts.test.js", "tests/live-context.test.js", "tests/plan-integrity.test.js", "tests/sandbox-conformance.test.js", "tests/server-datahub.test.js", "tests_py/test_datahub_mutation_safety.py",
   "examples/outputs/demo-certification.json", "examples/outputs/generated/ARTIFACT_MANIFEST.json",
   "examples/outputs/generated/ai/contextseal-ai-input.json", "examples/outputs/generated/ai/contextseal-ai-output.json", "examples/outputs/generated/ai/contextseal-ai-output.md",
+  "examples/outputs/dbt/real-dbt-proof.json",
+  "examples/outputs/proofs/ollama-ai-proof.json",
   "examples/outputs/pr/pr-body.md", "examples/outputs/pr/pr-payload.json", "examples/outputs/pr/pr-checklist.md", "examples/outputs/pr/draft-pr-dry-run.json",
   "examples/outputs/sandbox/generated-sandbox-evidence.json",
   "examples/outputs/live-datahub-read-evidence.json", "examples/outputs/live-datahub-writeback-evidence.json"
@@ -48,21 +53,26 @@ if (packageJson.private !== true) failures.push("package.json must remain privat
 if (packageJson.engines?.node !== ">=20") failures.push("package.json must support the declared Node.js >=20 judge path.");
 
 for (const script of [
-  "plan:check", "check", "evidence:check", "test", "demo", "demo:generate", "demo:check",
-  "sandbox", "sandbox:generate", "sandbox:check", "pr:bundle", "pr:bundle:check",
-  "pr:draft", "ai:probe", "ai:proof", "smoke", "validate", "datahub:seed",
+  "plan:check", "prevideo:check", "submission:check", "check", "evidence:check", "test", "demo", "demo:generate", "demo:check",
+  "sandbox", "sandbox:generate", "sandbox:check", "dbt:proof", "dbt:proof:check", "pr:bundle", "pr:bundle:check",
+  "pr:draft", "ai:probe", "ai:capture", "ai:proof", "smoke", "validate", "datahub:seed",
   "datahub:seed:preflight", "datahub:seed:apply", "datahub:seed:scope",
   "datahub:properties", "datahub:properties:apply", "datahub:properties:scope", "datahub:safety:test",
   "datahub:capture", "datahub:prove", "datahub:export"
 ]) {
   if (!packageJson.scripts?.[script]) failures.push(`package.json script is missing: ${script}`);
 }
+if (!packageJson.scripts?.["prevideo:check"]?.includes("npm run ai:proof")) failures.push("prevideo:check must include ai:proof.");
+if (!packageJson.scripts?.["prevideo:check"]?.includes("npm run dbt:proof:check")) failures.push("prevideo:check must include dbt:proof:check.");
+if (!packageJson.scripts?.["submission:check"]?.includes("npm run validate")) failures.push("submission:check must include validate.");
+if (!packageJson.scripts?.["submission:check"]?.includes("git diff --exit-code")) failures.push("submission:check must include git diff --exit-code.");
 if (packageJson.scripts?.demo !== "npm run demo:generate") failures.push("demo must remain an explicit generate alias.");
 if (packageJson.scripts?.sandbox !== "npm run sandbox:generate") failures.push("sandbox must remain an explicit generate alias.");
 if (!packageJson.scripts?.["demo:check"]?.includes("run-demo.js --check")) failures.push("demo:check must compare committed demo artifacts without writing.");
 if (!packageJson.scripts?.["sandbox:check"]?.includes("run-generated-sandbox.py --check")) failures.push("sandbox:check must compare committed sandbox evidence without writing.");
 if (!packageJson.scripts?.["pr:bundle:check"]?.includes("build-pr-bundle.js --check")) failures.push("pr:bundle:check must compare committed PR artifacts without writing.");
 if (!packageJson.scripts?.check?.includes("npm run plan:check")) failures.push("check must include plan:check before repository checks.");
+if (!packageJson.scripts?.validate?.includes("npm run prevideo:check")) failures.push("validate must include prevideo:check.");
 if (!packageJson.scripts?.validate?.includes("npm run demo:check")) failures.push("validate must use demo:check.");
 if (!packageJson.scripts?.validate?.includes("npm run sandbox:check")) failures.push("validate must use sandbox:check.");
 if (!packageJson.scripts?.validate?.includes("npm run pr:bundle:check")) failures.push("validate must use pr:bundle:check.");

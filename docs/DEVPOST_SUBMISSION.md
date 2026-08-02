@@ -71,7 +71,7 @@ Context is most valuable when it changes an action, not when it only improves an
 
 ## What's next
 
-- Respond to maintainer feedback on the public DataHub Skills contribution, currently `OPEN / REVIEW_REQUIRED / NOT_MERGED`
+- Respond to maintainer feedback on the public DataHub Skills contribution, currently `OPEN / NOT_MERGED / NO MAINTAINER REVIEW RECORDED YET`
 - Add target-derived normalization for more DataHub entity types
 - Add signed reviewer identities and replay protection
 - Exercise the optional token-gated draft PR path against a real GitHub branch after explicit approval
@@ -82,9 +82,9 @@ Context is most valuable when it changes an action, not when it only improves an
 
 - Repository: https://github.com/zyganali-glitch/ContextSeal
 - Live demo: https://zyganali-glitch.github.io/ContextSeal/
-- Demo video: `ADD_PUBLIC_YOUTUBE_URL`
-- DataHub skill contribution: [datahub-project/datahub-skills#35](https://github.com/datahub-project/datahub-skills/pull/35) — `OPEN / REVIEW_REQUIRED / NOT_MERGED` when verified on 2026-08-01.
+- Demo video: not recorded yet; add the public final URL only after the exact final-head CI and Pages proofs are recorded from the same frozen SHA.
+- DataHub skill contribution: [datahub-project/datahub-skills#35](https://github.com/datahub-project/datahub-skills/pull/35) — `OPEN / NOT_MERGED / NO MAINTAINER REVIEW RECORDED YET` when verified on 2026-08-01.
 
 ## Honest limitations
 
-ContextSeal is a hackathon prototype. It does not auto-merge, execute production warehouse SQL, guarantee security, or claim customer impact. The default judge path uses fixture-backed path reconstruction, while separate live-local artifacts prove raw MCP reads and bounded write-back on synthetic metadata. The sandbox proves generated-bundle conformance, not warehouse execution. The checked-in AI artifact is truthful about local runtime availability; a local-model-backed `PASS` capture still depends on an environment with Ollama. Only operations with named artifacts are marked `PASS`.
+ContextSeal is a hackathon prototype. It does not auto-merge, execute production warehouse SQL, guarantee security, or claim customer impact. The default judge path uses fixture-backed path reconstruction, while separate live-local artifacts prove raw MCP reads and bounded write-back on synthetic metadata. The conformance sandbox proves generated-bundle integrity, and the separate real dbt proof artifact covers isolated local execution rather than production warehouses. GitHub Pages replays a recorded local Ollama `PASS` artifact; it does not perform hosted live inference. Only operations with named artifacts are marked `PASS`.

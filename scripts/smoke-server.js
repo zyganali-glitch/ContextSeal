@@ -13,6 +13,7 @@ const child = spawn(process.execPath, ["src/server.js"], {
     HOST: "127.0.0.1",
     PORT: String(port),
     CONTEXTSEAL_MODE: "fixture",
+    CONTEXTSEAL_AI_ENABLED: "false",
     DATAHUB_MCP_MUTATIONS_ENABLED: "false"
   },
   stdio: ["ignore", "pipe", "pipe"],

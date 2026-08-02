@@ -1,7 +1,7 @@
 ## Summary
 
 - Run ID: csr_4ab7ef5169bd2e0dcbfd64669646933a
-- Passport ID: csp_60ce7207989fff37fdf8
+- Passport ID: csp_6612513f5f952e97ba94
 - Target entity: gold_customers
 - Change type: rename-column
 - PR title: ContextSeal: staged rename for gold_customers.customer_email -> contact_email

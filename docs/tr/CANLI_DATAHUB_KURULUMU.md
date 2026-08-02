@@ -151,10 +151,12 @@ Ekran adları DataHub sürümüne göre biraz değişebilir. Gizli anahtarı hi�
     CONTEXTSEAL_MODE=datahub
     DATAHUB_MCP_TRANSPORT=stdio
    DATAHUB_MCP_COMMAND=uvx
-    DATAHUB_MCP_ARGS=["mcp-server-datahub@latest"]
+   DATAHUB_MCP_ARGS=["mcp-server-datahub@0.6.0"]
     DATAHUB_GMS_URL=http://localhost:8080
    DATAHUB_GMS_TOKEN=
     DATAHUB_MCP_MUTATIONS_ENABLED=false
+   CONTEXTSEAL_OPERATOR_TOKEN=<generate-a-random-token>
+   CONTEXTSEAL_ALLOWED_TARGET_URNS=["urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)"]
     ```
 
 11. Disposable local quickstart kullanıyorsan bu satırı boş bırakabilirsin.
@@ -164,6 +166,8 @@ Ekran adları DataHub sürümüne göre biraz değişebilir. Gizli anahtarı hi�
 15. Geçici Not Defteri dosyasındaki anahtarı sil.
 
 `.env` dosyası Git tarafından yok sayılır ve GitHub’a gönderilmez.
+
+`CONTEXTSEAL_MODE=datahub` altında canlı API ancak `CONTEXTSEAL_OPERATOR_TOKEN` ve boş olmayan JSON `CONTEXTSEAL_ALLOWED_TARGET_URNS` allowlist ile açılır. Her canlı `POST` isteği `Authorization: Bearer <CONTEXTSEAL_OPERATOR_TOKEN>` başlığını göndermeli ve hedef URN allowlist içinde yer almalıdır.
 
 ## Aşama 7 — ContextSeal alanlarını DataHub’a ekle
 
@@ -198,6 +202,8 @@ Başarılı olursa ContextSeal Status, Risk Score, Passport ID ve Valid Until al
    ```
 
 4. Bir sürüm numarası görmelisin. ContextSeal gerektiğinde resmî `mcp-server-datahub` aracını kendisi başlatacak; ayrı bir pencereyi açık tutman gerekmiyor.
+
+ContextSeal’in test edilip doğrulanan stdio başlatıcı pini `uvx mcp-server-datahub@0.6.0` değeridir; kurulum adımlarında `@latest` kullanma.
 
 İlk bağlantıda yalnız okuma işlemleri açık tutulacak. Şunları kanıtlamadan yazma işlemini açmayacağız:
 

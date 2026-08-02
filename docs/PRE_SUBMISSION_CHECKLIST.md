@@ -1,8 +1,17 @@
 # Pre-Submission Checklist
 
-Updated: 2026-07-22 UTC
+Updated: 2026-08-02 UTC
 
 This checklist is authoritative for final-head release readiness. Do not claim the hackathon submission is frozen until every required item below is either `PASS` with named evidence or explicitly marked `WARN` or `NOT_RUN` with a direct reason.
+
+## Exact final-head procedure
+
+1. Pick one freeze-candidate commit SHA and stop landing follow-up changes on top of it.
+2. Run `npm run prevideo:check` on that exact checkout.
+3. Run `npm run submission:check` on the same checkout and keep the tree clean.
+4. Push only that exact SHA to the submission branch or final `main` head.
+5. Record the matching GitHub Actions CI run and GitHub Pages deploy for that same SHA before changing any submission surface.
+6. Only then upload the public video URL, remove pending submission text, and freeze Devpost.
 
 ## Final SHA and tree
 
@@ -14,14 +23,13 @@ This checklist is authoritative for final-head release readiness. Do not claim t
 ## Local validation contract
 
 - [ ] Run `npm ci --ignore-scripts` on the exact final-head checkout.
-- [ ] Run `npm run check`.
-- [ ] Run `npm test`.
-- [ ] Run `npm run datahub:safety:test`.
+- [ ] Run `npm run prevideo:check`.
+- [ ] Run `npm run submission:check`.
+- [ ] Confirm `git diff --exit-code` still passes immediately after `npm run submission:check`.
 - [ ] Run `npm run demo:generate` once and commit only if the deterministic fixture artifacts legitimately changed.
 - [ ] Run `npm run sandbox:generate` once and commit only if the deterministic sandbox artifact legitimately changed.
 - [ ] Run `npm run pr:bundle` once and commit only if the deterministic PR artifacts legitimately changed.
 - [ ] Run `npm run validate` as the read-only validation suite.
-- [ ] Run `git diff --exit-code` immediately after `npm run validate`.
 
 ## Live proof and evidence freshness
 
@@ -40,18 +48,20 @@ This checklist is authoritative for final-head release readiness. Do not claim t
 
 ## Hosted and container proof
 
-- [ ] Trigger the CI workflow on the exact final SHA.
-- [ ] Record the Node 20 validation result.
-- [ ] Record the Node 24 validation result.
-- [ ] Record the Python safety-test result.
-- [ ] Record the container-smoke result.
-- [ ] Trigger or verify the GitHub Pages workflow on the exact final SHA.
-- [ ] Record the live GitHub Pages URL served from that exact SHA.
+- [ ] Push the exact frozen SHA and avoid follow-up commits before hosted proof is recorded.
+- [ ] Record the GitHub Actions run URL or ID for that exact SHA.
+- [ ] Record the Node 20 validation result on that exact SHA.
+- [ ] Record the Node 24 validation result on that exact SHA.
+- [ ] Record the Python safety-test result on that exact SHA.
+- [ ] Record the container-smoke result on that exact SHA.
+- [ ] Record the GitHub Pages workflow run URL or ID for that same SHA.
+- [ ] Record the live GitHub Pages URL served from that same SHA.
 - [ ] Run local Docker build and smoke checks when the daemon is available.
 
 ## AI and review handoff proof
 
 - [ ] Capture one real local Ollama-backed AI artifact on the final SHA, or leave the AI model-backed gate `WARN` with the environment reason.
+- [ ] Confirm `examples/outputs/proofs/ollama-ai-proof.json` either comes from that final SHA or is explicitly refreshed from it.
 - [ ] Confirm the committed AI input/output artifacts still match the deterministic demo run.
 - [ ] Confirm the committed PR body, checklist, and payload still match the deterministic PR bundle generator.
 - [ ] Confirm the optional draft PR path was either dry-run validated or executed live with a human-approved token.
@@ -62,7 +72,7 @@ This checklist is authoritative for final-head release readiness. Do not claim t
 - [ ] Freeze and submit the Devpost entry against the exact final SHA; remove every placeholder URL.
 - [x] Confirm the Apache-2.0 license is detected and visible in the public repository's GitHub About surface (`Apache-2.0`, verified 2026-07-22).
 - [ ] Freeze README, judging docs, evidence docs, and Turkish helper surfaces against the same final truth.
-- [ ] Confirm upstream PR #35 is described only as `OPEN / READY_FOR_REVIEW / NOT_MERGED` unless GitHub records a new state.
+- [ ] Confirm upstream PR #35 is described only as `OPEN / NOT_MERGED / NO MAINTAINER REVIEW RECORDED YET` unless GitHub records a new state.
 
 ## Intentional non-goals
 

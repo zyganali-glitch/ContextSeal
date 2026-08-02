@@ -286,6 +286,7 @@ button:disabled { cursor: not-allowed; opacity: .42; }
 .artifact { display: flex; align-items: center; gap: 12px; min-height: 100%; }
 .artifact-icon { display: grid; place-items: center; flex: 0 0 34px; height: 34px; border-radius: 9px; color: var(--cyan); background: rgba(85,230,193,.08); font-size: 12px; font-weight: 800; }
 .ai-panel { background: var(--surface-ai); border-color: rgba(85, 230, 193, .22); }
+.ai-proof-label { display: inline-flex; align-items: center; gap: 8px; width: fit-content; margin: 14px 0 4px; padding: 6px 10px; border-radius: 999px; border: 1px solid rgba(85, 230, 193, .24); color: var(--cyan); background: rgba(85, 230, 193, .09); font: 700 10px/1 var(--font-mono); letter-spacing: .08em; }
 .ai-companion { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 18px; }
 .ai-block { border: 1px solid rgba(85, 230, 193, .12); background: rgba(10, 16, 27, .92); border-radius: 12px; padding: 14px; display: grid; gap: 8px; }
 .ai-block strong { font-size: 12px; }

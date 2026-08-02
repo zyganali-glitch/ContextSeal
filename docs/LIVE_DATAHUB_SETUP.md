@@ -9,7 +9,7 @@ This path is intentionally separate from the fixture judge demo. It should be co
 - Node.js 20+
 - A local DataHub instance or authorized DataHub Cloud tenant
 - For DataHub Cloud or token-protected tenants, a DataHub token stored outside Git. Disposable local quickstart can instead use `datahub init --host http://localhost:8080 --username datahub --password datahub --force`.
-- DataHub MCP server v0.5.0+ with mutation tools available
+- The exact tested MCP launcher invocation `uvx mcp-server-datahub@0.6.0`
 
 ## Local DataHub
 
@@ -94,8 +94,10 @@ If you want to exercise the server contract manually instead of using the UI, wr
 ```powershell
 $request = Get-Content examples/retail-change-request.json -Raw | ConvertFrom-Json
 $body = @{ request = $request } | ConvertTo-Json -Depth 10
-Invoke-RestMethod -Method Post -Uri http://127.0.0.1:4173/api/analyze -ContentType application/json -Body $body
+Invoke-RestMethod -Method Post -Uri http://127.0.0.1:4173/api/analyze -Headers @{ Authorization = "Bearer <CONTEXTSEAL_OPERATOR_TOKEN>" } -ContentType application/json -Body $body
 ```
+
+In `CONTEXTSEAL_MODE=datahub`, live API startup requires both `CONTEXTSEAL_OPERATOR_TOKEN` and a non-empty JSON `CONTEXTSEAL_ALLOWED_TARGET_URNS` allowlist. Every live `POST` request must send `Authorization: Bearer <CONTEXTSEAL_OPERATOR_TOKEN>`, and the request target must appear in the allowlist.
 
 If you want ContextSeal to handle the recovery sequence for you on Windows, use the helper below. It self-elevates when needed, performs safe VHDX compaction, restarts Docker Desktop through the official Docker Desktop CLI when available, initializes local DataHub CLI access, waits for DataHub, refreshes the read-only artifact, and can also refresh the approved write-back artifact:
 
@@ -119,7 +121,7 @@ Install `uv`. ContextSeal starts the official open-source MCP server as a child 
 Local transport:
 
 ```text
-uvx mcp-server-datahub@latest
+uvx mcp-server-datahub@0.6.0
 ```
 
 `http://localhost:8080` is the GMS URL, not a local MCP HTTP endpoint. Streamable HTTP is supported for DataHub Cloud tenants through their `/integrations/ai/mcp/` URL.
@@ -136,10 +138,12 @@ Edit `.env`:
 CONTEXTSEAL_MODE=datahub
 DATAHUB_MCP_TRANSPORT=stdio
 DATAHUB_MCP_COMMAND=uvx
-DATAHUB_MCP_ARGS=["mcp-server-datahub@latest"]
+DATAHUB_MCP_ARGS=["mcp-server-datahub@0.6.0"]
 DATAHUB_GMS_URL=http://localhost:8080
 DATAHUB_GMS_TOKEN=LOCAL_TOKEN_ONLY
 DATAHUB_MCP_MUTATIONS_ENABLED=false
+CONTEXTSEAL_OPERATOR_TOKEN=<generate-a-random-token>
+CONTEXTSEAL_ALLOWED_TARGET_URNS=["urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)"]
 ```
 
 For the disposable local quickstart path, `DATAHUB_GMS_TOKEN` may remain unset when `datahub init --host http://localhost:8080 --username datahub --password datahub --force` succeeds with the default local `datahub/datahub` credentials. Cloud or token-protected tenants still require a token.
@@ -191,5 +195,7 @@ A disposable local DataHub run was refreshed successfully on `2026-08-01` with s
 - all successful MCP tool results checked for `isError: false`.
 
 See `examples/outputs/live-datahub-read-evidence.json` and `examples/outputs/live-datahub-writeback-evidence.json`. This does not claim production or customer impact.
+
+The committed MCP provenance for these artifacts is the stdio launcher package `mcp-server-datahub@0.6.0`.
 
 The live-local artifacts substantiate raw MCP read and bounded write-back claims only. The default judge flow, generated-artifact sandbox, and reviewer-ready PR packet remain independently reproducible fixture and local-conformance surfaces.

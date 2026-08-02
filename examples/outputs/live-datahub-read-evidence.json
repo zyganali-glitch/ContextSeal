@@ -1,9 +1,129 @@
 {
   "status": "PASS",
   "transport": "stdio",
-  "mutationToolsEnabled": true,
-  "observedAt": "2026-08-01T18:34:16.131Z",
+  "contextsealMutationGateEnabled": false,
+  "observedAt": "2026-08-02T10:58:15.335Z",
   "targetUrn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)",
+  "rawEvidenceHash": "1cb975bae97ee966a85279ad4348cd46ca5b06036c93c1bdbe1c899c69154a03",
+  "mcp": {
+    "protocolVersion": "2025-03-26",
+    "serverInfo": {
+      "name": "datahub",
+      "version": "3.4.5"
+    },
+    "launcher": {
+      "transport": "stdio",
+      "launcherPackage": "mcp-server-datahub@0.6.0"
+    }
+  },
+  "summary": {
+    "toolCount": 14,
+    "targetEntityCount": 1,
+    "schemaFieldCount": 3,
+    "schemaPageCount": 1,
+    "downstreamAssetCount": 10,
+    "queryCount": 0,
+    "queryTextCount": 0,
+    "pathCount": 10,
+    "pathTargetCount": 10,
+    "maxHops": 5
+  },
+  "lineageSummary": {
+    "downstreamCount": 10,
+    "entityTypes": [
+      {
+        "type": "DATASET",
+        "count": 6
+      },
+      {
+        "type": "DATA_JOB",
+        "count": 2
+      },
+      {
+        "type": "DASHBOARD",
+        "count": 2
+      }
+    ],
+    "representativeDownstreams": [
+      {
+        "urn": "urn:li:dashboard:(looker,executive_customer_health)",
+        "type": "DASHBOARD",
+        "name": "Executive Customer Health",
+        "platform": "looker",
+        "degree": 3
+      },
+      {
+        "urn": "urn:li:dashboard:(powerbi,retention_campaign)",
+        "type": "DASHBOARD",
+        "name": "Retention Campaign",
+        "platform": "powerbi",
+        "degree": 5
+      },
+      {
+        "urn": "urn:li:dataJob:(urn:li:dataFlow:(airflow,contextseal_customer_360,PROD),build_segments)",
+        "type": "DATA_JOB",
+        "name": "build_segments",
+        "platform": null,
+        "degree": 1
+      },
+      {
+        "urn": "urn:li:dataJob:(urn:li:dataFlow:(mlflow,contextseal_churn_scoring,PROD),score_churn)",
+        "type": "DATA_JOB",
+        "name": "score_churn",
+        "platform": null,
+        "degree": 3
+      },
+      {
+        "urn": "urn:li:dataset:(urn:li:dataPlatform:airflow,customer_360.build_segments,PROD)",
+        "type": "DATASET",
+        "name": "build_segments",
+        "platform": "airflow",
+        "degree": 1
+      },
+      {
+        "urn": "urn:li:dataset:(urn:li:dataPlatform:looker,executive_customer_health,PROD)",
+        "type": "DATASET",
+        "name": "Executive Customer Health",
+        "platform": "looker",
+        "degree": 3
+      },
+      {
+        "urn": "urn:li:dataset:(urn:li:dataPlatform:mlflow,churn_prediction,PROD)",
+        "type": "DATASET",
+        "name": "churn_prediction",
+        "platform": "mlflow",
+        "degree": 3
+      },
+      {
+        "urn": "urn:li:dataset:(urn:li:dataPlatform:powerbi,retention_campaign,PROD)",
+        "type": "DATASET",
+        "name": "Retention Campaign",
+        "platform": "powerbi",
+        "degree": 4
+      },
+      {
+        "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.analytics.customer_segments,PROD)",
+        "type": "DATASET",
+        "name": "customer_segments",
+        "platform": "snowflake",
+        "degree": 2
+      },
+      {
+        "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.ml.churn_scores,PROD)",
+        "type": "DATASET",
+        "name": "churn_scores",
+        "platform": "snowflake",
+        "degree": 4
+      }
+    ]
+  },
+  "tools": [
+    "get_entities",
+    "list_schema_fields",
+    "get_lineage",
+    "get_lineage_paths_between",
+    "get_dataset_queries"
+  ],
   "evidence": [
     {
       "tool": "get_entities",
@@ -22,7 +142,7 @@
               "name": "snowflake"
             },
             "editableProperties": {
-              "description": "Tier-1 customer contact dataset used by the ContextSeal local demonstration."
+              "description": "Tier-1 customer contact dataset used by the ContextSeal local demonstration.\n\n---\nContextSeal passport **csp_97a3c8fe1a02ce4c8dc1**: Add contact_email, backfill from customer_email, migrate consumers, then deprecate customer_email.\n\n---\nContextSeal passport **csp_d50e81c7484ca620560a**: Add contact_email, backfill from customer_email, migrate consumers, then deprecate customer_email.\n\n---\nContextSeal passport **csp_96a8fc7182a544489f80**: Add contact_email, backfill from customer_email, migrate consumers, then deprecate customer_email."
             },
             "properties": {
               "name": "gold_customers",
@@ -81,7 +201,7 @@
                   },
                   "values": [
                     {
-                      "stringValue": "csp_639fb562fad50c7ffb08"
+                      "stringValue": "csp_96a8fc7182a544489f80"
                     }
                   ]
                 },
@@ -95,7 +215,7 @@
                   },
                   "values": [
                     {
-                      "stringValue": "2026-08-02"
+                      "stringValue": "2026-08-03"
                     }
                   ]
                 },
@@ -123,7 +243,7 @@
                   },
                   "values": [
                     {
-                      "numberValue": 80
+                      "numberValue": 70
                     }
                   ]
                 }
@@ -162,8 +282,29 @@
             "relatedDocuments": {
               "start": 0,
               "count": 10,
-              "total": 6,
+              "total": 9,
               "documents": [
+                {
+                  "urn": "urn:li:document:shared-43c0d569-eb98-4b40-8e4c-6caa47799e50",
+                  "type": "DOCUMENT",
+                  "info": {
+                    "title": "Change Passport csp_96a8fc7182a544489f80"
+                  }
+                },
+                {
+                  "urn": "urn:li:document:shared-f796959a-d2b3-4cee-895c-e4b68c5be393",
+                  "type": "DOCUMENT",
+                  "info": {
+                    "title": "Change Passport csp_d50e81c7484ca620560a"
+                  }
+                },
+                {
+                  "urn": "urn:li:document:shared-f97627ed-0aaa-4bda-aea7-6793358faa95",
+                  "type": "DOCUMENT",
+                  "info": {
+                    "title": "Change Passport csp_97a3c8fe1a02ce4c8dc1"
+                  }
+                },
                 {
                   "urn": "urn:li:document:shared-e044fc47-6f98-440b-bafe-d133cea79f1a",
                   "type": "DOCUMENT",
@@ -210,6 +351,42 @@
             }
           }
         ]
+      }
+    },
+    {
+      "tool": "list_schema_fields",
+      "arguments": {
+        "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)",
+        "limit": 100,
+        "offset": 0
+      },
+      "payload": {
+        "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)",
+        "fields": [
+          {
+            "fieldPath": "customer_email",
+            "nativeDataType": "varchar",
+            "description": "Personal email address",
+            "nullable": false
+          },
+          {
+            "fieldPath": "customer_id",
+            "nativeDataType": "varchar",
+            "description": "Stable customer identifier",
+            "nullable": false
+          },
+          {
+            "fieldPath": "updated_at",
+            "nativeDataType": "timestamp",
+            "description": "Last source update",
+            "nullable": false
+          }
+        ],
+        "totalFields": 3,
+        "returned": 3,
+        "remainingCount": 0,
+        "matchingCount": null,
+        "offset": 0
       }
     },
     {
@@ -1106,6 +1283,502 @@
       }
     },
     {
+      "tool": "get_lineage_paths_between",
+      "arguments": {
+        "source_urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)",
+        "target_urn": "urn:li:dashboard:(looker,executive_customer_health)",
+        "direction": "downstream"
+      },
+      "payload": {
+        "metadata": {
+          "queryType": "lineage-path-trace",
+          "direction": "downstream",
+          "pathType": "dataset-level",
+          "fields": {
+            "paths": {
+              "description": "Array of lineage paths showing transformation chains from source to target",
+              "structure": "Each path contains alternating entities (SCHEMA_FIELD or DATASET) and optional transformation QUERY entities"
+            }
+          }
+        },
+        "source": {
+          "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)"
+        },
+        "target": {
+          "urn": "urn:li:dashboard:(looker,executive_customer_health)"
+        },
+        "pathCount": 1,
+        "paths": [
+          {
+            "path": [
+              {
+                "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)",
+                "type": "DATASET"
+              },
+              {
+                "urn": "urn:li:dataJob:(urn:li:dataFlow:(airflow,contextseal_customer_360,PROD),build_segments)",
+                "type": "DATA_JOB"
+              },
+              {
+                "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.analytics.customer_segments,PROD)",
+                "type": "DATASET"
+              },
+              {
+                "urn": "urn:li:dashboard:(looker,executive_customer_health)",
+                "type": "DASHBOARD"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "tool": "get_lineage_paths_between",
+      "arguments": {
+        "source_urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)",
+        "target_urn": "urn:li:dashboard:(powerbi,retention_campaign)",
+        "direction": "downstream"
+      },
+      "payload": {
+        "metadata": {
+          "queryType": "lineage-path-trace",
+          "direction": "downstream",
+          "pathType": "dataset-level",
+          "fields": {
+            "paths": {
+              "description": "Array of lineage paths showing transformation chains from source to target",
+              "structure": "Each path contains alternating entities (SCHEMA_FIELD or DATASET) and optional transformation QUERY entities"
+            }
+          }
+        },
+        "source": {
+          "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)"
+        },
+        "target": {
+          "urn": "urn:li:dashboard:(powerbi,retention_campaign)"
+        },
+        "pathCount": 1,
+        "paths": [
+          {
+            "path": [
+              {
+                "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)",
+                "type": "DATASET"
+              },
+              {
+                "urn": "urn:li:dataJob:(urn:li:dataFlow:(airflow,contextseal_customer_360,PROD),build_segments)",
+                "type": "DATA_JOB"
+              },
+              {
+                "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.analytics.customer_segments,PROD)",
+                "type": "DATASET"
+              },
+              {
+                "urn": "urn:li:dataJob:(urn:li:dataFlow:(mlflow,contextseal_churn_scoring,PROD),score_churn)",
+                "type": "DATA_JOB"
+              },
+              {
+                "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.ml.churn_scores,PROD)",
+                "type": "DATASET"
+              },
+              {
+                "urn": "urn:li:dashboard:(powerbi,retention_campaign)",
+                "type": "DASHBOARD"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "tool": "get_lineage_paths_between",
+      "arguments": {
+        "source_urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)",
+        "target_urn": "urn:li:dataJob:(urn:li:dataFlow:(airflow,contextseal_customer_360,PROD),build_segments)",
+        "direction": "downstream"
+      },
+      "payload": {
+        "metadata": {
+          "queryType": "lineage-path-trace",
+          "direction": "downstream",
+          "pathType": "dataset-level",
+          "fields": {
+            "paths": {
+              "description": "Array of lineage paths showing transformation chains from source to target",
+              "structure": "Each path contains alternating entities (SCHEMA_FIELD or DATASET) and optional transformation QUERY entities"
+            }
+          }
+        },
+        "source": {
+          "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)"
+        },
+        "target": {
+          "urn": "urn:li:dataJob:(urn:li:dataFlow:(airflow,contextseal_customer_360,PROD),build_segments)"
+        },
+        "pathCount": 1,
+        "paths": [
+          {
+            "path": [
+              {
+                "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)",
+                "type": "DATASET"
+              },
+              {
+                "urn": "urn:li:dataJob:(urn:li:dataFlow:(airflow,contextseal_customer_360,PROD),build_segments)",
+                "type": "DATA_JOB"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "tool": "get_lineage_paths_between",
+      "arguments": {
+        "source_urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)",
+        "target_urn": "urn:li:dataJob:(urn:li:dataFlow:(mlflow,contextseal_churn_scoring,PROD),score_churn)",
+        "direction": "downstream"
+      },
+      "payload": {
+        "metadata": {
+          "queryType": "lineage-path-trace",
+          "direction": "downstream",
+          "pathType": "dataset-level",
+          "fields": {
+            "paths": {
+              "description": "Array of lineage paths showing transformation chains from source to target",
+              "structure": "Each path contains alternating entities (SCHEMA_FIELD or DATASET) and optional transformation QUERY entities"
+            }
+          }
+        },
+        "source": {
+          "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)"
+        },
+        "target": {
+          "urn": "urn:li:dataJob:(urn:li:dataFlow:(mlflow,contextseal_churn_scoring,PROD),score_churn)"
+        },
+        "pathCount": 1,
+        "paths": [
+          {
+            "path": [
+              {
+                "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)",
+                "type": "DATASET"
+              },
+              {
+                "urn": "urn:li:dataJob:(urn:li:dataFlow:(airflow,contextseal_customer_360,PROD),build_segments)",
+                "type": "DATA_JOB"
+              },
+              {
+                "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.analytics.customer_segments,PROD)",
+                "type": "DATASET"
+              },
+              {
+                "urn": "urn:li:dataJob:(urn:li:dataFlow:(mlflow,contextseal_churn_scoring,PROD),score_churn)",
+                "type": "DATA_JOB"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "tool": "get_lineage_paths_between",
+      "arguments": {
+        "source_urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)",
+        "target_urn": "urn:li:dataset:(urn:li:dataPlatform:airflow,customer_360.build_segments,PROD)",
+        "direction": "downstream"
+      },
+      "payload": {
+        "metadata": {
+          "queryType": "lineage-path-trace",
+          "direction": "downstream",
+          "pathType": "dataset-level",
+          "fields": {
+            "paths": {
+              "description": "Array of lineage paths showing transformation chains from source to target",
+              "structure": "Each path contains alternating entities (SCHEMA_FIELD or DATASET) and optional transformation QUERY entities"
+            }
+          }
+        },
+        "source": {
+          "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)"
+        },
+        "target": {
+          "urn": "urn:li:dataset:(urn:li:dataPlatform:airflow,customer_360.build_segments,PROD)"
+        },
+        "pathCount": 1,
+        "paths": [
+          {
+            "path": [
+              {
+                "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)",
+                "type": "DATASET"
+              },
+              {
+                "urn": "urn:li:dataset:(urn:li:dataPlatform:airflow,customer_360.build_segments,PROD)",
+                "type": "DATASET"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "tool": "get_lineage_paths_between",
+      "arguments": {
+        "source_urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)",
+        "target_urn": "urn:li:dataset:(urn:li:dataPlatform:looker,executive_customer_health,PROD)",
+        "direction": "downstream"
+      },
+      "payload": {
+        "metadata": {
+          "queryType": "lineage-path-trace",
+          "direction": "downstream",
+          "pathType": "dataset-level",
+          "fields": {
+            "paths": {
+              "description": "Array of lineage paths showing transformation chains from source to target",
+              "structure": "Each path contains alternating entities (SCHEMA_FIELD or DATASET) and optional transformation QUERY entities"
+            }
+          }
+        },
+        "source": {
+          "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)"
+        },
+        "target": {
+          "urn": "urn:li:dataset:(urn:li:dataPlatform:looker,executive_customer_health,PROD)"
+        },
+        "pathCount": 1,
+        "paths": [
+          {
+            "path": [
+              {
+                "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)",
+                "type": "DATASET"
+              },
+              {
+                "urn": "urn:li:dataJob:(urn:li:dataFlow:(airflow,contextseal_customer_360,PROD),build_segments)",
+                "type": "DATA_JOB"
+              },
+              {
+                "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.analytics.customer_segments,PROD)",
+                "type": "DATASET"
+              },
+              {
+                "urn": "urn:li:dataset:(urn:li:dataPlatform:looker,executive_customer_health,PROD)",
+                "type": "DATASET"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "tool": "get_lineage_paths_between",
+      "arguments": {
+        "source_urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)",
+        "target_urn": "urn:li:dataset:(urn:li:dataPlatform:mlflow,churn_prediction,PROD)",
+        "direction": "downstream"
+      },
+      "payload": {
+        "metadata": {
+          "queryType": "lineage-path-trace",
+          "direction": "downstream",
+          "pathType": "dataset-level",
+          "fields": {
+            "paths": {
+              "description": "Array of lineage paths showing transformation chains from source to target",
+              "structure": "Each path contains alternating entities (SCHEMA_FIELD or DATASET) and optional transformation QUERY entities"
+            }
+          }
+        },
+        "source": {
+          "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)"
+        },
+        "target": {
+          "urn": "urn:li:dataset:(urn:li:dataPlatform:mlflow,churn_prediction,PROD)"
+        },
+        "pathCount": 1,
+        "paths": [
+          {
+            "path": [
+              {
+                "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)",
+                "type": "DATASET"
+              },
+              {
+                "urn": "urn:li:dataJob:(urn:li:dataFlow:(airflow,contextseal_customer_360,PROD),build_segments)",
+                "type": "DATA_JOB"
+              },
+              {
+                "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.analytics.customer_segments,PROD)",
+                "type": "DATASET"
+              },
+              {
+                "urn": "urn:li:dataset:(urn:li:dataPlatform:mlflow,churn_prediction,PROD)",
+                "type": "DATASET"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "tool": "get_lineage_paths_between",
+      "arguments": {
+        "source_urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)",
+        "target_urn": "urn:li:dataset:(urn:li:dataPlatform:powerbi,retention_campaign,PROD)",
+        "direction": "downstream"
+      },
+      "payload": {
+        "metadata": {
+          "queryType": "lineage-path-trace",
+          "direction": "downstream",
+          "pathType": "dataset-level",
+          "fields": {
+            "paths": {
+              "description": "Array of lineage paths showing transformation chains from source to target",
+              "structure": "Each path contains alternating entities (SCHEMA_FIELD or DATASET) and optional transformation QUERY entities"
+            }
+          }
+        },
+        "source": {
+          "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)"
+        },
+        "target": {
+          "urn": "urn:li:dataset:(urn:li:dataPlatform:powerbi,retention_campaign,PROD)"
+        },
+        "pathCount": 1,
+        "paths": [
+          {
+            "path": [
+              {
+                "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)",
+                "type": "DATASET"
+              },
+              {
+                "urn": "urn:li:dataJob:(urn:li:dataFlow:(airflow,contextseal_customer_360,PROD),build_segments)",
+                "type": "DATA_JOB"
+              },
+              {
+                "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.analytics.customer_segments,PROD)",
+                "type": "DATASET"
+              },
+              {
+                "urn": "urn:li:dataset:(urn:li:dataPlatform:mlflow,churn_prediction,PROD)",
+                "type": "DATASET"
+              },
+              {
+                "urn": "urn:li:dataset:(urn:li:dataPlatform:powerbi,retention_campaign,PROD)",
+                "type": "DATASET"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "tool": "get_lineage_paths_between",
+      "arguments": {
+        "source_urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)",
+        "target_urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.analytics.customer_segments,PROD)",
+        "direction": "downstream"
+      },
+      "payload": {
+        "metadata": {
+          "queryType": "lineage-path-trace",
+          "direction": "downstream",
+          "pathType": "dataset-level",
+          "fields": {
+            "paths": {
+              "description": "Array of lineage paths showing transformation chains from source to target",
+              "structure": "Each path contains alternating entities (SCHEMA_FIELD or DATASET) and optional transformation QUERY entities"
+            }
+          }
+        },
+        "source": {
+          "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)"
+        },
+        "target": {
+          "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.analytics.customer_segments,PROD)"
+        },
+        "pathCount": 1,
+        "paths": [
+          {
+            "path": [
+              {
+                "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)",
+                "type": "DATASET"
+              },
+              {
+                "urn": "urn:li:dataJob:(urn:li:dataFlow:(airflow,contextseal_customer_360,PROD),build_segments)",
+                "type": "DATA_JOB"
+              },
+              {
+                "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.analytics.customer_segments,PROD)",
+                "type": "DATASET"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "tool": "get_lineage_paths_between",
+      "arguments": {
+        "source_urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)",
+        "target_urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.ml.churn_scores,PROD)",
+        "direction": "downstream"
+      },
+      "payload": {
+        "metadata": {
+          "queryType": "lineage-path-trace",
+          "direction": "downstream",
+          "pathType": "dataset-level",
+          "fields": {
+            "paths": {
+              "description": "Array of lineage paths showing transformation chains from source to target",
+              "structure": "Each path contains alternating entities (SCHEMA_FIELD or DATASET) and optional transformation QUERY entities"
+            }
+          }
+        },
+        "source": {
+          "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)"
+        },
+        "target": {
+          "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.ml.churn_scores,PROD)"
+        },
+        "pathCount": 1,
+        "paths": [
+          {
+            "path": [
+              {
+                "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)",
+                "type": "DATASET"
+              },
+              {
+                "urn": "urn:li:dataJob:(urn:li:dataFlow:(airflow,contextseal_customer_360,PROD),build_segments)",
+                "type": "DATA_JOB"
+              },
+              {
+                "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.analytics.customer_segments,PROD)",
+                "type": "DATASET"
+              },
+              {
+                "urn": "urn:li:dataJob:(urn:li:dataFlow:(mlflow,contextseal_churn_scoring,PROD),score_churn)",
+                "type": "DATA_JOB"
+              },
+              {
+                "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.ml.churn_scores,PROD)",
+                "type": "DATASET"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
       "tool": "get_dataset_queries",
       "arguments": {
         "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)"
@@ -1117,95 +1790,320 @@
       }
     }
   ],
-  "lineageSummary": {
-    "downstreamCount": 10,
-    "entityTypes": [
+  "evidenceBoundary": "Disposable local DataHub with synthetic ContextSeal metadata; no production or customer data. Raw MCP responses are preserved and hash-bound.",
+  "normalizedContext": {
+    "source": "DataHub MCP live",
+    "observedAt": "2026-08-02T10:58:15.335Z",
+    "evidenceBoundary": "LIVE_DATAHUB_MCP_NORMALIZED",
+    "targetUrn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)",
+    "assets": [
       {
+        "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)",
+        "name": "gold_customers",
         "type": "DATASET",
-        "count": 6
+        "platform": "snowflake",
+        "criticality": "HIGH",
+        "owners": [
+          "urn:li:corpuser:customer-data"
+        ],
+        "tags": [
+          "PII",
+          "Tier1"
+        ],
+        "terms": [],
+        "assertions": [],
+        "incidents": [],
+        "schemaFields": [
+          {
+            "fieldPath": "customer_email",
+            "nativeDataType": "varchar",
+            "nullable": false
+          },
+          {
+            "fieldPath": "customer_id",
+            "nativeDataType": "varchar",
+            "nullable": false
+          },
+          {
+            "fieldPath": "updated_at",
+            "nativeDataType": "timestamp",
+            "nullable": false
+          }
+        ]
       },
-      {
-        "type": "DATA_JOB",
-        "count": 2
-      },
-      {
-        "type": "DASHBOARD",
-        "count": 2
-      }
-    ],
-    "representativeDownstreams": [
       {
         "urn": "urn:li:dashboard:(looker,executive_customer_health)",
-        "type": "DASHBOARD",
         "name": "Executive Customer Health",
+        "type": "DASHBOARD",
         "platform": "looker",
-        "degree": 3
+        "criticality": "MEDIUM",
+        "owners": [
+          "urn:li:corpuser:customer-success"
+        ],
+        "tags": [
+          "Synthetic"
+        ],
+        "terms": [],
+        "assertions": [],
+        "incidents": [],
+        "schemaFields": [],
+        "reportedDegree": 3
       },
       {
         "urn": "urn:li:dashboard:(powerbi,retention_campaign)",
-        "type": "DASHBOARD",
         "name": "Retention Campaign",
+        "type": "DASHBOARD",
         "platform": "powerbi",
-        "degree": 5
+        "criticality": "MEDIUM",
+        "owners": [
+          "urn:li:corpuser:marketing-analytics"
+        ],
+        "tags": [
+          "Synthetic"
+        ],
+        "terms": [],
+        "assertions": [],
+        "incidents": [],
+        "schemaFields": [],
+        "reportedDegree": 5
       },
       {
         "urn": "urn:li:dataJob:(urn:li:dataFlow:(airflow,contextseal_customer_360,PROD),build_segments)",
-        "type": "DATA_JOB",
         "name": "build_segments",
+        "type": "DATA_JOB",
         "platform": null,
-        "degree": 1
+        "criticality": "HIGH",
+        "owners": [
+          "urn:li:corpuser:growth-data"
+        ],
+        "tags": [
+          "Tier1",
+          "Synthetic"
+        ],
+        "terms": [],
+        "assertions": [],
+        "incidents": [],
+        "schemaFields": [],
+        "reportedDegree": 1
       },
       {
         "urn": "urn:li:dataJob:(urn:li:dataFlow:(mlflow,contextseal_churn_scoring,PROD),score_churn)",
-        "type": "DATA_JOB",
         "name": "score_churn",
+        "type": "DATA_JOB",
         "platform": null,
-        "degree": 3
+        "criticality": "HIGH",
+        "owners": [
+          "urn:li:corpuser:ml-platform"
+        ],
+        "tags": [
+          "Tier1",
+          "Synthetic"
+        ],
+        "terms": [],
+        "assertions": [],
+        "incidents": [],
+        "schemaFields": [],
+        "reportedDegree": 3
       },
       {
         "urn": "urn:li:dataset:(urn:li:dataPlatform:airflow,customer_360.build_segments,PROD)",
-        "type": "DATASET",
         "name": "build_segments",
+        "type": "DATASET",
         "platform": "airflow",
-        "degree": 1
+        "criticality": "HIGH",
+        "owners": [
+          "urn:li:corpuser:growth-data"
+        ],
+        "tags": [
+          "Tier1"
+        ],
+        "terms": [],
+        "assertions": [],
+        "incidents": [],
+        "schemaFields": [],
+        "reportedDegree": 1
       },
       {
         "urn": "urn:li:dataset:(urn:li:dataPlatform:looker,executive_customer_health,PROD)",
-        "type": "DATASET",
         "name": "Executive Customer Health",
+        "type": "DATASET",
         "platform": "looker",
-        "degree": 3
+        "criticality": "MEDIUM",
+        "owners": [
+          "urn:li:corpuser:customer-success"
+        ],
+        "tags": [
+          "Executive"
+        ],
+        "terms": [],
+        "assertions": [],
+        "incidents": [],
+        "schemaFields": [],
+        "reportedDegree": 3
       },
       {
         "urn": "urn:li:dataset:(urn:li:dataPlatform:mlflow,churn_prediction,PROD)",
-        "type": "DATASET",
         "name": "churn_prediction",
+        "type": "DATASET",
         "platform": "mlflow",
-        "degree": 3
+        "criticality": "MEDIUM",
+        "owners": [
+          "urn:li:corpuser:ml-platform"
+        ],
+        "tags": [
+          "Production"
+        ],
+        "terms": [],
+        "assertions": [],
+        "incidents": [],
+        "schemaFields": [],
+        "reportedDegree": 3
       },
       {
         "urn": "urn:li:dataset:(urn:li:dataPlatform:powerbi,retention_campaign,PROD)",
-        "type": "DATASET",
         "name": "Retention Campaign",
+        "type": "DATASET",
         "platform": "powerbi",
-        "degree": 4
+        "criticality": "MEDIUM",
+        "owners": [
+          "urn:li:corpuser:marketing-analytics"
+        ],
+        "tags": [
+          "Campaign"
+        ],
+        "terms": [],
+        "assertions": [],
+        "incidents": [],
+        "schemaFields": [],
+        "reportedDegree": 4
       },
       {
         "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.analytics.customer_segments,PROD)",
-        "type": "DATASET",
         "name": "customer_segments",
+        "type": "DATASET",
         "platform": "snowflake",
-        "degree": 2
+        "criticality": "HIGH",
+        "owners": [
+          "urn:li:corpuser:growth-data"
+        ],
+        "tags": [
+          "Tier1"
+        ],
+        "terms": [],
+        "assertions": [],
+        "incidents": [],
+        "schemaFields": [],
+        "reportedDegree": 2
       },
       {
         "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.ml.churn_scores,PROD)",
-        "type": "DATASET",
         "name": "churn_scores",
+        "type": "DATASET",
         "platform": "snowflake",
-        "degree": 4
+        "criticality": "HIGH",
+        "owners": [
+          "urn:li:corpuser:ml-platform"
+        ],
+        "tags": [
+          "Tier1",
+          "Synthetic"
+        ],
+        "terms": [],
+        "assertions": [],
+        "incidents": [],
+        "schemaFields": [],
+        "reportedDegree": 4
       }
-    ]
-  },
-  "evidenceBoundary": "Raw MCP evidence is preserved. Normalized impact requires an exported ContextSeal graph contract.",
-  "captureStage": "PRE_ANALYSIS"
+    ],
+    "edges": [
+      {
+        "from": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)",
+        "to": "urn:li:dataJob:(urn:li:dataFlow:(airflow,contextseal_customer_360,PROD),build_segments)",
+        "scope": "ENTITY"
+      },
+      {
+        "from": "urn:li:dataJob:(urn:li:dataFlow:(airflow,contextseal_customer_360,PROD),build_segments)",
+        "to": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.analytics.customer_segments,PROD)",
+        "scope": "ENTITY"
+      },
+      {
+        "from": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.analytics.customer_segments,PROD)",
+        "to": "urn:li:dashboard:(looker,executive_customer_health)",
+        "scope": "ENTITY"
+      },
+      {
+        "from": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.analytics.customer_segments,PROD)",
+        "to": "urn:li:dataJob:(urn:li:dataFlow:(mlflow,contextseal_churn_scoring,PROD),score_churn)",
+        "scope": "ENTITY"
+      },
+      {
+        "from": "urn:li:dataJob:(urn:li:dataFlow:(mlflow,contextseal_churn_scoring,PROD),score_churn)",
+        "to": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.ml.churn_scores,PROD)",
+        "scope": "ENTITY"
+      },
+      {
+        "from": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.ml.churn_scores,PROD)",
+        "to": "urn:li:dashboard:(powerbi,retention_campaign)",
+        "scope": "ENTITY"
+      },
+      {
+        "from": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)",
+        "to": "urn:li:dataset:(urn:li:dataPlatform:airflow,customer_360.build_segments,PROD)",
+        "scope": "ENTITY"
+      },
+      {
+        "from": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.analytics.customer_segments,PROD)",
+        "to": "urn:li:dataset:(urn:li:dataPlatform:looker,executive_customer_health,PROD)",
+        "scope": "ENTITY"
+      },
+      {
+        "from": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.analytics.customer_segments,PROD)",
+        "to": "urn:li:dataset:(urn:li:dataPlatform:mlflow,churn_prediction,PROD)",
+        "scope": "ENTITY"
+      },
+      {
+        "from": "urn:li:dataset:(urn:li:dataPlatform:mlflow,churn_prediction,PROD)",
+        "to": "urn:li:dataset:(urn:li:dataPlatform:powerbi,retention_campaign,PROD)",
+        "scope": "ENTITY"
+      }
+    ],
+    "queries": [],
+    "provenance": {
+      "rawEvidenceHash": "1cb975bae97ee966a85279ad4348cd46ca5b06036c93c1bdbe1c899c69154a03",
+      "toolTypes": [
+        "get_entities",
+        "list_schema_fields",
+        "get_lineage",
+        "get_lineage_paths_between",
+        "get_dataset_queries"
+      ],
+      "schema": {
+        "authority": "list_schema_fields",
+        "complete": true,
+        "totalFieldCount": 3,
+        "pageCount": 1
+      },
+      "lineage": {
+        "discoveredAssetCount": 10,
+        "exactPathCount": 10,
+        "pathTargetCount": 10,
+        "downstreamUrns": [
+          "urn:li:dashboard:(looker,executive_customer_health)",
+          "urn:li:dashboard:(powerbi,retention_campaign)",
+          "urn:li:dataJob:(urn:li:dataFlow:(airflow,contextseal_customer_360,PROD),build_segments)",
+          "urn:li:dataJob:(urn:li:dataFlow:(mlflow,contextseal_churn_scoring,PROD),score_churn)",
+          "urn:li:dataset:(urn:li:dataPlatform:airflow,customer_360.build_segments,PROD)",
+          "urn:li:dataset:(urn:li:dataPlatform:looker,executive_customer_health,PROD)",
+          "urn:li:dataset:(urn:li:dataPlatform:mlflow,churn_prediction,PROD)",
+          "urn:li:dataset:(urn:li:dataPlatform:powerbi,retention_campaign,PROD)",
+          "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.analytics.customer_segments,PROD)",
+          "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.ml.churn_scores,PROD)"
+        ],
+        "maxHops": 5,
+        "scope": "ENTITY"
+      },
+      "queryRecordsReported": 0,
+      "queryTextsAvailable": 0
+    }
+  }
 }

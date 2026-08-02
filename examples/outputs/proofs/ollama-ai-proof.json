@@ -1,0 +1,61 @@
+{
+  "proofVersion": "1.0",
+  "status": "PASS",
+  "runtime": "ollama",
+  "model": "qwen2.5:7b",
+  "disclaimer": "Explanation only. Deterministic ContextSeal evidence remains authoritative.",
+  "deterministicRunId": "csr_4ab7ef5169bd2e0dcbfd64669646933a",
+  "groundingInputSha256": "bd6af7f19d02a6e48c7e9732abd5c31fc67852e4cc0aebb3138eba2103aafacf",
+  "capturedAt": "2026-08-02T09:06:23.385Z",
+  "captureCommand": "npm run ai:capture",
+  "runtimeProvenance": {
+    "launcher": "ollama",
+    "transport": "native-http",
+    "ollamaVersion": "ollama version is 0.32.5",
+    "availableModels": [
+      "qwen2.5:7b"
+    ]
+  },
+  "boundary": {
+    "label": "RECORDED LOCAL OLLAMA PROOF",
+    "hostedDemo": "Not live inference on GitHub Pages.",
+    "authority": "Explanation only. Deterministic ContextSeal evidence remains authoritative."
+  },
+  "output": {
+    "schemaVersion": "1.0",
+    "disclaimer": "Explanation only. Deterministic ContextSeal evidence remains authoritative.",
+    "ownerAlert": {
+      "title": "High Risk Change to Gold Customers Dataset",
+      "summary": "A proposed change to the 'customer_email' field in the gold_customers dataset is at risk of breaking multiple downstream assets and involves sensitive data.",
+      "bullets": [
+        "Change type: Rename column from 'customer_email' to 'contact_email'",
+        "Impact: 5 impacted assets, including high-criticality datasets, dashboards, and ML models",
+        "Risk score: 80 (BLOCKED)",
+        "Sensitive data governance signals detected"
+      ]
+    },
+    "migrationRationale": {
+      "summary": "The proposed change requires a staged migration strategy to minimize risk. The plan is to add the new 'contact_email' field, backfill from existing 'customer_email', migrate consumers, and then deprecate the old field.",
+      "safeguards": [
+        "Addition of a new field before removing the old one",
+        "Backfilling data to ensure continuity",
+        "Migrating downstream consumers gradually"
+      ]
+    },
+    "reviewerNoteDraft": {
+      "subject": "[REVIEW] High-Risk Change: Rename 'customer_email' to 'contact_email'",
+      "body": "Please review the proposed change to rename the 'customer_email' field in the gold_customers dataset. This change poses a high risk due to its impact on multiple critical assets and involves sensitive data.\n\nMigration Strategy:\n- Add new 'contact_email' field\n- Backfill from existing 'customer_email'\n- Migrate downstream consumers gradually\n- Deprecate old 'customer_email' field after migration is complete\n\nRisk Assessment: The change has a risk score of 80, indicating it is BLOCKED. Ensure all impacted assets are properly accounted for and that the migration plan is thoroughly tested before execution."
+    },
+    "nextStepGuidance": {
+      "immediateActions": [
+        "Review and validate the staged migration strategy",
+        "Ensure all impacted owners and stakeholders are informed"
+      ],
+      "afterApproval": [
+        "Execute the staged migration in a safe environment first",
+        "Monitor for any issues during the migration process",
+        "Once successful, proceed with live implementation"
+      ]
+    }
+  }
+}

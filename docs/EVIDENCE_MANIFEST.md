@@ -1,23 +1,24 @@
 # Evidence Manifest
 
-| Claim | State | Evidence |
-| --- | --- | --- |
-| Typed schema-change contract works | PASS | `tests/workflow.test.js` |
-| Five-hop impact paths are reconstructed | PASS | fixture test and generated demo record |
-| Policy blocks the direct retail rename | PASS | score 80 fixture test |
-| Safe staged dbt artifacts are generated | PASS | `examples/outputs/generated/` after `npm run demo`, `artifacts.grounding` in the demo run record, and `examples/outputs/generated/ARTIFACT_MANIFEST.json` |
-| Approval creates a hash-bound passport | PASS | workflow test and demo record |
-| Unapproved write-back is rejected | PASS | workflow test |
-| MCP session/error behavior is fail-closed | PASS | `tests/mcp-client.test.js` |
-| Dashboard loads and the product API completes the judge flow | PASS | local render check plus containerized analyze/approve/write-back smoke test |
-| Docker image and Compose service build and run unprivileged | PASS | local build, health check, fixture load, and full API smoke test |
-| Generated artifact bundle passes deterministic local sandbox validation | PASS | `npm run sandbox` plus `tests/sandbox-conformance.test.js` |
-| DataHub MCP read path executed live | PASS | `examples/outputs/live-datahub-read-evidence.json`: entity, typed downstream summary, representative downstream entities, and query-history response |
-| Structured properties written and read back from DataHub | PASS | live read evidence contains status, score, passport ID, and validity date |
-| Passport description and document saved in DataHub | PASS | `examples/outputs/live-datahub-writeback-evidence.json` plus post-write read evidence |
-| Production warehouse SQL executed | NOT_RUN | intentionally outside current scope |
-| Customer impact measured | NOT_RUN | no customer deployment is claimed |
+Updated: 2026-08-02 UTC
 
-Update this table only when a named reproducible artifact exists.
+States must remain exactly `PASS`, `WARN`, `FAIL`, `NOT_RUN`, `STALE`, or `FIXTURE`.
 
-The live evidence uses a disposable local DataHub instance seeded with synthetic metadata. It is not production or customer evidence.
+| Claim | State | Freshness | Exact source / implementation identity | Evidence artifact or run | Boundary |
+| --- | --- | --- | --- | --- | --- |
+| Deterministic judge-path certification blocks the direct retail rename | PASS | Current committed fixture bundle; read-only revalidated by `npm run demo:check` | `src/core/workflow.js`, `src/core/risk.js`, `examples/retail-change-request.json`, and the committed demo run contract | `examples/outputs/demo-certification.json`; `npm run demo:check` | Fixture-backed synthetic judge path; not live DataHub proof |
+| Generated staged migration bundle remains grounded and reviewable | PASS | Current committed bundle; read-only revalidated by `npm run demo:check` | `src/core/artifacts.js`, `examples/outputs/generated/ARTIFACT_MANIFEST.json`, and `artifacts.grounding` bound to the committed demo run | `examples/outputs/generated/`; `examples/outputs/generated/ARTIFACT_MANIFEST.json`; `npm run demo:check` | Deterministic synthetic generation path |
+| Generated artifact bundle passes deterministic conformance sandbox validation | PASS | Current committed evidence; read-only revalidated by `npm run sandbox:check` | `scripts/run-generated-sandbox.py` and manifest-linked generated bundle checks | `examples/outputs/sandbox/generated-sandbox-evidence.json`; `npm run sandbox:check` | Deterministic local conformance only; not warehouse execution |
+| Reviewer-ready PR handoff bundle remains reproducible | PASS | Current committed bundle; read-only revalidated by `npm run pr:bundle:check` | `scripts/build-pr-bundle.js`, `scripts/create-draft-pr.js`, and the committed passport/run IDs | `examples/outputs/pr/pr-body.md`; `examples/outputs/pr/pr-payload.json`; `examples/outputs/pr/pr-checklist.md`; `examples/outputs/pr/draft-pr-dry-run.json`; `npm run pr:bundle:check`; `npm run pr:draft -- --dry-run` | Offline review packet plus optional token-gated live draft path; no maintainer action implied |
+| Real dbt bundle execution works for rename, type-change, drop, and collision handling | PASS | Fresh local proof captured on 2026-08-01; not yet rerun on the final frozen submission SHA | `scripts/run-dbt-proof.js`, `scripts/check-dbt-proof.js`, `src/core/artifacts.js`, `dbt-core 1.10.5`, and `dbt-duckdb 1.10.0` | `examples/outputs/dbt/real-dbt-proof.json`; `npm run dbt:proof`; `npm run dbt:proof:check` | Local isolated dbt-on-DuckDB execution only; not production warehouse execution |
+| Recorded local Ollama proof exists separately from deterministic demo artifacts | PASS | Fresh local capture on 2026-08-01; not yet re-captured on the final frozen submission SHA | `scripts/capture-ai-proof.js`, `scripts/check-ai-proof.js`, `src/ai/proof.js`, Ollama 0.32.5, and `qwen2.5:7b` | `examples/outputs/proofs/ollama-ai-proof.json`; `npm run ai:capture`; `npm run ai:proof` | Local CPU inference proof only; GitHub Pages replays the record and does not perform hosted live inference |
+| Disposable-local DataHub read proof exists | PASS | Fresh on 2026-08-02 from the disposable-local stack; must be re-captured from the frozen submission SHA before final freeze | `scripts/capture-live-evidence.js`, `scripts/validate-evidence.js`, `mcp-server-datahub@0.6.0`, and synthetic seeded metadata | `examples/outputs/live-datahub-read-evidence.json`; `npm run datahub:capture`; `npm run evidence:check` | Disposable-local synthetic DataHub only; no production or customer data |
+| Disposable-local DataHub write-back and durable read-back proof exists | PASS | Fresh on 2026-08-02 from the disposable-local stack; must be re-captured from the frozen submission SHA before final freeze | `scripts/run-live-proof.js`, `scripts/export-live-run.js`, structured properties, appended description, and decision-document write-back | `examples/outputs/live-datahub-writeback-evidence.json`; `npm run datahub:prove`; `npm run datahub:export`; `npm run evidence:check` | Disposable-local synthetic DataHub only; mutation proof remains approval-gated |
+| Exact final-head CI result is recorded from the frozen submission SHA | NOT_RUN | No frozen final SHA recorded yet | `.github/workflows/ci.yml` and the exact-head Node 20, Node 24, Python safety, and container-smoke matrix | Pending exact-head GitHub Actions run URL or ID | Hosted proof pending |
+| Exact final-head Pages result is recorded from the frozen submission SHA | NOT_RUN | No frozen final SHA recorded yet | `.github/workflows/pages.yml` and the exact-head static deploy | Pending exact-head Pages run URL or ID and deployed URL | Hosted proof pending |
+| Public final demo video URL is recorded | NOT_RUN | Not recorded yet | `docs/DEMO_SCRIPT.md`, `docs/tr/DEMO_VIDEO_CEKIM_REHBERI.md`, and the final frozen submission SHA | Pending public video URL | Submission artifact pending |
+| Devpost submission is frozen against the exact final SHA | NOT_RUN | Not frozen yet | `docs/DEVPOST_SUBMISSION.md` and `docs/PRE_SUBMISSION_CHECKLIST.md` | Pending final Devpost freeze record | Submission artifact pending |
+| Production warehouse SQL executed | NOT_RUN | Intentionally absent | No production warehouse executor is wired into the repo | No artifact by design | Explicit non-goal |
+| Customer impact measured | NOT_RUN | Intentionally absent | No production deployment or customer telemetry is claimed | No artifact by design | Explicit non-goal |
+
+Update this table only when a named reproducible artifact or hosted run record exists.

@@ -33,8 +33,28 @@ jobs:
       - name: Prove validation is idempotent
         run: git diff --exit-code
 
-  container-smoke:
+  dbt-proof:
     needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - uses: astral-sh/setup-uv@v6
+      - run: npm ci --ignore-scripts
+      - name: Reproduce real dbt proof
+        run: npm run dbt:proof
+      - name: Prove real dbt proof is committed and idempotent
+        run: git diff --exit-code
+
+  container-smoke:
+    needs: [validate, dbt-proof]
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:

@@ -12,7 +12,9 @@
 
 - Live mode is enabled with `CONTEXTSEAL_MODE=datahub`
 - Live API startup also requires `CONTEXTSEAL_HOST`, `CONTEXTSEAL_OPERATOR_TOKEN`, and a non-empty JSON `CONTEXTSEAL_ALLOWED_TARGET_URNS` allowlist
+- Every live `POST` request must send `Authorization: Bearer <CONTEXTSEAL_OPERATOR_TOKEN>` and target an allowed URN
 - MCP read/write boundaries are controlled by `DATAHUB_MCP_TRANSPORT`, `DATAHUB_MCP_COMMAND`, `DATAHUB_MCP_ARGS`, `DATAHUB_GMS_URL`, `DATAHUB_GMS_TOKEN`, and `DATAHUB_MCP_MUTATIONS_ENABLED`
+- The tested stdio launcher pin is `uvx mcp-server-datahub@0.6.0`; do not use `@latest` in setup instructions
 - Seed/property helpers stay on the pinned free path `uv run --with acryl-datahub==1.6.0.14`
 - Remote bootstrap is opt-in only and uses `CONTEXTSEAL_REMOTE_DATAHUB_BOOTSTRAP`, `CONTEXTSEAL_REMOTE_DATAHUB_ALLOWED_GMS_URLS`, `CONTEXTSEAL_REMOTE_DATAHUB_SEED_URNS`, and `CONTEXTSEAL_REMOTE_DATAHUB_PROPERTY_URNS`
 - Credentials, tokens, and source rows must never be logged, committed, or copied into docs
@@ -39,6 +41,7 @@
 - Locked runtime choice: local Ollama
 - Locked default model: `qwen2.5:7b`
 - Probe command: `npm run ai:probe`
+- Durable recorded-proof capture command: `npm run ai:capture`
 - Current machine proof: the official Ollama 0.32.5 installation completed after approved cache cleanup, and `qwen2.5:7b` is installed locally. `npm run ai:probe`, `npm run demo`, and `npm run ai:proof` passed on 2026-08-01.
 - GPU-backed inference is incompatible with the installed CUDA toolchain, so Ollama runs with the user-level `OLLAMA_LLM_LIBRARY=cpu` setting. The direct model check returned `CONTEXTSEAL_LOCAL_MODEL_OK`; the `.env` timeout is `600000` milliseconds for CPU inference.
 

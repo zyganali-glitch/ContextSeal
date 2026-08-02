@@ -1,7 +1,9 @@
 import { readFile, mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { analyzeChange, decideRun } from "../src/core/workflow.js";
 import { enrichRunWithAi } from "../src/ai/adapter.js";
+import { AI_PROOF_PATH, validateAiProof } from "../src/ai/proof.js";
 import { loadEnvFile } from "../src/env.js";
 
 const FIXTURE_OBSERVED_AT = "2026-07-22T06:39:36.459Z";
@@ -69,18 +71,29 @@ function jsonText(value, trailingNewline = false) {
   return trailingNewline ? `${serialized}\n` : serialized;
 }
 
-async function buildExpectedOutputs(root) {
+async function readOptionalRecordedAiProof(root) {
+  try {
+    const proof = JSON.parse(await readFile(path.join(root, AI_PROOF_PATH), "utf8"));
+    return validateAiProof(proof);
+  } catch (error) {
+    if (error?.code === "ENOENT") return null;
+    throw new Error(`Committed recorded AI proof is invalid: ${error.message}`);
+  }
+}
+
+export async function buildDeterministicFixtureRun(root, { env = process.env, useRuntimeAi = false } = {}) {
   const policy = JSON.parse(await readFile(path.join(root, "config/policy.json"), "utf8"));
   const request = JSON.parse(await readFile(path.join(root, "examples/retail-change-request.json"), "utf8"));
   const context = JSON.parse(await readFile(path.join(root, "examples/retail-context-graph.json"), "utf8"));
   context.observedAt = FIXTURE_OBSERVED_AT;
+  const aiEnv = useRuntimeAi ? env : { ...env, CONTEXTSEAL_AI_ENABLED: "false" };
   const run = await enrichRunWithAi(analyzeChange({
     request,
     context,
     policy,
     mode: "fixture",
     now: new Date(FIXTURE_ANALYZE_AT)
-  }));
+  }), { env: aiEnv });
   const approved = decideRun(run, {
     decision: "APPROVE",
     reviewer: "demo-reviewer",
@@ -88,13 +101,20 @@ async function buildExpectedOutputs(root) {
     scopeAccepted: true
   }, new Date(FIXTURE_DECIDE_AT));
 
+  return { run, approved };
+}
+
+export async function buildExpectedOutputs(root, { env = process.env } = {}) {
+  const { run, approved } = await buildDeterministicFixtureRun(root, { env, useRuntimeAi: false });
+  const recordedAiProof = await readOptionalRecordedAiProof(root);
+
   const outputs = new Map([
     ["examples/outputs/demo-certification.json", jsonText(approved)],
     ["examples/outputs/generated/ai/contextseal-ai-input.json", jsonText(run.aiGroundingInput, true)],
     ["examples/outputs/generated/ai/contextseal-ai-output.json", jsonText(run.ai, true)],
     ["examples/outputs/generated/ai/contextseal-ai-output.md", `${buildAiOutputMarkdown(run)}\n`],
     ["examples/outputs/generated/ARTIFACT_MANIFEST.json", jsonText(approved.artifacts.manifest, true)],
-    ["public/demo-data.json", jsonText({ analyzed: run, approved, aiGroundingInput: run.aiGroundingInput })]
+    ["public/demo-data.json", jsonText({ analyzed: run, approved, aiGroundingInput: run.aiGroundingInput, recordedAiProof })]
   ]);
 
   for (const file of approved.artifacts.files) {
@@ -104,7 +124,7 @@ async function buildExpectedOutputs(root) {
   return { run, approved, outputs };
 }
 
-async function writeOutputs(root, outputs) {
+export async function writeOutputs(root, outputs) {
   for (const [relativePath, content] of outputs) {
     const target = path.join(root, relativePath);
     await mkdir(path.dirname(target), { recursive: true });
@@ -112,7 +132,7 @@ async function writeOutputs(root, outputs) {
   }
 }
 
-async function assertOutputs(root, outputs) {
+export async function assertOutputs(root, outputs) {
   const mismatches = [];
 
   for (const [relativePath, expected] of outputs) {
@@ -130,15 +150,25 @@ async function assertOutputs(root, outputs) {
   }
 }
 
-const options = parseArgs(process.argv.slice(2));
-const root = path.resolve(".");
-await loadEnvFile(root);
-const { run, approved, outputs } = await buildExpectedOutputs(root);
+async function main() {
+  const options = parseArgs(process.argv.slice(2));
+  const root = path.resolve(".");
+  const env = { ...process.env };
+  await loadEnvFile(root, env);
+  const { approved, outputs } = await buildExpectedOutputs(root, { env });
 
-if (options.check) {
-  await assertOutputs(root, outputs);
-  console.log(`PASS demo check ${approved.runId}: committed fixture artifacts match deterministic generation`);
-} else {
-  await writeOutputs(root, outputs);
-  console.log(`PASS demo ${approved.runId}: ${approved.impact.counts.total} impacted, risk ${approved.risk.score}, passport ${approved.passport.passportId}`);
+  if (options.check) {
+    await assertOutputs(root, outputs);
+    console.log(`PASS demo check ${approved.runId}: committed fixture artifacts match deterministic generation`);
+  } else {
+    await writeOutputs(root, outputs);
+    console.log(`PASS demo ${approved.runId}: ${approved.impact.counts.total} impacted, risk ${approved.risk.score}, passport ${approved.passport.passportId}`);
+  }
+}
+
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  main().catch((error) => {
+    console.error(error.message);
+    process.exitCode = 1;
+  });
 }

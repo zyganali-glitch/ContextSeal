@@ -240,7 +240,7 @@ try {
   $env:CONTEXTSEAL_MODE = 'datahub'
   $env:DATAHUB_MCP_TRANSPORT = 'stdio'
   $env:DATAHUB_MCP_COMMAND = 'uvx'
-  $env:DATAHUB_MCP_ARGS = '["mcp-server-datahub@latest"]'
+  $env:DATAHUB_MCP_ARGS = '["mcp-server-datahub@0.6.0"]'
   $env:DATAHUB_GMS_URL = 'http://localhost:8080'
 
   Write-Step 'Seeding disposable local metadata'

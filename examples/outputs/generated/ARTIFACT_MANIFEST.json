@@ -2,8 +2,8 @@
   "manifestVersion": "1.0",
   "generatedFromRunId": "csr_4ab7ef5169bd2e0dcbfd64669646933a",
   "passportContext": {
-    "passportId": "csp_60ce7207989fff37fdf8",
-    "manifestHash": "60ce7207989fff37fdf8c37f256fb16a9fd4fa6adf0f926c136008a428f3e963",
+    "passportId": "csp_6612513f5f952e97ba94",
+    "manifestHash": "6612513f5f952e97ba94dcdd6619a2b9a8ee35b4ee67b3a240dd89ebeaa6d474",
     "validUntil": "2026-07-23T06:39:36.469Z",
     "status": "CERTIFIED",
     "artifactGroundingContractVersion": "1.0",
@@ -130,7 +130,7 @@
     {
       "path": "generated/rollback/gold_customers.sql",
       "kind": "ROLLBACK",
-      "sha256": "69e5d94459c9c804495577b71f62e430bfeccf05841137e3f8b009dec74cf2ee",
+      "sha256": "e7ab0ad5cb311080f08d1b210c9564d5a17bdf3af4ec2d4e41e7f31bfd771485",
       "groundingRefs": [
         "target",
         "schemaInputs",

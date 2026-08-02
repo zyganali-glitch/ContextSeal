@@ -455,7 +455,7 @@
         {
           "path": "generated/rollback/gold_customers.sql",
           "kind": "ROLLBACK",
-          "content": "-- Rollback keeps the original field authoritative\nselect * exclude (contact_email) from {{ ref('gold_customers_contextseal') }};\n"
+          "content": "-- Rollback keeps the original field authoritative\nselect * exclude (contact_email) from {{ ref('gold_customers_contextseal') }}\n"
         },
         {
           "path": "generated/IMPACTED_OWNERS.md",
@@ -1238,7 +1238,7 @@
         {
           "path": "generated/rollback/gold_customers.sql",
           "kind": "ROLLBACK",
-          "content": "-- Rollback keeps the original field authoritative\nselect * exclude (contact_email) from {{ ref('gold_customers_contextseal') }};\n"
+          "content": "-- Rollback keeps the original field authoritative\nselect * exclude (contact_email) from {{ ref('gold_customers_contextseal') }}\n"
         },
         {
           "path": "generated/IMPACTED_OWNERS.md",
@@ -1250,8 +1250,8 @@
         "manifestVersion": "1.0",
         "generatedFromRunId": "csr_4ab7ef5169bd2e0dcbfd64669646933a",
         "passportContext": {
-          "passportId": "csp_60ce7207989fff37fdf8",
-          "manifestHash": "60ce7207989fff37fdf8c37f256fb16a9fd4fa6adf0f926c136008a428f3e963",
+          "passportId": "csp_6612513f5f952e97ba94",
+          "manifestHash": "6612513f5f952e97ba94dcdd6619a2b9a8ee35b4ee67b3a240dd89ebeaa6d474",
           "validUntil": "2026-07-23T06:39:36.469Z",
           "status": "CERTIFIED",
           "artifactGroundingContractVersion": "1.0",
@@ -1378,7 +1378,7 @@
           {
             "path": "generated/rollback/gold_customers.sql",
             "kind": "ROLLBACK",
-            "sha256": "69e5d94459c9c804495577b71f62e430bfeccf05841137e3f8b009dec74cf2ee",
+            "sha256": "e7ab0ad5cb311080f08d1b210c9564d5a17bdf3af4ec2d4e41e7f31bfd771485",
             "groundingRefs": [
               "target",
               "schemaInputs",
@@ -1772,7 +1772,7 @@
         },
         {
           "path": "generated/rollback/gold_customers.sql",
-          "sha256": "69e5d94459c9c804495577b71f62e430bfeccf05841137e3f8b009dec74cf2ee"
+          "sha256": "e7ab0ad5cb311080f08d1b210c9564d5a17bdf3af4ec2d4e41e7f31bfd771485"
         },
         {
           "path": "generated/IMPACTED_OWNERS.md",
@@ -1829,8 +1829,8 @@
         "decidedAt": "2026-07-22T06:39:36.469Z"
       },
       "validUntil": "2026-07-23T06:39:36.469Z",
-      "passportId": "csp_60ce7207989fff37fdf8",
-      "manifestHash": "60ce7207989fff37fdf8c37f256fb16a9fd4fa6adf0f926c136008a428f3e963"
+      "passportId": "csp_6612513f5f952e97ba94",
+      "manifestHash": "6612513f5f952e97ba94dcdd6619a2b9a8ee35b4ee67b3a240dd89ebeaa6d474"
     }
   },
   "aiGroundingInput": {
@@ -2099,5 +2099,66 @@
       "reviewerNoteDraft",
       "nextStepGuidance"
     ]
+  },
+  "recordedAiProof": {
+    "proofVersion": "1.0",
+    "status": "PASS",
+    "runtime": "ollama",
+    "model": "qwen2.5:7b",
+    "disclaimer": "Explanation only. Deterministic ContextSeal evidence remains authoritative.",
+    "deterministicRunId": "csr_4ab7ef5169bd2e0dcbfd64669646933a",
+    "groundingInputSha256": "bd6af7f19d02a6e48c7e9732abd5c31fc67852e4cc0aebb3138eba2103aafacf",
+    "capturedAt": "2026-08-02T09:06:23.385Z",
+    "captureCommand": "npm run ai:capture",
+    "runtimeProvenance": {
+      "launcher": "ollama",
+      "transport": "native-http",
+      "ollamaVersion": "ollama version is 0.32.5",
+      "availableModels": [
+        "qwen2.5:7b"
+      ]
+    },
+    "boundary": {
+      "label": "RECORDED LOCAL OLLAMA PROOF",
+      "hostedDemo": "Not live inference on GitHub Pages.",
+      "authority": "Explanation only. Deterministic ContextSeal evidence remains authoritative."
+    },
+    "output": {
+      "schemaVersion": "1.0",
+      "disclaimer": "Explanation only. Deterministic ContextSeal evidence remains authoritative.",
+      "ownerAlert": {
+        "title": "High Risk Change to Gold Customers Dataset",
+        "summary": "A proposed change to the 'customer_email' field in the gold_customers dataset is at risk of breaking multiple downstream assets and involves sensitive data.",
+        "bullets": [
+          "Change type: Rename column from 'customer_email' to 'contact_email'",
+          "Impact: 5 impacted assets, including high-criticality datasets, dashboards, and ML models",
+          "Risk score: 80 (BLOCKED)",
+          "Sensitive data governance signals detected"
+        ]
+      },
+      "migrationRationale": {
+        "summary": "The proposed change requires a staged migration strategy to minimize risk. The plan is to add the new 'contact_email' field, backfill from existing 'customer_email', migrate consumers, and then deprecate the old field.",
+        "safeguards": [
+          "Addition of a new field before removing the old one",
+          "Backfilling data to ensure continuity",
+          "Migrating downstream consumers gradually"
+        ]
+      },
+      "reviewerNoteDraft": {
+        "subject": "[REVIEW] High-Risk Change: Rename 'customer_email' to 'contact_email'",
+        "body": "Please review the proposed change to rename the 'customer_email' field in the gold_customers dataset. This change poses a high risk due to its impact on multiple critical assets and involves sensitive data.\n\nMigration Strategy:\n- Add new 'contact_email' field\n- Backfill from existing 'customer_email'\n- Migrate downstream consumers gradually\n- Deprecate old 'customer_email' field after migration is complete\n\nRisk Assessment: The change has a risk score of 80, indicating it is BLOCKED. Ensure all impacted assets are properly accounted for and that the migration plan is thoroughly tested before execution."
+      },
+      "nextStepGuidance": {
+        "immediateActions": [
+          "Review and validate the staged migration strategy",
+          "Ensure all impacted owners and stakeholders are informed"
+        ],
+        "afterApproval": [
+          "Execute the staged migration in a safe environment first",
+          "Monitor for any issues during the migration process",
+          "Once successful, proceed with live implementation"
+        ]
+      }
+    }
   }
 }

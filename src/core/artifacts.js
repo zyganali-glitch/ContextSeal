@@ -140,7 +140,7 @@ function safeMigration(request) {
       safeClaim: "Direct rename requests are converted into a compatibility-field migration so downstream consumers can move before removal.",
       generatedModelName,
       sql: `-- ContextSeal safe expansion: keep the old field during consumer migration\nselect\n  *,\n  ${source} as ${destination}\nfrom {{ ref('${entity}') }}\n`,
-      rollback: `-- Rollback keeps the original field authoritative\nselect * exclude (${destination}) from {{ ref('${generatedModelName}') }};\n`
+      rollback: `-- Rollback keeps the original field authoritative\nselect * exclude (${destination}) from {{ ref('${generatedModelName}') }}\n`
     };
   }
   if (request.changeType === "type_change") {
@@ -152,7 +152,7 @@ function safeMigration(request) {
       safeClaim: "Type changes create a parallel typed column so the original field stays authoritative during validation.",
       generatedModelName,
       sql: `select\n  *,\n  try_cast(${source} as ${destinationType}) as ${source}_typed\nfrom {{ ref('${entity}') }}\n`,
-      rollback: `select * exclude (${source}_typed) from {{ ref('${generatedModelName}') }};\n`
+      rollback: `select * exclude (${source}_typed) from {{ ref('${generatedModelName}') }}\n`
     };
   }
   if (request.changeType === "drop_column") {
@@ -163,7 +163,7 @@ function safeMigration(request) {
       safeClaim: "Direct drops are refused; the generator preserves the field and emits a later-drop migration note instead.",
       generatedModelName,
       sql: `-- Deliberately preserves ${source}; direct destructive removal is not generated.\nselect * from {{ ref('${entity}') }}\n`,
-      rollback: `-- No destructive operation was generated; rollback is a no-op.\nselect 1;\n`
+      rollback: `-- No destructive operation was generated; rollback is a no-op.\nselect 1\n`
     };
   }
   throw new Error(`Unsupported change type: ${request.changeType}`);

@@ -81,6 +81,27 @@ Kayıtlı AI artefaktları:
 - `examples/outputs/generated/ai/contextseal-ai-input.json`
 - `examples/outputs/generated/ai/contextseal-ai-output.json`
 - `examples/outputs/generated/ai/contextseal-ai-output.md`
+- `examples/outputs/proofs/ollama-ai-proof.json`
+
+Deterministik demo artefaktları Ollama olmadan tekrarlanabilir kalır. Ayrı `examples/outputs/proofs/ollama-ai-proof.json` dosyası, GitHub Pages yüzeyinde `RECORDED LOCAL OLLAMA PROOF` etiketiyle gösterilen kalıcı yerel-model `PASS` kaydıdır.
+
+## Canlı DataHub modu sözleşmesi
+
+Canlı modda `.env` dosyasında en az şu satırlar bulunmalıdır:
+
+```dotenv
+CONTEXTSEAL_MODE=datahub
+DATAHUB_MCP_TRANSPORT=stdio
+DATAHUB_MCP_COMMAND=uvx
+DATAHUB_MCP_ARGS=["mcp-server-datahub@0.6.0"]
+DATAHUB_GMS_URL=http://localhost:8080
+DATAHUB_GMS_TOKEN=your-local-token
+DATAHUB_MCP_MUTATIONS_ENABLED=false
+CONTEXTSEAL_OPERATOR_TOKEN=<generate-a-random-token>
+CONTEXTSEAL_ALLOWED_TARGET_URNS=["urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)"]
+```
+
+`CONTEXTSEAL_MODE=datahub` altında canlı API ancak `CONTEXTSEAL_OPERATOR_TOKEN` ve boş olmayan JSON `CONTEXTSEAL_ALLOWED_TARGET_URNS` allowlist ile açılır. Her canlı `POST` isteği `Authorization: Bearer <CONTEXTSEAL_OPERATOR_TOKEN>` başlığını göndermeli ve istek hedefi allowlist içinde yer almalıdır.
 
 ## Üretilen paket ve PR kanıtı
 

@@ -8,7 +8,7 @@ const request = JSON.parse(await readFile("examples/retail-change-request.json",
 const context = JSON.parse(await readFile("examples/retail-context-graph.json", "utf8"));
 const policy = JSON.parse(await readFile("config/policy.json", "utf8"));
 
-test("datahub analysis captures raw MCP context before deterministic analysis without upgrading fixture impact", async () => {
+test("datahub analysis captures raw MCP context before deterministic analysis and analyzes the normalized live context", async () => {
   const order = [];
   let closed = false;
   const sourceField = request.sourceField;
@@ -90,8 +90,9 @@ test("datahub analysis captures raw MCP context before deterministic analysis wi
   assert.deepEqual(order, ["initialize", "get_entities", "list_schema_fields", "get_lineage", "get_dataset_queries", "close", "analyze", "enrich"]);
   assert.equal(closed, true);
   assert.equal(run.liveEvidence.captureStage, "PRE_ANALYSIS");
+  assert.equal(run.context.evidenceBoundary, "LIVE_DATAHUB_MCP_NORMALIZED");
   assert.equal(run.evidence.find((item) => item.claim === "DataHub context retrieved").state, "PASS");
-  assert.equal(run.evidence.find((item) => item.claim === "Downstream impact paths traced").state, "FIXTURE");
+  assert.equal(run.evidence.find((item) => item.claim === "Downstream impact paths traced").state, "WARN");
 });
 
 test("fixture analysis does not create a client or live-evidence claim", async () => {

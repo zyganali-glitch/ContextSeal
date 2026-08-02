@@ -16,17 +16,30 @@ export async function analyzeWithLiveContext({
 }) {
   const validatedRequest = validateChangeRequest(request);
   let liveEvidence = null;
+  let analysisContext = context;
 
   if (mode === "datahub") {
     const client = createClient();
     try {
-      liveEvidence = await collectLiveEvidence(client, validatedRequest);
+      const collected = await collectLiveEvidence(client, validatedRequest);
+      analysisContext = collected.normalizedContext;
+      liveEvidence = {
+        ...collected,
+        normalizedContext: undefined
+      };
     } finally {
       await client.close();
     }
   }
 
-  const deterministicRun = analyze({ request: validatedRequest, context, policy, mode, now });
+  const deterministicRun = analyze({
+    request: validatedRequest,
+    context: analysisContext,
+    policy,
+    mode,
+    now,
+    liveEvidence
+  });
   const run = liveEvidence
     ? attachLiveEvidence(deterministicRun, liveEvidence, "PRE_ANALYSIS")
     : deterministicRun;

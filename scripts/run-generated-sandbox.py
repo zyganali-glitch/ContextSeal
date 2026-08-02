@@ -250,7 +250,7 @@ def main() -> int:
             print(message)
         return 0
     except SandboxError as error:
-        if evidence_output and manifest_path.exists():
+        if evidence_output and manifest_path.exists() and not args.check:
             try:
                 manifest = read_json(manifest_path)
                 write_json(evidence_output, build_evidence(manifest_path, repo_root, manifest, "FAIL", str(error)))

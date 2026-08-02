@@ -74,6 +74,7 @@ async function createFakeMcp(t, {
   const calls = [];
   const mutations = [];
   const catalog = { propertyValues: null, description: "", document: null };
+  const sockets = new Set();
   const server = http.createServer(async (request, response) => {
     const payload = await readRequestBody(request);
     calls.push({
@@ -219,8 +220,17 @@ async function createFakeMcp(t, {
     });
     response.end(JSON.stringify({ jsonrpc: "2.0", id: payload.id, result }));
   });
+  server.on("connection", (socket) => {
+    sockets.add(socket);
+    socket.on("close", () => sockets.delete(socket));
+  });
   const port = await listen(server);
-  t.after(() => new Promise((resolve) => server.close(resolve)));
+  t.after(async () => {
+    server.closeIdleConnections?.();
+    server.closeAllConnections?.();
+    for (const socket of sockets) socket.destroy();
+    await new Promise((resolve) => server.close(resolve));
+  });
   return { url: `http://127.0.0.1:${port}/mcp`, calls, mutations, catalog };
 }
 
@@ -237,6 +247,7 @@ async function startContextSeal(t, fakeMcp, { mutationsEnabled = false } = {}) {
       PORT: String(port),
       CONTEXTSEAL_HOST: "127.0.0.1",
       CONTEXTSEAL_MODE: "datahub",
+      CONTEXTSEAL_AI_ENABLED: "false",
       [operatorTokenKey]: operatorToken,
       CONTEXTSEAL_ALLOWED_TARGET_URNS: JSON.stringify([changeRequest.targetUrn]),
       CONTEXTSEAL_STATE_DIR: stateRoot,

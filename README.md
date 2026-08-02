@@ -121,10 +121,12 @@ Copy `.env.example` to `.env`, then set:
 CONTEXTSEAL_MODE=datahub
 DATAHUB_MCP_TRANSPORT=stdio
 DATAHUB_MCP_COMMAND=uvx
-DATAHUB_MCP_ARGS=["mcp-server-datahub@latest"]
+DATAHUB_MCP_ARGS=["mcp-server-datahub@0.6.0"]
 DATAHUB_GMS_URL=http://localhost:8080
 DATAHUB_GMS_TOKEN=your-local-token
 DATAHUB_MCP_MUTATIONS_ENABLED=false
+CONTEXTSEAL_OPERATOR_TOKEN=<generate-a-random-token>
+CONTEXTSEAL_ALLOWED_TARGET_URNS=["urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)"]
 ```
 
 Keep mutations disabled while validating search, entity, lineage, and query evidence. Enable them only for the final, approved write-back demonstration:
@@ -132,6 +134,8 @@ Keep mutations disabled while validating search, entity, lineage, and query evid
 ```dotenv
 DATAHUB_MCP_MUTATIONS_ENABLED=true
 ```
+
+In `CONTEXTSEAL_MODE=datahub`, live API startup also requires `CONTEXTSEAL_OPERATOR_TOKEN` and a non-empty JSON `CONTEXTSEAL_ALLOWED_TARGET_URNS` allowlist. Every live `POST` request must send `Authorization: Bearer <CONTEXTSEAL_OPERATOR_TOKEN>`, and the request target must appear in the allowlist.
 
 ContextSeal launches the official local MCP process for each bounded operation and passes the mutation setting explicitly. Credentials must never be committed. For DataHub Cloud, set `DATAHUB_MCP_TRANSPORT=http` and provide the tenant MCP URL.
 
@@ -207,6 +211,9 @@ Committed AI artifacts:
 - `examples/outputs/generated/ai/contextseal-ai-input.json`
 - `examples/outputs/generated/ai/contextseal-ai-output.json`
 - `examples/outputs/generated/ai/contextseal-ai-output.md`
+- `examples/outputs/proofs/ollama-ai-proof.json`
+
+The deterministic demo artifacts stay reproducible without Ollama. The separate `examples/outputs/proofs/ollama-ai-proof.json` file is the durable recorded local-model `PASS` capture that GitHub Pages replays with the label `RECORDED LOCAL OLLAMA PROOF`.
 
 ## PR review handoff contract
 
