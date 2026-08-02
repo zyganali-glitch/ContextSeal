@@ -72,6 +72,10 @@ function toPosixPath(value) {
   return String(value).replaceAll("\\", "/");
 }
 
+export function resolveEvidencePath(root, evidenceOutput) {
+  return path.resolve(root, evidenceOutput);
+}
+
 function baseModelSql() {
   const values = BASE_ROWS
     .map((row) => `(${row.map(sqlLiteral).join(", ")})`)
@@ -625,7 +629,7 @@ export function validateDbtProofArtifact(proof, expectedScenarios = buildDbtProo
 async function main() {
   const options = parseArgs(process.argv.slice(2));
   const root = path.resolve(".");
-  const evidencePath = path.join(root, options.evidenceOutput);
+  const evidencePath = resolveEvidencePath(root, options.evidenceOutput);
 
   if (options.check) {
     const proof = JSON.parse(await readFile(evidencePath, "utf8"));

@@ -49,9 +49,11 @@ jobs:
       - uses: astral-sh/setup-uv@v6
       - run: npm ci --ignore-scripts
       - name: Reproduce real dbt proof
-        run: npm run dbt:proof
-      - name: Prove real dbt proof is committed and idempotent
-        run: git diff --exit-code
+        run: npm run dbt:proof -- --evidence-output "$RUNNER_TEMP/real-dbt-proof.json"
+      - name: Validate fresh real dbt proof
+        run: node scripts/run-dbt-proof.js --check --evidence-output "$RUNNER_TEMP/real-dbt-proof.json"
+      - name: Validate committed real dbt proof
+        run: npm run dbt:proof:check
 
   container-smoke:
     needs: [validate, dbt-proof]
@@ -68,7 +70,7 @@ jobs:
           curl --fail --retry 10 --retry-all-errors --retry-delay 1 http://127.0.0.1:4173/api/health --output health.json
           jq --exit-status '.status == "ok" and .mode == "fixture" and .mutationsEnabled == false and (.evidenceBoundary | startswith("FIXTURE:"))' health.json
           curl --fail --request POST --header 'content-type: application/json' --data '{}' http://127.0.0.1:4173/api/analyze --output analysis.json
-          jq --exit-status '.state == "AWAITING_HUMAN" and (.artifacts.files | length) == 4 and (.evidence[] | select(.claim == "DataHub context retrieved").state) == "FIXTURE"' analysis.json
+          jq --exit-status '.state == "AWAITING_HUMAN" and (.artifacts.files | length) == 5 and (.evidence[] | select(.claim == "DataHub context retrieved").state) == "FIXTURE"' analysis.json
       - name: Show container logs
         if: always()
         run: docker logs contextseal-ci

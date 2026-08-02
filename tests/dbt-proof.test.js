@@ -1,11 +1,14 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import os from "node:os";
+import path from "node:path";
 import { sha256 } from "../src/core/hash.js";
 import {
   DBT_CORE_VERSION,
   DBT_DUCKDB_VERSION,
   DBT_PROOF_BOUNDARY,
   buildDbtProofScenarios,
+  resolveEvidencePath,
   validateDbtProofArtifact
 } from "../scripts/run-dbt-proof.js";
 
@@ -91,4 +94,12 @@ test("dbt proof validator rejects PASS artifacts that contain failed execution s
   proof.scenarios[0].commands[2].exitCode = 1;
 
   assert.throws(() => validateDbtProofArtifact(proof, scenarios), /non-zero exit code/);
+});
+
+test("dbt proof output supports both repo-relative and CI temporary paths", () => {
+  const root = path.join(os.tmpdir(), "contextseal-proof-root");
+  const temporaryProof = path.join(os.tmpdir(), "contextseal-ci-proof.json");
+
+  assert.equal(resolveEvidencePath(root, "examples/outputs/dbt/proof.json"), path.join(root, "examples", "outputs", "dbt", "proof.json"));
+  assert.equal(resolveEvidencePath(root, temporaryProof), temporaryProof);
 });
