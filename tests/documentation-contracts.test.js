@@ -71,7 +71,7 @@ test("evidence manifest exposes the final truth-lock columns and required pendin
   }
 });
 
-test("judge-facing docs distinguish the stale write-back export from recorded read evidence", async () => {
+test("judge-facing docs distinguish the recorded write-back proof from fixture impact", async () => {
   const [readme, devpost, boundary, judgePath, judgingMap, audit, plan] = await Promise.all([
     readFile("README.md", "utf8"),
     readFile("docs/DEVPOST_SUBMISSION.md", "utf8"),
@@ -83,10 +83,13 @@ test("judge-facing docs distinguish the stale write-back export from recorded re
   ]);
 
   for (const content of [readme, devpost, boundary, judgePath, judgingMap, audit]) {
-    assert.match(content, /STALE/);
+    assert.match(content, /synthetic-local|synthetic metadata/i);
+    assert.match(content, /fixture/i);
   }
-  assert.doesNotMatch(readme, /completed disposable-local proof/);
-  assert.match(plan, /Current Write-Back Export Gate[\s\S]*?\| `STALE` \|/);
+  assert.match(readme, /three `APPLIED` bounded write-backs, three `SKIPPED` verify-then-skip retries/);
+  assert.match(devpost, /three `APPLIED` operations, and three `SKIPPED` idempotent retry operations/);
+  assert.match(judgePath, /recorded `PASS` export/);
+  assert.match(plan, /Current Write-Back Export Gate[\s\S]*?\| `PASS` \|/);
   assert.match(plan, /Final Video Duration Gate[\s\S]*?\| `NOT_RUN` \|/);
   assert.doesNotMatch(plan, /Final 115-125 second/);
 });

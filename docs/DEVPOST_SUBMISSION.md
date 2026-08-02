@@ -48,7 +48,7 @@ A human reviewer approves or rejects only that bounded safe scope. ContextSeal t
 
 ## DataHub use
 
-ContextSeal treats DataHub as both the decision context and the durable memory layer. The MCP read path uses entity, lineage, and dataset-query tools; approved write-back uses structured-property, description, and document mutation tools. The public judge flow deliberately keeps its exact path visualization fixture-backed and labeled `FIXTURE`, so every judge can reproduce it safely. A historical disposable-local record captures raw MCP reads, bounded mutations, and post-write retrieval against synthetic metadata; its write-back export is currently labeled `STALE` until it is re-captured under the current provenance and idempotency contract. This keeps fixture analysis separate from any live normalized impact claim.
+ContextSeal treats DataHub as both the decision context and the durable memory layer. The MCP read path uses entity, lineage, and dataset-query tools; approved write-back uses structured-property, description, and document mutation tools. The public judge flow deliberately keeps its exact path visualization fixture-backed and labeled `FIXTURE`, so every judge can reproduce it safely. A recorded disposable-local `PASS` bundle captures raw MCP reads, three bounded mutations, a same-passport retry that skips those three operations, and post-write retrieval against synthetic metadata. This keeps fixture analysis separate from any live normalized impact claim.
 
 ## Challenges we ran into
 
@@ -64,9 +64,9 @@ The hardest design problem was separating a risky original request from a safe g
 - A deterministic local sandbox harness that validates the generated artifact bundle against its manifest and grounding contract
 - A reviewer-ready PR bundle and token-free draft-PR request validation, while live GitHub creation remains optional and token-gated
 - A hardened five-tool live read contract using `get_entities`, `list_schema_fields`, `get_lineage`, `get_lineage_paths_between`, and `get_dataset_queries` before any deterministic package or mutation claim
-- Fail-closed DataHub write-back gates and a historical disposable-local proof, explicitly marked `STALE` until refreshed under the current contract
-- A typed downstream summary retrieved through live MCP: six `DATASET`, two `DATA_JOB`, and two `DASHBOARD` entities across seeded Airflow, Snowflake, Looker, MLflow, and Power BI metadata
-- A historical synthetic-local record of four certification properties, an appended passport description, and a standalone decision document; its write-back export is explicitly `STALE` until recaptured under the current provenance and idempotency contract
+- Fail-closed DataHub write-back gates and a recorded disposable-local `PASS` proof with provenance-bound receipt and read-back validation
+- A recorded live MCP summary with ten reads, six downstream assets, and two each of `DATASET`, `DATA_JOB`, and `DASHBOARD`
+- A synthetic-local record of four certification properties, one appended passport description, one standalone decision document, three `APPLIED` operations, and three `SKIPPED` idempotent retry operations
 - A reusable DataHub change-certification skill
 
 ## What we learned
@@ -91,4 +91,4 @@ Context is most valuable when it changes an action, not when it only improves an
 
 ## Honest limitations
 
-ContextSeal is a hackathon prototype. It does not auto-merge, execute production warehouse SQL, guarantee security, or claim customer impact. The default judge path uses fixture-backed path reconstruction, while the historical live-local write-back record is explicitly `STALE` pending recapture under the current provenance and idempotency contract. The conformance sandbox proves generated-bundle integrity, and the separate real dbt proof artifact covers isolated local execution rather than production warehouses. GitHub Pages replays a recorded local Ollama `PASS` artifact; it does not perform hosted live inference. Only operations with current named artifacts are marked `PASS`.
+ContextSeal is a hackathon prototype. It does not auto-merge, execute production warehouse SQL, guarantee security, or claim customer impact. The default judge path uses fixture-backed path reconstruction, while the separate recorded live-local write-back bundle is limited to synthetic metadata and remains distinct from final-head hosted proof. The conformance sandbox proves generated-bundle integrity, and the separate real dbt proof artifact covers isolated local execution rather than production warehouses. GitHub Pages replays a recorded local Ollama `PASS` artifact; it does not perform hosted live inference. Only operations with current named artifacts are marked `PASS`.

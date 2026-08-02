@@ -137,7 +137,7 @@ The hardest design problem was separating a risky original request from a safe g
 ### Accomplishments that we're proud of
 
 ```text
-We built explainable fixture impact paths instead of a flat asset count, deterministic findings that model text cannot overwrite, a non-destructive migration package, a human approval bound to exact evidence hashes, inspectable grounded AI artifacts with honest fallback states, manifest-linked sandbox conformance, a reviewer-ready PR bundle, fail-closed DataHub mutations, and a reusable DataHub change-certification skill. A recorded disposable local DataHub read artifact retrieved a typed downstream summary through live MCP with six DATASET, two DATA_JOB, and two DASHBOARD entities. Its companion write-back export is explicitly STALE until a provenance-bound, verify-then-skip recapture passes durable read-back validation on synthetic metadata.
+We built explainable fixture impact paths instead of a flat asset count, deterministic findings that model text cannot overwrite, a non-destructive migration package, a human approval bound to exact evidence hashes, inspectable grounded AI artifacts with honest fallback states, manifest-linked sandbox conformance, a reviewer-ready PR bundle, fail-closed DataHub mutations, and a reusable DataHub change-certification skill. A recorded disposable local DataHub proof retrieved ten live MCP reads across six downstream assets: two each of DATASET, DATA_JOB, and DASHBOARD. Its companion write-back export passed provenance-bound durable validation with three APPLIED operations, three skipped verify-then-skip retries, and exact-one checks on synthetic metadata.
 ```
 
 ### What we learned

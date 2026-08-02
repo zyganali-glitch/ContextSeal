@@ -357,7 +357,7 @@ def main() -> None:
     client = DataHubClient.from_env()
     ownership = preflight_ownership(client, entities)
 
-    if not args.apply:
+    if not (args.apply or args.reset):
         print(json.dumps({
             "status": "PASS",
             "mutationState": "NOT_RUN",

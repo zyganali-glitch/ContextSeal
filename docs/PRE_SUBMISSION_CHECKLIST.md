@@ -34,10 +34,10 @@ This checklist is authoritative for final-head release readiness. Do not claim t
 
 ## Live proof and evidence freshness
 
-- [ ] Recapture disposable-local live DataHub read evidence from the reconciled HEAD.
-- [ ] Recapture disposable-local live DataHub write-back and durable read-back evidence from the reconciled HEAD.
-- [ ] Run `npm run evidence:check` and attach the exact result.
-- [ ] Keep any historical artifact labeled `historical` until the fresh capture exists.
+- [x] Recapture disposable-local live DataHub read evidence from source commit `baa61387324868b39427030c447b94c2b9599c03`.
+- [x] Recapture disposable-local live DataHub write-back and durable read-back evidence from that same source commit, including the idempotent retry.
+- [x] Run `npm run evidence:check`; it passed with 10 MCP reads, 6 downstream assets, and 3 verified mutations.
+- [x] Keep the recorded proof visibly synthetic-local and separate from fixture impact, production evidence, and final-head hosted proof.
 
 ## Generated bundle execution
 

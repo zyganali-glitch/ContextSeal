@@ -7,8 +7,8 @@
   "manifestVersion": "1.0",
   "generatedFromRunId": "csr_e46cd53f1c61e8701ee8d32cda2e5126",
   "passportContext": {
-    "passportId": "csp_3d44057766e10716a567",
-    "manifestHash": "3d44057766e10716a5677dd6194fd58506ae56e884ff7a500389113bf911a2ef",
+    "passportId": "csp_7cb1e5659501734e6205",
+    "manifestHash": "7cb1e5659501734e62055e51050b62d112a4f0010def8ddf6eb0c9c0bb2ebf28",
     "validUntil": "2026-07-23T06:39:36.469Z",
     "status": "CERTIFIED",
     "artifactGroundingContractVersion": "1.0",
@@ -16,7 +16,7 @@
   },
   "deliveryMetadata": {
     "contextsealRunId": "csr_e46cd53f1c61e8701ee8d32cda2e5126",
-    "passportId": "csp_3d44057766e10716a567",
+    "passportId": "csp_7cb1e5659501734e6205",
     "policyVersion": "2026-07-14",
     "policyHash": "eadf377cceb74742db8523466ec4fd700574e55e4786bbc993c7985053d31a82",
     "migrationStrategy": "EXPAND_MIGRATE_CONTRACT",
@@ -40,7 +40,7 @@
     {
       "path": "generated/models/gold_customers_contextseal.yml",
       "kind": "DBT_TESTS",
-      "sha256": "5dfe400fb56730a0580815353e7c053991c869aafe2c7ce508f18a5905452012",
+      "sha256": "c5987232067d8463f6c9df95c6671f9e779a9a3fb101cbef4f028e33153d9c31",
       "groundingRefs": [
         "target",
         "schemaInputs",

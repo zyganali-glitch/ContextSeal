@@ -154,7 +154,7 @@ npm start
 
 The application calls DataHub MCP tools for entity context, downstream lineage, observed dataset queries, and bounded metadata mutations. The default judge path keeps the exact graph view fixture-backed unless a target-derived graph contract is exported separately. See [Live DataHub Setup](docs/LIVE_DATAHUB_SETUP.md) for the exact verification path and limitations.
 
-The repository includes a historical disposable-local record under `examples/outputs/`: its read artifact reports a typed downstream summary with six `DATASET`, two `DATA_JOB`, and two `DASHBOARD` entities across seeded local platforms. The companion write-back export is explicitly `STALE` because it predates the current provenance, verify-then-skip, and exactly-one-description-marker contract; it must be recaptured and pass `npm run evidence:check` before it can be presented as current proof.
+The repository includes a recorded disposable-local `PASS` bundle under `examples/outputs/`, sourced from commit `baa61387324868b39427030c447b94c2b9599c03`. It binds ten MCP reads across five tool types to six downstream assets (`DATASET`, `DATA_JOB`, and `DASHBOARD` counts of two each), then records three `APPLIED` bounded write-backs, three `SKIPPED` verify-then-skip retries, and durable exact-one read-back checks. It remains synthetic-local evidence, not a live dashboard connection, production evidence, or a final-head submission freeze.
 
 ## MCP tools used
 

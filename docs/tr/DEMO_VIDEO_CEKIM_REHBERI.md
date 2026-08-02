@@ -216,7 +216,7 @@ A human approves only this safe scope. ContextSeal binds the request, context, a
 #### Ses 8 — Dürüst kapanış
 
 ```text
-In this public fixture, write-back remains not run and no catalog is modified. The separately labeled RECORDED LIVE-LOCAL PROOF shows bounded write-back and read-back on synthetic metadata; it is not a current live catalog connection.
+In this public fixture, write-back remains not run and no catalog is modified. The separately labeled RECORDED LIVE-LOCAL PROOF shows three bounded write-backs, a skipped idempotent retry, and durable read-back on synthetic metadata; it is not a current live catalog connection.
 ```
 
 ### 5. Ses ayarı

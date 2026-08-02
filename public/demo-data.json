@@ -503,7 +503,7 @@
         {
           "path": "generated/models/gold_customers_contextseal.yml",
           "kind": "DBT_TESTS",
-          "content": "version: 2\nmodels:\n  - name: gold_customers_contextseal\n    description: \"ContextSeal migration candidate; strategy EXPAND_MIGRATE_CONTRACT.\"\n    meta:\n      contextseal:\n        run_id: csr_e46cd53f1c61e8701ee8d32cda2e5126\n        policy_version: 2026-07-14\n        policy_hash: eadf377cceb74742db8523466ec4fd700574e55e4786bbc993c7985053d31a82\n        migration_strategy: EXPAND_MIGRATE_CONTRACT\n        target_platform: snowflake\n        dialect: snowflake\n        intended_deprecation_window: \"Retain the source field until every known downstream consumer migrates and a later scoped approval authorizes removal.\"\n    columns:\n      - name: customer_email\n        tests:\n          - not_null\n      - name: contact_email\n"
+          "content": "version: 2\nmodels:\n  - name: gold_customers_contextseal\n    description: \"ContextSeal migration candidate; strategy EXPAND_MIGRATE_CONTRACT.\"\n    meta:\n      contextseal:\n        run_id: \"csr_e46cd53f1c61e8701ee8d32cda2e5126\"\n        policy_version: \"2026-07-14\"\n        policy_hash: \"eadf377cceb74742db8523466ec4fd700574e55e4786bbc993c7985053d31a82\"\n        migration_strategy: \"EXPAND_MIGRATE_CONTRACT\"\n        target_platform: \"snowflake\"\n        dialect: \"snowflake\"\n        intended_deprecation_window: \"Retain the source field until every known downstream consumer migrates and a later scoped approval authorizes removal.\"\n    columns:\n      - name: customer_email\n        tests:\n          - not_null\n      - name: contact_email\n"
         },
         {
           "path": "generated/tests/gold_customers_contextseal_rename_parity.sql",
@@ -1348,7 +1348,7 @@
         {
           "path": "generated/models/gold_customers_contextseal.yml",
           "kind": "DBT_TESTS",
-          "content": "version: 2\nmodels:\n  - name: gold_customers_contextseal\n    description: \"ContextSeal migration candidate; strategy EXPAND_MIGRATE_CONTRACT.\"\n    meta:\n      contextseal:\n        run_id: csr_e46cd53f1c61e8701ee8d32cda2e5126\n        policy_version: 2026-07-14\n        policy_hash: eadf377cceb74742db8523466ec4fd700574e55e4786bbc993c7985053d31a82\n        migration_strategy: EXPAND_MIGRATE_CONTRACT\n        target_platform: snowflake\n        dialect: snowflake\n        intended_deprecation_window: \"Retain the source field until every known downstream consumer migrates and a later scoped approval authorizes removal.\"\n    columns:\n      - name: customer_email\n        tests:\n          - not_null\n      - name: contact_email\n"
+          "content": "version: 2\nmodels:\n  - name: gold_customers_contextseal\n    description: \"ContextSeal migration candidate; strategy EXPAND_MIGRATE_CONTRACT.\"\n    meta:\n      contextseal:\n        run_id: \"csr_e46cd53f1c61e8701ee8d32cda2e5126\"\n        policy_version: \"2026-07-14\"\n        policy_hash: \"eadf377cceb74742db8523466ec4fd700574e55e4786bbc993c7985053d31a82\"\n        migration_strategy: \"EXPAND_MIGRATE_CONTRACT\"\n        target_platform: \"snowflake\"\n        dialect: \"snowflake\"\n        intended_deprecation_window: \"Retain the source field until every known downstream consumer migrates and a later scoped approval authorizes removal.\"\n    columns:\n      - name: customer_email\n        tests:\n          - not_null\n      - name: contact_email\n"
         },
         {
           "path": "generated/tests/gold_customers_contextseal_rename_parity.sql",
@@ -1370,8 +1370,8 @@
         "manifestVersion": "1.0",
         "generatedFromRunId": "csr_e46cd53f1c61e8701ee8d32cda2e5126",
         "passportContext": {
-          "passportId": "csp_3d44057766e10716a567",
-          "manifestHash": "3d44057766e10716a5677dd6194fd58506ae56e884ff7a500389113bf911a2ef",
+          "passportId": "csp_7cb1e5659501734e6205",
+          "manifestHash": "7cb1e5659501734e62055e51050b62d112a4f0010def8ddf6eb0c9c0bb2ebf28",
           "validUntil": "2026-07-23T06:39:36.469Z",
           "status": "CERTIFIED",
           "artifactGroundingContractVersion": "1.0",
@@ -1379,7 +1379,7 @@
         },
         "deliveryMetadata": {
           "contextsealRunId": "csr_e46cd53f1c61e8701ee8d32cda2e5126",
-          "passportId": "csp_3d44057766e10716a567",
+          "passportId": "csp_7cb1e5659501734e6205",
           "policyVersion": "2026-07-14",
           "policyHash": "eadf377cceb74742db8523466ec4fd700574e55e4786bbc993c7985053d31a82",
           "migrationStrategy": "EXPAND_MIGRATE_CONTRACT",
@@ -1520,7 +1520,7 @@
           {
             "path": "generated/models/gold_customers_contextseal.yml",
             "kind": "DBT_TESTS",
-            "sha256": "5dfe400fb56730a0580815353e7c053991c869aafe2c7ce508f18a5905452012",
+            "sha256": "c5987232067d8463f6c9df95c6671f9e779a9a3fb101cbef4f028e33153d9c31",
             "groundingRefs": [
               "target",
               "schemaInputs",
@@ -1934,7 +1934,7 @@
         },
         {
           "path": "generated/models/gold_customers_contextseal.yml",
-          "sha256": "5dfe400fb56730a0580815353e7c053991c869aafe2c7ce508f18a5905452012"
+          "sha256": "c5987232067d8463f6c9df95c6671f9e779a9a3fb101cbef4f028e33153d9c31"
         },
         {
           "path": "generated/tests/gold_customers_contextseal_rename_parity.sql",
@@ -1999,8 +1999,8 @@
         "decidedAt": "2026-07-22T06:39:36.469Z"
       },
       "validUntil": "2026-07-23T06:39:36.469Z",
-      "passportId": "csp_3d44057766e10716a567",
-      "manifestHash": "3d44057766e10716a5677dd6194fd58506ae56e884ff7a500389113bf911a2ef"
+      "passportId": "csp_7cb1e5659501734e6205",
+      "manifestHash": "7cb1e5659501734e62055e51050b62d112a4f0010def8ddf6eb0c9c0bb2ebf28"
     }
   },
   "aiGroundingInput": {
@@ -2336,40 +2336,105 @@
     }
   },
   "recordedLiveProof": {
-    "status": "STALE",
+    "status": "PASS",
     "label": "RECORDED LIVE-LOCAL PROOF",
-    "note": "Historical disposable-local synthetic DataHub evidence. It predates the current provenance and idempotency contract, so this page marks it STALE and is not connected to a live catalog.",
-    "observedAt": "2026-08-02T10:58:15.335Z",
+    "note": "Recorded disposable-local synthetic DataHub evidence. This page is not connected to a live catalog.",
+    "observedAt": "2026-08-02T20:45:59.024Z",
     "targetUrn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)",
-    "rawEvidenceHash": "1cb975bae97ee966a85279ad4348cd46ca5b06036c93c1bdbe1c899c69154a03",
+    "rawEvidenceHash": "f24da9bbb35d7ccf42c72ee6b0ccd1f91997ab428ace8947de671dc9a53feb8e",
+    "sourceProvenance": {
+      "commitSha": "baa61387324868b39427030c447b94c2b9599c03",
+      "initialRawEvidenceHash": "4b57e4a146c557b1cee095528676f83b48526b91a523fd60a06136681cc18b3e",
+      "finalRawEvidenceHash": "f24da9bbb35d7ccf42c72ee6b0ccd1f91997ab428ace8947de671dc9a53feb8e"
+    },
     "mcp": {
       "serverName": "datahub",
       "serverVersion": "3.4.5",
       "launcherPackage": "mcp-server-datahub@0.6.0"
     },
     "read": {
-      "toolCount": 14,
-      "downstreamAssetCount": 10,
-      "queryCount": 0
+      "toolCount": 10,
+      "toolNames": [
+        "get_entities",
+        "list_schema_fields",
+        "get_lineage",
+        "get_lineage_paths_between",
+        "get_dataset_queries"
+      ],
+      "downstreamAssetCount": 6,
+      "queryCount": 0,
+      "entityTypeCounts": {
+        "DATASET": 2,
+        "DATA_JOB": 2,
+        "DASHBOARD": 2
+      },
+      "maxHops": 5
     },
     "writeback": {
-      "state": "STALE",
+      "state": "PASS",
       "mutationReceiptCount": 3,
       "receiptStates": [
         {
           "tool": "add_structured_properties",
-          "state": "STALE"
+          "action": "APPLIED",
+          "state": "PASS"
         },
         {
           "tool": "update_description",
-          "state": "STALE"
+          "action": "APPLIED",
+          "state": "PASS"
         },
         {
           "tool": "save_document",
-          "state": "STALE"
+          "action": "APPLIED",
+          "state": "PASS"
         }
       ],
-      "documentBindingState": "STALE"
+      "firstRunActions": [
+        {
+          "tool": "add_structured_properties",
+          "action": "APPLIED",
+          "state": "PASS"
+        },
+        {
+          "tool": "update_description",
+          "action": "APPLIED",
+          "state": "PASS"
+        },
+        {
+          "tool": "save_document",
+          "action": "APPLIED",
+          "state": "PASS"
+        }
+      ],
+      "secondRunActions": [
+        {
+          "tool": "add_structured_properties",
+          "action": "SKIPPED",
+          "state": "PASS"
+        },
+        {
+          "tool": "update_description",
+          "action": "SKIPPED",
+          "state": "PASS"
+        },
+        {
+          "tool": "save_document",
+          "action": "SKIPPED",
+          "state": "PASS"
+        }
+      ],
+      "durableReadbackState": "PASS",
+      "idempotencyStrategy": "VERIFY_THEN_SKIP",
+      "exactOneDescription": {
+        "state": "PASS",
+        "count": 1
+      },
+      "exactOneDocument": {
+        "state": "PASS",
+        "verified": true
+      },
+      "documentBindingState": "PASS"
     },
     "evidencePaths": [
       "examples/outputs/live-datahub-read-evidence.json",

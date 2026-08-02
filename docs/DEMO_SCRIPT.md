@@ -61,7 +61,7 @@ Target 2 minutes 20 seconds, with an allowed range of 2:15 to 2:30. Keep the fix
 ### 02:08-02:20 - Recorded live-local close
 
 - On screen: Show the `RECORDED LIVE-LOCAL PROOF` receipt, receipt states, and source links while the fixture badge stays visible.
-- Spoken beat: `A separate recorded disposable-local proof shows the bounded write-back and read-back path on synthetic metadata. This page is not a live catalog connection.`
-- Subtitle: `Recorded local proof is separate from the fixture demo and never a hosted live claim.`
+- Spoken beat: `A separate recorded disposable-local proof completed three bounded write-backs, then verified an idempotent retry that skipped the same three operations on synthetic metadata. This page is not a live catalog connection.`
+- Subtitle: `Recorded local proof passed separately from the fixture demo; it is never a hosted live claim.`
 
 > ContextSeal turns DataHub context into a safe decision the next human and agent can inherit.

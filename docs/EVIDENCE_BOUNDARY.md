@@ -55,7 +55,7 @@ A current live DataHub read/write claim requires:
 
 In `CONTEXTSEAL_MODE=datahub`, `/api/analyze` validates the request, captures the five bounded read-only MCP tool types, closes the MCP client, then generates the deterministic package. This makes the read -> act ordering operational while retaining the public graph and impact paths as `FIXTURE` until a target-derived graph contract exists.
 
-A **live normalized impact** claim additionally requires a target-derived graph contract. The recorded local read artifact has live entity, lineage, and query evidence, while the historical write-back export is `STALE` until it is recaptured under the current provenance and idempotency contract. The dashboard's exact path visualization remains labeled fixture-derived. This distinction is deliberate.
+A **live normalized impact** claim additionally requires a target-derived graph contract. The recorded local read and write-back artifacts now have provenance-bound, verify-then-skip, and exactly-one-marker evidence, but the dashboard's exact path visualization remains labeled fixture-derived. This distinction is deliberate.
 
 The public fixture demo may still show field-reference findings because its synthetic query text is bundled directly into the fixture context. The committed live read artifact currently proves that `get_dataset_queries` executed for the target, not that the target returned non-zero observed queries.
 
