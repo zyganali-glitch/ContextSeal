@@ -1,6 +1,6 @@
 # Pre-Submission Checklist
 
-Updated: 2026-08-02 UTC
+Updated: 2026-08-03 UTC
 
 This checklist is authoritative for final-head release readiness. Do not claim the hackathon submission is frozen until every required item below is either `PASS` with named evidence or explicitly marked `WARN` or `NOT_RUN` with a direct reason.
 
@@ -16,21 +16,21 @@ This checklist is authoritative for final-head release readiness. Do not claim t
 
 ## Final SHA and tree
 
-- [ ] Record the final Git commit SHA that backs the submission.
-- [ ] Confirm `git status --short` is empty.
-- [ ] Confirm `git diff --exit-code` passes after the final read-only validation suite.
-- [ ] Confirm the pushed branch and any PR point to the same final SHA.
+- [x] Record CI candidate SHA `c984eeba449d54d49fb4228b22835933fb7db98e`.
+- [x] Confirm `git status --short` is empty at candidate verification.
+- [x] Confirm `git diff --exit-code` passes after the candidate's read-only validation suite.
+- [x] Confirm the pushed branch and draft PR #4 point to the same candidate SHA.
 
 ## Local validation contract
 
-- [ ] Run `npm ci --ignore-scripts` on the exact final-head checkout.
-- [ ] Run `npm run prevideo:check`.
-- [ ] Run `npm run submission:check`.
-- [ ] Confirm `git diff --exit-code` still passes immediately after `npm run submission:check`.
+- [x] Run `npm ci --ignore-scripts` on the exact candidate checkout.
+- [x] Run `npm run prevideo:check`.
+- [x] Run `npm run submission:check`.
+- [x] Confirm `git diff --exit-code` still passes immediately after `npm run submission:check`.
 - [ ] Run `npm run demo:generate` once and commit only if the deterministic fixture artifacts legitimately changed.
 - [ ] Run `npm run sandbox:generate` once and commit only if the deterministic sandbox artifact legitimately changed.
 - [ ] Run `npm run pr:bundle` once and commit only if the deterministic PR artifacts legitimately changed.
-- [ ] Run `npm run validate` as the read-only validation suite.
+- [x] Run `npm run validate` as the read-only validation suite.
 
 ## Live proof and evidence freshness
 
@@ -49,15 +49,15 @@ This checklist is authoritative for final-head release readiness. Do not claim t
 
 ## Hosted and container proof
 
-- [ ] Push the exact frozen SHA and avoid follow-up commits before hosted proof is recorded.
-- [ ] Record the GitHub Actions run URL or ID for that exact SHA.
-- [ ] Record the Node 20 validation result on that exact SHA.
-- [ ] Record the Node 24 validation result on that exact SHA.
-- [ ] Record the Python safety-test result on that exact SHA.
-- [ ] Record the container-smoke result on that exact SHA.
+- [x] Push CI candidate `c984eeba449d54d49fb4228b22835933fb7db98e` and record hosted proof before selecting a release/tag head.
+- [x] Record GitHub Actions run `30766641380` for that exact SHA: `https://github.com/zyganali-glitch/ContextSeal/actions/runs/30766641380`.
+- [x] Record the Node 20 validation result on that exact SHA.
+- [x] Record the Node 24 validation result on that exact SHA.
+- [x] Record the Python setup and fail-closed DataHub safety-test result on that exact SHA.
+- [x] Record the container-smoke result on that exact SHA.
 - [ ] Record the GitHub Pages workflow run URL or ID for that same SHA.
 - [ ] Record the live GitHub Pages URL served from that same SHA.
-- [ ] Run local Docker build and smoke checks when the daemon is available.
+- [x] Run local Docker build and smoke checks when the daemon is available.
 - [ ] Create and inspect the immutable annotated tag `datahub-hackathon-submission-v1` at the verified SHA.
 - [ ] Create a GitHub release from that exact tag; do not release from an untagged or later commit.
 
