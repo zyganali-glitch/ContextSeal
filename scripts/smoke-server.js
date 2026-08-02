@@ -1,26 +1,23 @@
 import path from "node:path";
+import net from "node:net";
 import { spawn } from "node:child_process";
 import { fileURLToPath } from "node:url";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const port = Number(process.env.CONTEXTSEAL_SMOKE_PORT || (45_000 + (process.pid % 10_000)));
-const origin = `http://127.0.0.1:${port}`;
 const output = [];
-const child = spawn(process.execPath, ["src/server.js"], {
-  cwd: root,
-  env: {
-    ...process.env,
-    HOST: "127.0.0.1",
-    PORT: String(port),
-    CONTEXTSEAL_MODE: "fixture",
-    CONTEXTSEAL_AI_ENABLED: "false",
-    DATAHUB_MCP_MUTATIONS_ENABLED: "false"
-  },
-  stdio: ["ignore", "pipe", "pipe"],
-  windowsHide: true
-});
-child.stdout.on("data", (chunk) => output.push(chunk.toString()));
-child.stderr.on("data", (chunk) => output.push(chunk.toString()));
+
+async function freePort() {
+  const server = net.createServer();
+  const port = await new Promise((resolve, reject) => {
+    server.once("error", reject);
+    server.listen(0, "127.0.0.1", () => {
+      server.off("error", reject);
+      resolve(server.address().port);
+    });
+  });
+  await new Promise((resolve) => server.close(resolve));
+  return port;
+}
 
 function assert(condition, message) {
   if (!condition) throw new Error(message);
@@ -42,6 +39,24 @@ async function waitForServer() {
   }
   throw new Error("Server did not become healthy within 8 seconds.");
 }
+
+const port = Number(process.env.CONTEXTSEAL_SMOKE_PORT || await freePort());
+const origin = `http://127.0.0.1:${port}`;
+const child = spawn(process.execPath, ["src/server.js"], {
+  cwd: root,
+  env: {
+    ...process.env,
+    HOST: "127.0.0.1",
+    PORT: String(port),
+    CONTEXTSEAL_MODE: "fixture",
+    CONTEXTSEAL_AI_ENABLED: "false",
+    DATAHUB_MCP_MUTATIONS_ENABLED: "false"
+  },
+  stdio: ["ignore", "pipe", "pipe"],
+  windowsHide: true
+});
+child.stdout.on("data", (chunk) => output.push(chunk.toString()));
+child.stderr.on("data", (chunk) => output.push(chunk.toString()));
 
 try {
   const { payload: health } = await waitForServer();
