@@ -82,7 +82,7 @@ try {
   assert(analyzed.impact?.counts?.total === 5, "Fixture judge path must preserve five downstream assets.");
   assert(Math.max(...analyzed.impact.impacted.map((item) => item.hops)) === 4, "Fixture judge path must preserve a deepest path of four hops.");
   assert(analyzed.risk?.score === 80 && analyzed.risk?.verdict === "BLOCKED", "Fixture judge path must deterministically block at risk 80.");
-  assert(analyzed.artifacts?.files?.length === 4, "Fixture analysis did not produce four bounded artifacts.");
+  assert(analyzed.artifacts?.files?.length === 5, "Fixture analysis did not produce five bounded artifacts.");
 
   const { payload: approved } = await requestJson(`/api/runs/${analyzed.runId}/decision`, {
     method: "POST",

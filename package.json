@@ -35,6 +35,8 @@
     "datahub:seed": "node scripts/run-datahub-seed.js",
     "datahub:seed:preflight": "uv run --with acryl-datahub==1.6.0.14 python scripts/seed-datahub.py --preflight",
     "datahub:seed:apply": "uv run --with acryl-datahub==1.6.0.14 python scripts/seed-datahub.py --apply",
+    "datahub:seed:reset:preflight": "uv run --with acryl-datahub==1.6.0.14 python scripts/seed-datahub.py --reset-preflight",
+    "datahub:seed:reset": "uv run --with acryl-datahub==1.6.0.14 python scripts/seed-datahub.py --reset",
     "datahub:seed:scope": "uv run --with acryl-datahub==1.6.0.14 python scripts/seed-datahub.py --print-scope",
     "datahub:properties": "uv run --with acryl-datahub==1.6.0.14 python scripts/upsert-datahub-properties.py --preflight",
     "datahub:properties:apply": "uv run --with acryl-datahub==1.6.0.14 python scripts/upsert-datahub-properties.py --apply",

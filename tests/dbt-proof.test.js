@@ -21,6 +21,7 @@ function makeScenarioResult(scenario) {
     status: "PASS",
     generatedModelName: scenario.generatedModelName,
     generatedTests: scenario.generatedTests,
+    generatedDataTestCount: scenario.generatedDataTestCount,
     generatedFileHashes: scenario.generatedFileHashes,
     commands: [
       { name: "dbt parse", exitCode: 0 },
@@ -66,6 +67,7 @@ function makeProof() {
         status: "PASS",
         generatedModelName: scenarios[0].generatedModelName,
         generatedTests: scenarios[0].generatedTests,
+        generatedDataTestCount: scenarios[0].generatedDataTestCount,
         generatedFileHashes: scenarios[0].generatedFileHashes,
         commands: [{ name: "dbt parse", exitCode: 2 }],
         checks: {

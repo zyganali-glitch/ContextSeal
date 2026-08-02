@@ -9,6 +9,9 @@ import { loadEnvFile } from "../src/env.js";
 const FIXTURE_OBSERVED_AT = "2026-07-22T06:39:36.459Z";
 const FIXTURE_ANALYZE_AT = "2026-07-22T06:39:36.461Z";
 const FIXTURE_DECIDE_AT = "2026-07-22T06:39:36.469Z";
+const RECORDED_LIVE_LOCAL_PROOF_LABEL = "RECORDED LIVE-LOCAL PROOF";
+const RECORDED_LIVE_LOCAL_PROOF_NOTE = "Recorded disposable-local synthetic DataHub evidence. This page is not connected to a live catalog.";
+const STALE_RECORDED_LIVE_LOCAL_PROOF_NOTE = "Historical disposable-local synthetic DataHub evidence. It predates the current provenance and idempotency contract, so this page marks it STALE and is not connected to a live catalog.";
 
 function parseArgs(argv) {
   const options = { check: false };
@@ -81,6 +84,73 @@ async function readOptionalRecordedAiProof(root) {
   }
 }
 
+function proofState(value) {
+  return ["PASS", "WARN", "FAIL", "NOT_RUN", "STALE", "FIXTURE"].includes(value) ? value : "NOT_RUN";
+}
+
+function isCurrentWritebackProof(writebackEvidence) {
+  const writeback = writebackEvidence?.run?.writeback || {};
+  const receipts = Array.isArray(writeback.mutationReceipts) ? writeback.mutationReceipts : [];
+  const expectedTools = ["add_structured_properties", "update_description", "save_document"];
+  return Boolean(
+    writebackEvidence?.proofProvenance
+    && writeback.idempotency?.strategy === "VERIFY_THEN_SKIP"
+    && writeback.idempotency?.state === "PASS"
+    && writeback.readback?.state === "PASS"
+    && writeback.readback?.verified?.description?.passportBlockCount === 1
+    && receipts.length === expectedTools.length
+    && expectedTools.every((tool, index) => receipts[index]?.tool === tool && receipts[index]?.status === "PASS" && ["APPLIED", "SKIPPED"].includes(receipts[index]?.action))
+  );
+}
+
+async function readOptionalRecordedLiveProof(root) {
+  try {
+    const [readEvidence, writebackEvidence] = await Promise.all([
+      readFile(path.join(root, "examples", "outputs", "live-datahub-read-evidence.json"), "utf8").then(JSON.parse),
+      readFile(path.join(root, "examples", "outputs", "live-datahub-writeback-evidence.json"), "utf8").then(JSON.parse)
+    ]);
+    const writeback = writebackEvidence?.run?.writeback || {};
+    const receipts = Array.isArray(writeback.mutationReceipts) ? writeback.mutationReceipts : [];
+    const relatedDocument = writeback.readback?.verified?.relatedDocument || {};
+    const current = isCurrentWritebackProof(writebackEvidence);
+
+    return {
+      status: current ? proofState(readEvidence.status) : "STALE",
+      label: RECORDED_LIVE_LOCAL_PROOF_LABEL,
+      note: current ? RECORDED_LIVE_LOCAL_PROOF_NOTE : STALE_RECORDED_LIVE_LOCAL_PROOF_NOTE,
+      observedAt: typeof readEvidence.observedAt === "string" ? readEvidence.observedAt : null,
+      targetUrn: typeof readEvidence.targetUrn === "string" ? readEvidence.targetUrn : null,
+      rawEvidenceHash: typeof readEvidence.rawEvidenceHash === "string" ? readEvidence.rawEvidenceHash : null,
+      mcp: {
+        serverName: typeof readEvidence.mcp?.serverInfo?.name === "string" ? readEvidence.mcp.serverInfo.name : null,
+        serverVersion: typeof readEvidence.mcp?.serverInfo?.version === "string" ? readEvidence.mcp.serverInfo.version : null,
+        launcherPackage: typeof readEvidence.mcp?.launcher?.launcherPackage === "string" ? readEvidence.mcp.launcher.launcherPackage : null
+      },
+      read: {
+        toolCount: Number.isSafeInteger(readEvidence.summary?.toolCount) ? readEvidence.summary.toolCount : null,
+        downstreamAssetCount: Number.isSafeInteger(readEvidence.summary?.downstreamAssetCount) ? readEvidence.summary.downstreamAssetCount : null,
+        queryCount: Number.isSafeInteger(readEvidence.summary?.queryCount) ? readEvidence.summary.queryCount : null
+      },
+      writeback: {
+        state: current ? proofState(writeback.readback?.state) : "STALE",
+        mutationReceiptCount: receipts.length,
+        receiptStates: receipts.map((receipt) => ({
+          tool: typeof receipt?.tool === "string" ? receipt.tool : "unknown",
+          state: current ? proofState(receipt?.status) : "STALE"
+        })),
+        documentBindingState: current ? proofState(relatedDocument.state) : "STALE"
+      },
+      evidencePaths: [
+        "examples/outputs/live-datahub-read-evidence.json",
+        "examples/outputs/live-datahub-writeback-evidence.json"
+      ]
+    };
+  } catch (error) {
+    if (error?.code === "ENOENT") return null;
+    throw new Error(`Committed recorded live-local proof is invalid: ${error.message}`);
+  }
+}
+
 export async function buildDeterministicFixtureRun(root, { env = process.env, useRuntimeAi = false } = {}) {
   const policy = JSON.parse(await readFile(path.join(root, "config/policy.json"), "utf8"));
   const request = JSON.parse(await readFile(path.join(root, "examples/retail-change-request.json"), "utf8"));
@@ -107,6 +177,7 @@ export async function buildDeterministicFixtureRun(root, { env = process.env, us
 export async function buildExpectedOutputs(root, { env = process.env } = {}) {
   const { run, approved } = await buildDeterministicFixtureRun(root, { env, useRuntimeAi: false });
   const recordedAiProof = await readOptionalRecordedAiProof(root);
+  const recordedLiveProof = await readOptionalRecordedLiveProof(root);
 
   const outputs = new Map([
     ["examples/outputs/demo-certification.json", jsonText(approved)],
@@ -114,7 +185,7 @@ export async function buildExpectedOutputs(root, { env = process.env } = {}) {
     ["examples/outputs/generated/ai/contextseal-ai-output.json", jsonText(run.ai, true)],
     ["examples/outputs/generated/ai/contextseal-ai-output.md", `${buildAiOutputMarkdown(run)}\n`],
     ["examples/outputs/generated/ARTIFACT_MANIFEST.json", jsonText(approved.artifacts.manifest, true)],
-    ["public/demo-data.json", jsonText({ analyzed: run, approved, aiGroundingInput: run.aiGroundingInput, recordedAiProof })]
+    ["public/demo-data.json", jsonText({ analyzed: run, approved, aiGroundingInput: run.aiGroundingInput, recordedAiProof, recordedLiveProof })]
   ]);
 
   for (const file of approved.artifacts.files) {

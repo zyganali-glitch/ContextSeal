@@ -3,8 +3,9 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 
 test("judge UI cannot render the approved fixture before the approval action", async () => {
-  const [app, html] = await Promise.all([
+  const [app, proofDashboard, html] = await Promise.all([
     readFile("public/app.js", "utf8"),
+    readFile("public/dashboard-proof.js", "utf8"),
     readFile("public/index.html", "utf8")
   ]);
 
@@ -19,4 +20,12 @@ test("judge UI cannot render the approved fixture before the approval action", a
   assert.match(html, /id="loopActState"[^>]*data-state="NOT_RUN"[^>]*>NOT_RUN</);
   assert.match(html, /id="loopWritebackState"[^>]*data-state="NOT_RUN"[^>]*>NOT_RUN</);
   assert.match(html, /id="loopInheritState"[^>]*data-state="PENDING"[^>]*>PENDING</);
+  assert.match(html, /id="recordedProof"/);
+  assert.match(html, /id="agentTrace"/);
+  assert.match(html, /id="artifactViewer"/);
+  assert.match(app, /createProofDashboard/);
+  assert.match(proofDashboard, /function renderRecordedProof\(proof\)/);
+  assert.match(proofDashboard, /function renderAgentTrace\(run\)/);
+  assert.match(proofDashboard, /function renderArtifactViewer\(file, run\)/);
+  assert.doesNotMatch(proofDashboard, /innerHTML/);
 });

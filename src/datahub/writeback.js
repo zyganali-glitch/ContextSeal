@@ -50,6 +50,7 @@ function mutationValues(run, policy) {
 }
 
 function canonicalWritebackOperations(run, policy) {
+  const passportMarker = `ContextSeal passport **${run.passport.passportId}**`;
   return [
     {
       tool: "add_structured_properties",
@@ -60,7 +61,7 @@ function canonicalWritebackOperations(run, policy) {
       arguments: {
         entity_urn: run.request.targetUrn,
         operation: "append",
-        description: `\n\n---\nContextSeal passport **${run.passport.passportId}**: ${run.artifacts.summary}`
+        description: `\n\n---\n${passportMarker}: ${run.artifacts.summary}`
       }
     },
     {
@@ -115,6 +116,103 @@ function credentialFreePayload(result) {
   return contentPayload(result);
 }
 
+function passportMarker(run) {
+  return `ContextSeal passport **${run.passport.passportId}**`;
+}
+
+function countOccurrences(value, literal) {
+  if (typeof value !== "string" || !literal) return 0;
+  return value.split(literal).length - 1;
+}
+
+function relatedDocumentUrn(document) {
+  const urn = document?.urn || document?.document?.urn || document?.info?.urn;
+  return typeof urn === "string" && urn.startsWith("urn:li:document:") ? urn : null;
+}
+
+function relatedDocuments(entity) {
+  return Array.isArray(entity?.relatedDocuments?.documents) ? entity.relatedDocuments.documents : [];
+}
+
+function propertiesMatch(entity, run, policy) {
+  const actual = propertyMap(entity);
+  const expected = mutationValues(run, policy);
+  return Object.entries(expected).every(([property, values]) => {
+    const observed = actual.get(property) || [];
+    return observed.length === values.length
+      && observed.every((value, index) => sameScalar(value, values[index]));
+  });
+}
+
+async function loadWritebackTarget(client, run) {
+  const args = { urns: [run.request.targetUrn] };
+  const result = await client.callTool("get_entities", args);
+  const payload = credentialFreePayload(result);
+  const matches = extractEntities(payload, "write-back idempotency preflight")
+    .filter((entity) => entity?.urn === run.request.targetUrn);
+  if (matches.length !== 1) {
+    throw new Error("Write-back idempotency preflight did not return exactly the certified target.");
+  }
+  return matches[0];
+}
+
+async function verifyExistingDocument(client, documentUrn, run) {
+  const expectedTitle = `Change Passport ${run.passport.passportId}`;
+  const checks = [
+    { name: "passportId", literal: run.passport.passportId },
+    { name: "manifestHash", literal: run.passport.manifestHash },
+    { name: "targetUrn", literal: run.request.targetUrn }
+  ];
+  const verified = {};
+  for (const check of checks) {
+    const args = { urns: [documentUrn], pattern: regexEscape(check.literal), context_chars: 500, max_matches_per_doc: 5 };
+    const result = await client.callTool("grep_documents", args);
+    verified[check.name] = verifyGrepPayload(credentialFreePayload(result), documentUrn, expectedTitle, check.literal);
+  }
+  if (!Object.values(verified).every(Boolean)) {
+    throw new Error("Existing passport document does not exactly match the certified passport bindings.");
+  }
+  return { urn: documentUrn, title: expectedTitle, verified };
+}
+
+async function idempotencyPlan(client, run, policy) {
+  const target = await loadWritebackTarget(client, run);
+  const description = target?.editableProperties?.description || target?.description || "";
+  const markerCount = countOccurrences(description, passportMarker(run));
+  if (markerCount > 1) {
+    throw new Error("Write-back idempotency preflight found duplicate passport description blocks.");
+  }
+
+  const title = `Change Passport ${run.passport.passportId}`;
+  const matchingDocuments = relatedDocuments(target).filter((document) => document?.info?.title === title || document?.title === title);
+  if (matchingDocuments.length > 1) {
+    throw new Error("Write-back idempotency preflight found duplicate passport documents.");
+  }
+
+  let document = null;
+  if (matchingDocuments.length === 1) {
+    const urn = relatedDocumentUrn(matchingDocuments[0]);
+    if (!urn) throw new Error("Existing passport document has no exact document URN for verification.");
+    document = await verifyExistingDocument(client, urn, run);
+  }
+
+  return {
+    strategy: "VERIFY_THEN_SKIP",
+    state: "PASS",
+    targetUrn: run.request.targetUrn,
+    preflight: {
+      structuredProperties: propertiesMatch(target, run, policy) ? "MATCH" : "MISMATCH",
+      descriptionBlockCount: markerCount,
+      document: document ? { state: "VERIFIED", urn: document.urn, title: document.title } : { state: "ABSENT" }
+    },
+    operations: {
+      add_structured_properties: propertiesMatch(target, run, policy) ? { action: "SKIPPED", reason: "EXACT_VALUES_PRESENT" } : { action: "APPLIED", reason: "VALUES_MISSING_OR_DIFFERENT" },
+      update_description: markerCount === 1 ? { action: "SKIPPED", reason: "EXACT_PASSPORT_MARKER_PRESENT" } : { action: "APPLIED", reason: "PASSPORT_MARKER_ABSENT" },
+      save_document: document ? { action: "SKIPPED", reason: "EXACT_DOCUMENT_BINDINGS_VERIFIED", urn: document.urn } : { action: "APPLIED", reason: "PASSPORT_DOCUMENT_ABSENT" }
+    }
+  };
+}
+
 export function buildWritebackOperations(run, policy, now = new Date()) {
   if (run.state !== "APPROVED_FOR_WRITEBACK" || run.passport.status !== "CERTIFIED") {
     throw new Error("Only an approved certified run can produce DataHub write-back operations.");
@@ -128,13 +226,35 @@ export async function executeWriteback(client, operations, { run = null, policy 
     assertPassportValid(run, policy, now);
     assertOperationsBound(operations, run, policy);
     const certifiedOperations = canonicalWritebackOperations(run, policy);
+    let plan;
+    try {
+      plan = await idempotencyPlan(client, run, policy);
+    } catch (_error) {
+      throw new WritebackError("DataHub write-back idempotency preflight failed.");
+    }
     const results = [];
     for (const operation of certifiedOperations) {
+      const planned = plan.operations[operation.tool];
+      if (planned.action === "SKIPPED") {
+        results.push({
+          tool: operation.tool,
+          status: "PASS",
+          action: "SKIPPED",
+          reason: planned.reason,
+          result: {
+            isError: false,
+            structuredContent: { success: true, ...(planned.urn ? { urn: planned.urn } : {}) }
+          }
+        });
+        continue;
+      }
       try {
         const result = await client.callTool(operation.tool, operation.arguments);
         results.push({
           tool: operation.tool,
           status: "PASS",
+          action: "APPLIED",
+          reason: planned.reason,
           result: sanitizedMutationResult(operation.tool, result)
         });
       } catch (_error) {
@@ -146,6 +266,7 @@ export async function executeWriteback(client, operations, { run = null, policy 
         throw new WritebackError(`DataHub write-back stopped at ${operation.tool}.`, results);
       }
     }
+    Object.defineProperty(results, "idempotency", { value: plan, enumerable: false });
     return results;
   }
 
@@ -187,14 +308,16 @@ function verifyTargetEntity(entity, run, policy) {
     matches: actual.has(key) && sameScalar(actual.get(key)[0], values[0])
   }));
   const description = entity?.editableProperties?.description || entity?.description || "";
+  const descriptionBlockCount = countOccurrences(description, passportMarker(run));
   return {
     structuredProperties: {
       state: properties.every((item) => item.matches) ? "PASS" : "FAIL",
       properties
     },
     description: {
-      state: description.includes(run.passport.passportId) ? "PASS" : "FAIL",
-      passportIdPresent: description.includes(run.passport.passportId)
+      state: descriptionBlockCount === 1 ? "PASS" : "FAIL",
+      passportIdPresent: descriptionBlockCount > 0,
+      passportBlockCount: descriptionBlockCount
     }
   };
 }

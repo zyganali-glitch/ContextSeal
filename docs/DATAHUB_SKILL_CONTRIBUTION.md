@@ -2,9 +2,13 @@
 
 ## Current status
 
-`OPEN / NOT_MERGED / NO MAINTAINER REVIEW RECORDED YET` — the contribution is public as [datahub-project/datahub-skills#35](https://github.com/datahub-project/datahub-skills/pull/35). Review, acceptance, and merge are not claimed.
+`OPEN / NOT MERGED / AWAITING MAINTAINER REVIEW` — verified from the public PR page on 2026-08-02: the contribution is open, not a draft, and has no recorded review. Review, acceptance, and merge are not claimed.
 
 Source directory: [`skills/datahub-schema-change-certification/`](../skills/datahub-schema-change-certification/)
+
+## Canonical package and compatibility alias
+
+`datahub-schema-change-certification` is the only canonical package name and the name submitted in PR #35. [`skills/contextseal-change-certification/`](../skills/contextseal-change-certification/) is a compatibility alias for legacy local prompts only; it must remain a pointer and must not fork the canonical workflow.
 
 Upstream: <https://github.com/datahub-project/datahub-skills>
 
@@ -192,4 +196,4 @@ The public pull request exists, is inspectable, and is ready for review. It has 
 
 ## Claim boundary
 
-A real public upstream contribution now exists at [PR #35](https://github.com/datahub-project/datahub-skills/pull/35). It may be presented as an open-source contribution with the exact status `OPEN / NOT_MERGED / NO MAINTAINER REVIEW RECORDED YET`; never imply review, acceptance, or merge until GitHub records it.
+A real public upstream contribution now exists at [PR #35](https://github.com/datahub-project/datahub-skills/pull/35). It may be presented as an open-source contribution with the exact status `OPEN / NOT MERGED / AWAITING MAINTAINER REVIEW`; never imply review, acceptance, or merge until GitHub records it.

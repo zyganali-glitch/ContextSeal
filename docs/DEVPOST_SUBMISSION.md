@@ -14,13 +14,17 @@ Metadata-Aware Code Generation & Development
 
 Secondary fit: Agents That Do Real Work.
 
+## 30-second judge summary
+
+ContextSeal stops a breaking schema change before merge by turning DataHub context into a deterministic decision and an inspectable safe migration package. It shows the blocked request, exact fixture-backed downstream paths, generated dbt/model-test/rollback/owner artifacts, and a SHA-256 passport after scoped human approval. A bounded local AI layer explains the fixed verdict without changing it, while a separate recorded disposable-local DataHub proof demonstrates gated write-back and durable read-back on synthetic metadata.
+
 ## Inspiration
 
 AI coding agents can generate valid SQL and dbt code while missing the organizational context that makes a change safe. A repository does not reveal that a field feeds a dashboard three hops away, carries a PII term, or belongs to another team. DataHub holds that context, but a reviewer still needs a safe action, evidence, and an auditable decision. We built ContextSeal to turn DataHub context into a pre-merge certification boundary and a durable change passport.
 
 ## What it does
 
-In the 100-second judge demo, ContextSeal blocks a risky rename, shows its deterministic blast radius, surfaces a bounded AI explanation, generates a safe migration package, records scoped approval, and ends on the passport that the next human or agent can inherit.
+In the 2:20 judge demo, ContextSeal blocks a risky rename, shows its deterministic blast radius and 12-step agent trace, inspects a bounded AI explanation and generated artifact viewer, records scoped approval, and ends on the passport plus a separately labeled recorded live-local proof.
 
 ContextSeal accepts a proposed column rename, drop, or type change. Its deterministic core uses captured DataHub-shaped target, lineage, ownership, governance, quality, incident, and query context to reconstruct downstream paths and explain every risk finding. Instead of producing a destructive operation, it generates an expand-migrate-contract dbt model, schema tests, rollback, and owner briefing. The committed manifest links each generated file to the request, deterministic findings, downstream-owner context, migration rule, and passport context. A local deterministic sandbox then checks that bundle against its hashes and grounding contract; it is a conformance proof, not warehouse SQL execution.
 
@@ -44,7 +48,7 @@ A human reviewer approves or rejects only that bounded safe scope. ContextSeal t
 
 ## DataHub use
 
-ContextSeal treats DataHub as both the decision context and the durable memory layer. The MCP read path uses entity, lineage, and dataset-query tools; approved write-back uses structured-property, description, and document mutation tools. The public judge flow deliberately keeps its exact path visualization fixture-backed and labeled `FIXTURE`, so every judge can reproduce it safely. Separate disposable-local evidence records raw MCP reads, bounded mutations, and post-write retrieval against synthetic metadata. This closes the loop without conflating fixture analysis with live normalized impact: read context, act, prove, write back, and inherit.
+ContextSeal treats DataHub as both the decision context and the durable memory layer. The MCP read path uses entity, lineage, and dataset-query tools; approved write-back uses structured-property, description, and document mutation tools. The public judge flow deliberately keeps its exact path visualization fixture-backed and labeled `FIXTURE`, so every judge can reproduce it safely. A historical disposable-local record captures raw MCP reads, bounded mutations, and post-write retrieval against synthetic metadata; its write-back export is currently labeled `STALE` until it is re-captured under the current provenance and idempotency contract. This keeps fixture analysis separate from any live normalized impact claim.
 
 ## Challenges we ran into
 
@@ -60,9 +64,9 @@ The hardest design problem was separating a risky original request from a safe g
 - A deterministic local sandbox harness that validates the generated artifact bundle against its manifest and grounding contract
 - A reviewer-ready PR bundle and token-free draft-PR request validation, while live GitHub creation remains optional and token-gated
 - A hardened five-tool live read contract using `get_entities`, `list_schema_fields`, `get_lineage`, `get_lineage_paths_between`, and `get_dataset_queries` before any deterministic package or mutation claim
-- Fail-closed DataHub write-back gates and a completed disposable-local proof
+- Fail-closed DataHub write-back gates and a historical disposable-local proof, explicitly marked `STALE` until refreshed under the current contract
 - A typed downstream summary retrieved through live MCP: six `DATASET`, two `DATA_JOB`, and two `DASHBOARD` entities across seeded Airflow, Snowflake, Looker, MLflow, and Power BI metadata
-- Four certification properties, an appended passport description, and a standalone decision document written and read back against synthetic metadata
+- A historical synthetic-local record of four certification properties, an appended passport description, and a standalone decision document; its write-back export is explicitly `STALE` until recaptured under the current provenance and idempotency contract
 - A reusable DataHub change-certification skill
 
 ## What we learned
@@ -71,7 +75,7 @@ Context is most valuable when it changes an action, not when it only improves an
 
 ## What's next
 
-- Respond to maintainer feedback on the public DataHub Skills contribution, currently `OPEN / NOT_MERGED / NO MAINTAINER REVIEW RECORDED YET`
+- Respond to maintainer feedback on the public DataHub Skills contribution, currently `OPEN / NOT MERGED / AWAITING MAINTAINER REVIEW`
 - Add target-derived normalization for more DataHub entity types
 - Add signed reviewer identities and replay protection
 - Exercise the optional token-gated draft PR path against a real GitHub branch after explicit approval
@@ -83,8 +87,8 @@ Context is most valuable when it changes an action, not when it only improves an
 - Repository: https://github.com/zyganali-glitch/ContextSeal
 - Live demo: https://zyganali-glitch.github.io/ContextSeal/
 - Demo video: not recorded yet; add the public final URL only after the exact final-head CI and Pages proofs are recorded from the same frozen SHA.
-- DataHub skill contribution: [datahub-project/datahub-skills#35](https://github.com/datahub-project/datahub-skills/pull/35) — `OPEN / NOT_MERGED / NO MAINTAINER REVIEW RECORDED YET` when verified on 2026-08-01.
+- DataHub skill contribution: [datahub-project/datahub-skills#35](https://github.com/datahub-project/datahub-skills/pull/35) — `OPEN / NOT MERGED / AWAITING MAINTAINER REVIEW`, verified from the public PR page on 2026-08-02.
 
 ## Honest limitations
 
-ContextSeal is a hackathon prototype. It does not auto-merge, execute production warehouse SQL, guarantee security, or claim customer impact. The default judge path uses fixture-backed path reconstruction, while separate live-local artifacts prove raw MCP reads and bounded write-back on synthetic metadata. The conformance sandbox proves generated-bundle integrity, and the separate real dbt proof artifact covers isolated local execution rather than production warehouses. GitHub Pages replays a recorded local Ollama `PASS` artifact; it does not perform hosted live inference. Only operations with named artifacts are marked `PASS`.
+ContextSeal is a hackathon prototype. It does not auto-merge, execute production warehouse SQL, guarantee security, or claim customer impact. The default judge path uses fixture-backed path reconstruction, while the historical live-local write-back record is explicitly `STALE` pending recapture under the current provenance and idempotency contract. The conformance sandbox proves generated-bundle integrity, and the separate real dbt proof artifact covers isolated local execution rather than production warehouses. GitHub Pages replays a recorded local Ollama `PASS` artifact; it does not perform hosted live inference. Only operations with current named artifacts are marked `PASS`.

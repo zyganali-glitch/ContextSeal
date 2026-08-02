@@ -2,7 +2,17 @@ version: 2
 models:
   - name: gold_customers_contextseal
     description: "ContextSeal migration candidate; strategy EXPAND_MIGRATE_CONTRACT."
+    meta:
+      contextseal:
+        run_id: csr_e46cd53f1c61e8701ee8d32cda2e5126
+        policy_version: 2026-07-14
+        policy_hash: eadf377cceb74742db8523466ec4fd700574e55e4786bbc993c7985053d31a82
+        migration_strategy: EXPAND_MIGRATE_CONTRACT
+        target_platform: snowflake
+        dialect: snowflake
+        intended_deprecation_window: "Retain the source field until every known downstream consumer migrates and a later scoped approval authorizes removal."
     columns:
-      - name: contact_email
+      - name: customer_email
         tests:
           - not_null
+      - name: contact_email

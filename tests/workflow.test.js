@@ -69,12 +69,12 @@ test("approval creates a hashed passport without rewriting deterministic risk", 
   assert.equal(approved.risk.verdict, "BLOCKED");
   assert.equal(approved.passport.status, "CERTIFIED");
   assert.match(approved.passport.passportId, /^csp_[a-f0-9]{20}$/);
-  assert.equal(approved.passport.artifactHashes.length, 4);
+  assert.equal(approved.passport.artifactHashes.length, 5);
   assert.equal(approved.passport.artifactGroundingContractVersion, "1.0");
   assert.equal(approved.passport.artifactGroundingRuleId, "RENAME_COLUMN_REQUIRES_COMPATIBILITY_FIELD");
   assert.equal(approved.artifacts.manifest.manifestVersion, "1.0");
   assert.equal(approved.artifacts.manifest.passportContext.passportId, approved.passport.passportId);
-  assert.equal(approved.artifacts.manifest.artifacts.length, 4);
+  assert.equal(approved.artifacts.manifest.artifacts.length, 5);
   assert.deepEqual(approved.artifacts.manifest.artifacts[0].groundingRefs, ["target", "schemaInputs", "policyInputs", "migrationRule"]);
 });
 
@@ -111,4 +111,74 @@ test("write-back stops and preserves partial operation evidence on tool failure"
     (error) => error instanceof WritebackError && error.results.map((item) => item.status).join(",") === "PASS,FAIL"
   );
   assert.equal(calls, 2);
+});
+
+test("write-back verifies then skips an already durable passport without duplicate mutations", async () => {
+  const run = decideRun(analyzeChange({ request: fixtureRequest, context: fixtureContext, policy, mode: "fixture", now }), {
+    decision: "APPROVE",
+    reviewer: "data-owner",
+    note: "Approve staged migration only.",
+    scopeAccepted: true
+  }, now);
+  const operations = buildWritebackOperations(run, policy, now);
+  const catalog = { properties: {}, description: "", document: null };
+  const mutationCalls = [];
+  const client = {
+    async callTool(tool, args) {
+      if (tool === "get_entities") {
+        return {
+          isError: false,
+          structuredContent: {
+            result: [{
+              urn: fixtureRequest.targetUrn,
+              editableProperties: { description: catalog.description },
+              structuredProperties: {
+                properties: Object.entries(catalog.properties).map(([urn, values]) => ({
+                  structuredProperty: { urn },
+                  values: values.map((value) => typeof value === "number" ? { numberValue: value } : { stringValue: value })
+                }))
+              },
+              relatedDocuments: {
+                documents: catalog.document ? [{ urn: catalog.document.urn, info: { title: catalog.document.title } }] : []
+              }
+            }]
+          }
+        };
+      }
+      if (tool === "grep_documents") {
+        return {
+          isError: false,
+          structuredContent: {
+            results: catalog.document ? [{
+              urn: catalog.document.urn,
+              title: catalog.document.title,
+              total_matches: 1,
+              matches: [{ excerpt: catalog.document.content }]
+            }] : []
+          }
+        };
+      }
+      mutationCalls.push(tool);
+      if (tool === "add_structured_properties") catalog.properties = args.property_values;
+      if (tool === "update_description") catalog.description += args.description;
+      if (tool === "save_document") {
+        catalog.document = { urn: "urn:li:document:workflow-idempotent", title: args.title, content: args.content };
+      }
+      return {
+        isError: false,
+        structuredContent: { success: true, ...(tool === "save_document" ? { urn: catalog.document.urn } : {}) }
+      };
+    }
+  };
+
+  const first = await executeWriteback(client, operations, { run, policy, now });
+  const second = await executeWriteback(client, operations, { run, policy, now });
+
+  assert.deepEqual(first.map((receipt) => receipt.action), ["APPLIED", "APPLIED", "APPLIED"]);
+  assert.deepEqual(second.map((receipt) => receipt.action), ["SKIPPED", "SKIPPED", "SKIPPED"]);
+  assert.equal(second.idempotency.strategy, "VERIFY_THEN_SKIP");
+  assert.equal(second.idempotency.preflight.descriptionBlockCount, 1);
+  assert.equal(second.idempotency.preflight.document.state, "VERIFIED");
+  assert.deepEqual(mutationCalls, ["add_structured_properties", "update_description", "save_document"]);
+  assert.equal(catalog.description.split(`ContextSeal passport **${run.passport.passportId}**`).length - 1, 1);
 });

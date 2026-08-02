@@ -179,6 +179,36 @@ function verificationState(value) {
   return value?.state || null;
 }
 
+function validateProofProvenance(provenance, run, readEvidence, envelope, receipts, errors) {
+  if (!isRecord(provenance)) {
+    errors.push("writeback: proofProvenance is required for a committed live evidence export.");
+    return;
+  }
+  if (!/^[a-f0-9]{40}$/.test(provenance.commitSha || "")) errors.push("writeback: proofProvenance must include an exact Git commit SHA.");
+  if (provenance.capturedAt !== envelope.exportedAt) errors.push("writeback: proofProvenance timestamp must match the evidence export timestamp.");
+  if (provenance.targetUrn !== run.request?.targetUrn) errors.push("writeback: proofProvenance target URN must match the certified request.");
+  if (provenance.rawEvidenceHash !== run.liveEvidence?.rawEvidenceHash
+      || provenance.finalReadRawEvidenceHash !== readEvidence.rawEvidenceHash) {
+    errors.push("writeback: proofProvenance raw evidence hashes must match the pre-write and final read captures.");
+  }
+  if (sha256(provenance.mcp) !== sha256(run.liveEvidence?.mcp)
+      || sha256(provenance.finalReadMcp) !== sha256(readEvidence.mcp)) {
+    errors.push("writeback: proofProvenance MCP metadata must match the captured DataHub/MCP versions.");
+  }
+  if (sha256(provenance.tools) !== sha256(run.liveEvidence?.tools)
+      || sha256(provenance.finalReadTools) !== sha256(readEvidence.tools)) {
+    errors.push("writeback: proofProvenance tool lists must match the captured MCP tools.");
+  }
+  const expectedIdempotency = {
+    strategy: run.writeback?.idempotency?.strategy,
+    state: run.writeback?.idempotency?.state,
+    operationActions: Object.fromEntries((receipts || []).map((receipt) => [receipt.tool, receipt.action]))
+  };
+  if (sha256(provenance.idempotency) !== sha256(expectedIdempotency)) {
+    errors.push("writeback: proofProvenance idempotency outcome must match durable mutation receipts.");
+  }
+}
+
 export function validateEvidenceBundle({ readEvidence, writebackEvidence, policy }) {
   const errors = [];
   const envelope = writebackEvidence;
@@ -265,7 +295,11 @@ export function validateEvidenceBundle({ readEvidence, writebackEvidence, policy
     try {
       const recomputedImpact = traceImpact(recomputedContext, targetUrn, policy.impactMaxHops);
       const recomputedRisk = evaluateRisk({ request: run.request, context: recomputedContext, impact: recomputedImpact, policy, now: new Date(run.createdAt) });
-      const recomputedArtifacts = generateArtifacts(run.request, recomputedImpact, recomputedRisk);
+      const recomputedArtifacts = generateArtifacts(run.request, recomputedImpact, recomputedRisk, {
+        runId: run.runId,
+        policyVersion: run.policyVersion,
+        policyHash: run.policyHash
+      });
       const { manifest: _ignoredManifest, ...certifiedArtifacts } = run.artifacts || {};
       if (sha256(recomputedImpact) !== sha256(run.impact)) errors.push("writeback: impact does not match recomputation from bound live context and policy.");
       if (sha256(recomputedRisk) !== sha256(run.risk)) errors.push("writeback: risk does not match recomputation from bound live context and policy.");
@@ -371,10 +405,27 @@ export function validateEvidenceBundle({ readEvidence, writebackEvidence, policy
 
   const receipts = run.writeback?.mutationReceipts;
   if (!Array.isArray(receipts) || receipts.length !== MUTATION_TOOLS.length) errors.push("writeback: exactly three bounded mutation receipts are required.");
+  validateProofProvenance(envelope.proofProvenance, run, readEvidence, envelope, receipts, errors);
+  const idempotency = run.writeback?.idempotency;
+  if (idempotency?.strategy !== "VERIFY_THEN_SKIP" || idempotency?.state !== "PASS"
+      || idempotency?.targetUrn !== targetUrn || !isRecord(idempotency?.preflight)
+      || !isRecord(idempotency?.operations)) {
+    errors.push("writeback: durable proof must preserve a PASS VERIFY_THEN_SKIP idempotency plan for the certified target.");
+  }
+  if (!Number.isSafeInteger(idempotency?.preflight?.descriptionBlockCount)
+      || idempotency.preflight.descriptionBlockCount < 0
+      || !["MATCH", "MISMATCH"].includes(idempotency?.preflight?.structuredProperties)
+      || !isRecord(idempotency?.preflight?.document)
+      || !["ABSENT", "VERIFIED"].includes(idempotency?.preflight?.document?.state)) {
+    errors.push("writeback: idempotency preflight is incomplete or invalid.");
+  }
   for (const tool of MUTATION_TOOLS) {
     const receipt = receipts?.find((item) => item?.tool === tool);
-    if (receipt?.status !== "PASS" || receipt?.result?.isError !== false || receipt?.result?.structuredContent?.success !== true) {
-      errors.push(`writeback: ${tool} must preserve PASS, isError:false, and success:true.`);
+    const planned = idempotency?.operations?.[tool];
+    if (receipt?.status !== "PASS" || !["APPLIED", "SKIPPED"].includes(receipt?.action)
+        || receipt?.action !== planned?.action || receipt?.result?.isError !== false
+        || receipt?.result?.structuredContent?.success !== true) {
+      errors.push(`writeback: ${tool} must preserve its PASS VERIFY_THEN_SKIP receipt.`);
     }
   }
 
@@ -391,6 +442,9 @@ export function validateEvidenceBundle({ readEvidence, writebackEvidence, policy
   const savedDocumentUrn = receipts?.find((item) => item?.tool === "save_document")?.result?.structuredContent?.urn;
   if (!savedDocumentUrn || relatedDocument?.urn !== savedDocumentUrn || relatedDocument?.title !== expectedDocumentTitle) {
     errors.push("writeback: saved-document receipt and readback identity/title do not match.");
+  }
+  if (readback?.verified?.description?.passportBlockCount !== 1) {
+    errors.push("writeback: durable read-back must prove exactly one passport description block.");
   }
   for (const binding of ["passportId", "manifestHash", "targetUrn"]) {
     if (relatedDocument?.verified?.[binding] !== true) errors.push(`writeback: related document did not verify ${binding}.`);

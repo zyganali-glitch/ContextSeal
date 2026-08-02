@@ -1,8 +1,11 @@
 import path from "node:path";
+import { execFile } from "node:child_process";
 import { readdir, readFile, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
+import { promisify } from "node:util";
 import { validateEvidenceBundle } from "./validate-evidence.js";
 
+const execFileAsync = promisify(execFile);
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const runsDirectory = path.join(root, ".contextseal", "runs");
 const candidates = [];
@@ -21,16 +24,36 @@ if (run.writeback?.readback?.state !== "PASS") {
   throw new Error("Latest live run does not contain a complete PASS durable read-back.");
 }
 
+const [readEvidence, policy, revision] = await Promise.all([
+  readFile(path.join(root, "examples", "outputs", "live-datahub-read-evidence.json"), "utf8").then(JSON.parse),
+  readFile(path.join(root, "config", "policy.json"), "utf8").then(JSON.parse),
+  execFileAsync("git", ["rev-parse", "--verify", "HEAD"], { cwd: root, windowsHide: true })
+]);
+const commitSha = revision.stdout.trim().toLowerCase();
+if (!/^[a-f0-9]{40}$/.test(commitSha)) throw new Error("Unable to capture an exact Git commit SHA for the live evidence export.");
+const exportedAt = new Date().toISOString();
 const output = {
   evidenceBoundary: "Disposable local DataHub with synthetic ContextSeal metadata; no production or customer data.",
-  exportedAt: new Date().toISOString(),
+  exportedAt,
+  proofProvenance: {
+    capturedAt: exportedAt,
+    commitSha,
+    targetUrn: run.request.targetUrn,
+    rawEvidenceHash: run.liveEvidence.rawEvidenceHash,
+    finalReadRawEvidenceHash: readEvidence.rawEvidenceHash,
+    mcp: run.liveEvidence.mcp,
+    tools: run.liveEvidence.tools,
+    finalReadMcp: readEvidence.mcp,
+    finalReadTools: readEvidence.tools,
+    idempotency: {
+      strategy: run.writeback.idempotency?.strategy,
+      state: run.writeback.idempotency?.state,
+      operationActions: Object.fromEntries(run.writeback.mutationReceipts.map((receipt) => [receipt.tool, receipt.action]))
+    }
+  },
   run
 };
 const outputPath = path.join(root, "examples", "outputs", "live-datahub-writeback-evidence.json");
-const [readEvidence, policy] = await Promise.all([
-  readFile(path.join(root, "examples", "outputs", "live-datahub-read-evidence.json"), "utf8").then(JSON.parse),
-  readFile(path.join(root, "config", "policy.json"), "utf8").then(JSON.parse)
-]);
 validateEvidenceBundle({ readEvidence, writebackEvidence: output, policy });
 await writeFile(outputPath, `${JSON.stringify(output, null, 2)}\n`, "utf8");
 console.log(`PASS exported and structurally verified ${run.runId} -> ${path.relative(root, outputPath)}`);

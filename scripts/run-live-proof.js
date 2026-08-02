@@ -86,7 +86,7 @@ const writebackStartedAt = new Date().toISOString();
 await store.save({
   ...approved,
   state: "WRITEBACK_IN_PROGRESS",
-  writeback: { startedAt: writebackStartedAt, mutationReceipts: [], readback: null }
+  writeback: { startedAt: writebackStartedAt, idempotency: null, mutationReceipts: [], readback: null }
 }, "DATAHUB_WRITEBACK_STARTED", { expectedState: "APPROVED_FOR_WRITEBACK" });
 
 let mutationReceipts;
@@ -96,6 +96,7 @@ let updated;
 try {
   await client.initialize();
   mutationReceipts = await executeWriteback(client, operations, { run: approved, policy, now: new Date() });
+  const idempotency = mutationReceipts.idempotency || null;
   const mutationsCompletedAt = new Date().toISOString();
   readback = await collectWritebackReadback(client, approved, mutationReceipts, { policy });
   const writebackCompletedAt = new Date().toISOString();
@@ -108,12 +109,19 @@ try {
       at: mutationsCompletedAt,
       mutationsCompletedAt,
       completedAt: writebackCompletedAt,
+      idempotency,
       mutationReceipts,
       readback
     },
     evidence: approved.evidence.map((item) => {
       if (item.claim === "DataHub write-back completed") {
-        return { ...item, state: "PASS", artifact: mutationReceipts.map((result) => result.tool).join(", ") };
+        return {
+          ...item,
+          state: readbackPassed ? "PASS" : "FAIL",
+          artifact: readbackPassed
+            ? mutationReceipts.map((result) => `${result.tool}:${result.action}`).join(", ")
+            : "Mutation receipts were captured, but durable read-back did not PASS."
+        };
       }
       if (item.claim === "Durable DataHub read-back verified") {
         return { ...item, state: readback.state, artifact: "structured properties, description, and exact document binding excerpts" };

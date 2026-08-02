@@ -43,22 +43,23 @@ The PR packet proves that the generated result is prepared for review. It does n
 
 The checked-in retail example is synthetic metadata shaped like DataHub entities and lineage. It exists so every judge gets a deterministic, privacy-safe demo. Runs against it are labeled `FIXTURE`.
 
-A live DataHub read/write claim requires:
+A current live DataHub read/write claim requires:
 
 1. `CONTEXTSEAL_MODE=datahub`;
 2. successful DataHub MCP initialization;
 3. stored raw results from `get_entities`, `list_schema_fields`, `get_lineage`, `get_lineage_paths_between`, and `get_dataset_queries`;
 4. an approved passport before mutation;
 5. `isError: false` individual mutation responses if write-back is claimed;
-6. post-write retrieval for durable fields.
+6. post-write retrieval for durable fields, including exactly one passport description block;
+7. a provenance-bound export whose verify-then-skip receipt outcomes match durable read-back.
 
 In `CONTEXTSEAL_MODE=datahub`, `/api/analyze` validates the request, captures the five bounded read-only MCP tool types, closes the MCP client, then generates the deterministic package. This makes the read -> act ordering operational while retaining the public graph and impact paths as `FIXTURE` until a target-derived graph contract exists.
 
-A **live normalized impact** claim additionally requires a target-derived graph contract. The committed local proof has live entity, lineage, query, and mutation evidence, but the dashboard's exact path visualization remains labeled fixture-derived. This distinction is deliberate.
+A **live normalized impact** claim additionally requires a target-derived graph contract. The recorded local read artifact has live entity, lineage, and query evidence, while the historical write-back export is `STALE` until it is recaptured under the current provenance and idempotency contract. The dashboard's exact path visualization remains labeled fixture-derived. This distinction is deliberate.
 
 The public fixture demo may still show field-reference findings because its synthetic query text is bundled directly into the fixture context. The committed live read artifact currently proves that `get_dataset_queries` executed for the target, not that the target returned non-zero observed queries.
 
-The committed seeded local proof now preserves a typed downstream summary plus representative `DATASET`, `DATA_JOB`, and `DASHBOARD` entities across multiple platforms. That is stronger live read evidence than the earlier single-shape export, but it is still not the same thing as a target-derived normalized graph contract or a fully typed cross-entity path guarantee for the fixture dashboard.
+The recorded seeded local read artifact preserves a typed downstream summary plus representative `DATASET`, `DATA_JOB`, and `DASHBOARD` entities across multiple platforms. That is stronger live read evidence than the earlier single-shape export, but it is still not the same thing as a target-derived normalized graph contract or a fully typed cross-entity path guarantee for the fixture dashboard.
 
 ## Forbidden claim upgrades
 
@@ -67,6 +68,7 @@ The committed seeded local proof now preserves a typed downstream summary plus r
 - A prepared mutation is not a completed mutation.
 - A fixture PASS is not a live DataHub PASS.
 - A successful `get_dataset_queries` call with `total: 0` is not proof of live field usage.
+- A historical write-back export that lacks current provenance, idempotency, or exactly-one-marker evidence is `STALE`, not a current mutation `PASS`.
 - A typed seeded downstream summary is not, by itself, proof of a target-derived fully typed cross-entity lineage contract.
 - A hash proves integrity of captured bytes, not correctness or security.
 - Passing unit tests are not a production-readiness certificate.

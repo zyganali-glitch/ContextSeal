@@ -11,7 +11,7 @@ const execFileAsync = promisify(execFile);
 test("generated artifact sandbox validates the committed fixture bundle", async () => {
   const { stdout } = await execFileAsync("python", ["scripts/run-generated-sandbox.py"], { encoding: "utf8" });
   assert.match(stdout, /PASS generated artifact sandbox/);
-  assert.match(stdout, /4 artifact\(s\) validated/);
+  assert.match(stdout, /5 artifact\(s\) validated/);
 });
 
 test("generated artifact sandbox can persist a JSON evidence record", async () => {
@@ -26,7 +26,7 @@ test("generated artifact sandbox can persist a JSON evidence record", async () =
   assert.match(stdout, /PASS generated artifact sandbox/);
   const payload = JSON.parse(await readFile(evidencePath, "utf8"));
   assert.equal(payload.status, "PASS");
-  assert.equal(payload.artifactCount, 4);
+  assert.equal(payload.artifactCount, 5);
   assert.equal(payload.manifestVersion, "1.0");
   assert.equal(payload.manifestPath, "examples/outputs/generated/ARTIFACT_MANIFEST.json");
   assert.equal(payload.artifacts[0].path, "generated/models/gold_customers_contextseal.sql");

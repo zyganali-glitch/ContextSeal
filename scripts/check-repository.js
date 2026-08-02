@@ -56,7 +56,7 @@ for (const script of [
   "plan:check", "prevideo:check", "submission:check", "check", "evidence:check", "test", "demo", "demo:generate", "demo:check",
   "sandbox", "sandbox:generate", "sandbox:check", "dbt:proof", "dbt:proof:check", "pr:bundle", "pr:bundle:check",
   "pr:draft", "ai:probe", "ai:capture", "ai:proof", "smoke", "validate", "datahub:seed",
-  "datahub:seed:preflight", "datahub:seed:apply", "datahub:seed:scope",
+  "datahub:seed:preflight", "datahub:seed:apply", "datahub:seed:reset:preflight", "datahub:seed:reset", "datahub:seed:scope",
   "datahub:properties", "datahub:properties:apply", "datahub:properties:scope", "datahub:safety:test",
   "datahub:capture", "datahub:prove", "datahub:export"
 ]) {
@@ -82,6 +82,8 @@ if (!packageJson.scripts?.["datahub:properties"]?.includes('uv run --with acryl-
 if (!packageJson.scripts?.["datahub:seed:preflight"]?.includes("--preflight")) failures.push("datahub:seed:preflight must remain read-only by default.");
 if (!packageJson.scripts?.["datahub:properties"]?.includes("--preflight")) failures.push("datahub:properties must remain read-only preflight by default.");
 if (!packageJson.scripts?.["datahub:seed:apply"]?.includes("--apply")) failures.push("datahub:seed:apply must be an explicitly named apply command.");
+if (!packageJson.scripts?.["datahub:seed:reset:preflight"]?.includes("--reset-preflight")) failures.push("datahub:seed:reset:preflight must remain read-only by default.");
+if (!packageJson.scripts?.["datahub:seed:reset"]?.includes("--reset")) failures.push("datahub:seed:reset must be an explicitly named reset command.");
 if (!packageJson.scripts?.["datahub:properties:apply"]?.includes("--apply")) failures.push("datahub:properties:apply must be an explicitly named apply command.");
 if (!packageJson.scripts?.["datahub:safety:test"]?.includes("unittest")) failures.push("datahub:safety:test must run the standard-library Python safety suite.");
 
@@ -104,6 +106,7 @@ for (const name of [
   "CONTEXTSEAL_ALLOWED_TARGET_URNS",
   "CONTEXTSEAL_DATAHUB_MUTATION_CONFIRMATION",
   "CONTEXTSEAL_SEED_CONFIRMATION",
+  "CONTEXTSEAL_SEED_RESET_CONFIRMATION",
   "CONTEXTSEAL_PROPERTIES_CONFIRMATION",
   "CONTEXTSEAL_APPROVED_BOOTSTRAP_PLAN_SHA256",
   "CONTEXTSEAL_REMOTE_DATAHUB_BOOTSTRAP",

@@ -59,7 +59,7 @@ export function analyzeChange({
     && liveEvidence?.rawEvidenceHash === context?.provenance?.rawEvidenceHash
     && liveImpactInvariant(context, liveEvidence, impact, policy.impactMaxHops);
   const risk = evaluateRisk({ request, context, impact, policy, now });
-  const artifacts = generateArtifacts(request, impact, risk);
+  const preliminaryArtifacts = generateArtifacts(request, impact, risk);
   const runId = `csr_${sha256({
     version: "contextseal-run-v2",
     mode,
@@ -67,8 +67,13 @@ export function analyzeChange({
     normalizedContext: context,
     rawEvidence: liveEvidence?.evidence || null,
     policy,
-    artifactStrategy: artifacts.strategy
+    artifactStrategy: preliminaryArtifacts.strategy
   }).slice(0, 32)}`;
+  const artifacts = generateArtifacts(request, impact, risk, {
+    runId,
+    policyVersion: policy.policyVersion,
+    policyHash: sha256(policy)
+  });
   const contextState = mode === "datahub" ? (liveContextVerified ? "PASS" : "NOT_RUN") : "FIXTURE";
   const impactState = mode === "datahub"
     ? (liveContextVerified ? (impact.counts.total ? "PASS" : "WARN") : (context?.evidenceBoundary === "LIVE_DATAHUB_MCP_NORMALIZED" ? "NOT_RUN" : "FIXTURE"))

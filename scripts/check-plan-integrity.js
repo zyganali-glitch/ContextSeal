@@ -15,12 +15,14 @@ const REQUIRED_GATES_BY_PHASE = {
   P7: ["Submission Surface Parity Gate", "AI Hero Gate", "AI Model-Backed Proof Gate", "Live Documentation Contract Gate"],
   P8: ["Maintainer Traction Gate"],
   P9: ["Stretch Proof Gate"],
-  P10: ["Exact Final-HEAD CI Gate", "Exact Final-HEAD Pages Gate", "Submission Completion Gate", "Pre-Submission Freeze Gate"]
+  P10: ["Current Write-Back Export Gate", "Final Video Duration Gate", "Exact Final-HEAD CI Gate", "Exact Final-HEAD Pages Gate", "Submission Completion Gate", "Pre-Submission Freeze Gate"]
 };
 const REQUIRED_FINAL_GATES = [
   "Real dbt Bundle Execution Gate",
   "AI Model-Backed Proof Gate",
   "Live Documentation Contract Gate",
+  "Current Write-Back Export Gate",
+  "Final Video Duration Gate",
   "Exact Final-HEAD CI Gate",
   "Exact Final-HEAD Pages Gate",
   "Submission Completion Gate",

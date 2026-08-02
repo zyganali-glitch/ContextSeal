@@ -74,4 +74,15 @@ test("deterministic demo generation preserves the recorded AI proof artifact", a
   assert.equal(demoData.recordedAiProof.boundary.label, RECORDED_LOCAL_OLLAMA_PROOF_LABEL);
   assert.equal(demoData.recordedAiProof.boundary.hostedDemo, RECORDED_LOCAL_OLLAMA_PROOF_NOTE);
   assert.deepEqual(demoData.recordedAiProof.output.ownerAlert, output.ownerAlert);
+  assert.equal(demoData.recordedLiveProof.label, "RECORDED LIVE-LOCAL PROOF");
+  assert.equal(demoData.recordedLiveProof.note.includes("not connected to a live catalog"), true);
+  assert.equal(demoData.recordedLiveProof.status, "STALE");
+  assert.equal(demoData.recordedLiveProof.read.toolCount, 14);
+  assert.equal(demoData.recordedLiveProof.writeback.mutationReceiptCount, 3);
+  assert.equal(demoData.recordedLiveProof.writeback.receiptStates.every((receipt) => receipt.state === "STALE"), true);
+  assert.equal("evidence" in demoData.recordedLiveProof, false);
+  assert.deepEqual(demoData.recordedLiveProof.evidencePaths, [
+    "examples/outputs/live-datahub-read-evidence.json",
+    "examples/outputs/live-datahub-writeback-evidence.json"
+  ]);
 });

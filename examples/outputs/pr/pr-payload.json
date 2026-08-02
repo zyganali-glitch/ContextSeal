@@ -1,8 +1,8 @@
 {
-  "runId": "csr_4ab7ef5169bd2e0dcbfd64669646933a",
-  "passportId": "csp_6612513f5f952e97ba94",
+  "runId": "csr_e46cd53f1c61e8701ee8d32cda2e5126",
+  "passportId": "csp_3d44057766e10716a567",
   "baseBranch": "main",
-  "branchName": "contextseal/rename-column/gold-customers-csr_4ab7ef5169bd2e0dcbfd64669646933a",
+  "branchName": "contextseal/rename-column/gold-customers-csr_e46cd53f1c61e8701ee8d32cda2e5126",
   "title": "ContextSeal: staged rename for gold_customers.customer_email -> contact_email",
   "bodyPath": "examples/outputs/pr/pr-body.md",
   "checklistPath": "examples/outputs/pr/pr-checklist.md",
@@ -13,6 +13,7 @@
   "generatedFiles": [
     "generated/models/gold_customers_contextseal.sql",
     "generated/models/gold_customers_contextseal.yml",
+    "generated/tests/gold_customers_contextseal_rename_parity.sql",
     "generated/rollback/gold_customers.sql",
     "generated/IMPACTED_OWNERS.md"
   ],

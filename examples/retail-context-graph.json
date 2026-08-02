@@ -14,8 +14,19 @@
       "assertions": ["urn:li:assertion:customer-email-not-null"],
       "schemaFields": [
         {
+          "fieldPath": "customer_id",
+          "nativeDataType": "varchar",
+          "nullable": false,
+          "unique": true
+        },
+        {
           "fieldPath": "customer_email",
           "nativeDataType": "varchar",
+          "nullable": false
+        },
+        {
+          "fieldPath": "updated_at",
+          "nativeDataType": "timestamp",
           "nullable": false
         }
       ],

@@ -22,6 +22,12 @@ const BASE_ROWS = [
   [2, "linus@example.com", "250", null],
   [3, "grace@example.com", "375", "beta"]
 ];
+const BASE_SCHEMA_FIELDS = [
+  { fieldPath: "customer_id", nativeDataType: "integer", nullable: false, unique: true },
+  { fieldPath: "customer_email", nativeDataType: "varchar", nullable: false },
+  { fieldPath: "loyalty_points_text", nativeDataType: "varchar", nullable: false },
+  { fieldPath: "legacy_segment", nativeDataType: "varchar", nullable: true }
+];
 
 function nowIso() {
   return new Date().toISOString();
@@ -85,7 +91,7 @@ function baseImpactFor(schemaField) {
     target: {
       type: "DATASET",
       platform: "duckdb",
-      schemaFields: [schemaField]
+      schemaFields: BASE_SCHEMA_FIELDS.map((field) => field.fieldPath === schemaField.fieldPath ? schemaField : field)
     },
     counts: {
       total: 2,
@@ -219,7 +225,12 @@ export function buildDbtProofScenarios() {
       ],
       expectedRows: BASE_ROWS.map(([customerId, , , legacySegment]) => [customerId, legacySegment]),
       verificationQuery: `select customer_id, legacy_segment from ${CANONICAL_GENERATED_MODEL_NAME} order by customer_id`,
-      rollbackExpectedColumns: [{ name: "1", type: "INTEGER" }],
+      rollbackExpectedColumns: [
+        { name: "customer_id", type: "INTEGER" },
+        { name: "customer_email", type: "VARCHAR" },
+        { name: "loyalty_points_text", type: "VARCHAR" },
+        { name: "legacy_segment", type: "VARCHAR" }
+      ],
       nullableShouldGenerateNotNull: false
     }
   ];
@@ -232,6 +243,7 @@ export function buildDbtProofScenarios() {
       artifacts,
       generatedModelName: artifacts.grounding.schemaInputs.generatedModelName,
       generatedTests: artifacts.grounding.schemaInputs.generatedTests,
+      generatedDataTestCount: artifacts.files.filter((file) => file.kind === "DBT_DATA_TEST").length,
       generatedFileHashes: Object.fromEntries(artifacts.files.map((file) => [file.path, sha256(file.content)])),
       rollbackModelName: `${artifacts.grounding.schemaInputs.generatedModelName}__rollback`
     };
@@ -398,15 +410,20 @@ async function writeProjectFiles(projectDir, scenario, { collision = false } = {
   const generatedModel = scenario.artifacts.files.find((file) => file.kind === "DBT_MODEL");
   const generatedTests = scenario.artifacts.files.find((file) => file.kind === "DBT_TESTS");
   const rollback = scenario.artifacts.files.find((file) => file.kind === "ROLLBACK");
+  const dataTests = scenario.artifacts.files.filter((file) => file.kind === "DBT_DATA_TEST");
 
   await mkdir(path.join(projectDir, "models", "generated"), { recursive: true });
   await mkdir(path.join(projectDir, "models", "rollback"), { recursive: true });
+  await mkdir(path.join(projectDir, "tests"), { recursive: true });
   await writeFile(path.join(projectDir, "dbt_project.yml"), projectConfig, "utf8");
   await writeFile(path.join(projectDir, "profiles.yml"), profiles, "utf8");
   await writeFile(path.join(projectDir, "models", `${BASE_MODEL_NAME}.sql`), baseModel, "utf8");
   await writeFile(path.join(projectDir, "models", "generated", path.basename(generatedModel.path)), generatedModel.content, "utf8");
   await writeFile(path.join(projectDir, "models", "generated", path.basename(generatedTests.path)), generatedTests.content, "utf8");
   await writeFile(path.join(projectDir, "models", "rollback", `${scenario.rollbackModelName}.sql`), rollback.content, "utf8");
+  for (const dataTest of dataTests) {
+    await writeFile(path.join(projectDir, "tests", path.basename(dataTest.path)), dataTest.content, "utf8");
+  }
 
   if (collision) {
     await mkdir(path.join(projectDir, "models", "collision"), { recursive: true });
@@ -473,7 +490,7 @@ async function executeSuccessScenario(root, tempRoot, scenario) {
     rowsMatch: arraysEqual(actualRows, scenario.expectedRows),
     rollbackColumnsMatch: arraysEqual(rollbackColumnsNormalized, scenario.rollbackExpectedColumns),
     rollbackExecuted: commands.some((command) => command.name === "dbt run" && command.exitCode === 0),
-    testsObserved: scenario.generatedTests.includes("not_null") ? testsExecuted >= 1 : testsExecuted === 0
+    testsObserved: testsExecuted >= scenario.generatedTests.length + scenario.generatedDataTestCount
   };
   const status = [
     checks.canonicalModelIdentity,
@@ -492,6 +509,7 @@ async function executeSuccessScenario(root, tempRoot, scenario) {
     status,
     generatedModelName: scenario.generatedModelName,
     generatedTests: scenario.generatedTests,
+    generatedDataTestCount: scenario.generatedDataTestCount,
     generatedFileHashes: scenario.generatedFileHashes,
     commands,
     expectedColumns: scenario.expectedColumns,
@@ -576,6 +594,7 @@ export function validateDbtProofArtifact(proof, expectedScenarios = buildDbtProo
     assert(actual.status === "PASS", `dbt proof scenario '${scenario.id}' must be PASS.`);
     assert(actual.generatedModelName === CANONICAL_GENERATED_MODEL_NAME, `dbt proof scenario '${scenario.id}' must use canonical model identity ${CANONICAL_GENERATED_MODEL_NAME}.`);
     assert(arraysEqual(actual.generatedTests || [], scenario.generatedTests), `dbt proof scenario '${scenario.id}' generatedTests do not match the current generator.`);
+    assert(actual.generatedDataTestCount === scenario.generatedDataTestCount, `dbt proof scenario '${scenario.id}' data-test count does not match the current generator.`);
     assert(arraysEqual(actual.expectedColumns || [], scenario.expectedColumns), `dbt proof scenario '${scenario.id}' expectedColumns drifted from the current harness.`);
     assert(arraysEqual(actual.expectedRows || [], scenario.expectedRows), `dbt proof scenario '${scenario.id}' expectedRows drifted from the current harness.`);
     assert(arraysEqual(actual.rollbackExpectedColumns || [], scenario.rollbackExpectedColumns), `dbt proof scenario '${scenario.id}' rollbackExpectedColumns drifted from the current harness.`);

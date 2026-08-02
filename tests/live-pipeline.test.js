@@ -459,7 +459,8 @@ test("mutation executor revalidates certification and requires explicit success 
   const operations = buildWritebackOperations(run, policy, now);
   let calls = 0;
   const client = {
-    async callTool() {
+    async callTool(tool) {
+      if (tool === "get_entities") return freshWritebackTarget(run);
       calls += 1;
       return calls === 2
         ? { isError: false, structuredContent: { success: false } }
@@ -478,6 +479,7 @@ test("mutation receipts are minimized and credential-bearing results fail closed
   const operations = buildWritebackOperations(run, policy, now);
   const receipts = await executeWriteback({
     async callTool(tool) {
+      if (tool === "get_entities") return freshWritebackTarget(run);
       return {
         isError: false,
         structuredContent: {
@@ -498,7 +500,8 @@ test("mutation receipts are minimized and credential-bearing results fail closed
   const pasted = ["github", "pat", "K4".repeat(16)].join("_");
   await assert.rejects(
     () => executeWriteback({
-      async callTool() {
+      async callTool(tool) {
+        if (tool === "get_entities") return freshWritebackTarget(run);
         return { isError: false, structuredContent: { success: true, diagnostic: pasted } };
       }
     }, operations, { run, policy, now }),
@@ -539,12 +542,13 @@ test("write-back rejects every non-canonical operation field and resists TOCTOU 
   const client = {
     async callTool(tool, args) {
       received.push({ tool, args: structuredClone(args) });
-      if (received.length === 1) operations[1].arguments.operation = "overwrite";
+      if (tool === "get_entities") return freshWritebackTarget(run);
+      if (tool === "add_structured_properties") operations[1].arguments.operation = "overwrite";
       return { isError: false, structuredContent: { success: true } };
     }
   };
   await executeWriteback(client, operations, { run, policy, now });
-  assert.equal(received[1].args.operation, "append");
+  assert.equal(received.find((item) => item.tool === "update_description").args.operation, "append");
 });
 
 test("write-back enforces supported changes and the structured-property allowlist", () => {
@@ -580,6 +584,20 @@ function mutationReceipts(run) {
   ];
 }
 
+function freshWritebackTarget(run) {
+  return {
+    isError: false,
+    structuredContent: {
+      result: [{
+        urn: run.request.targetUrn,
+        editableProperties: { description: "" },
+        structuredProperties: { properties: [] },
+        relatedDocuments: { documents: [] }
+      }]
+    }
+  };
+}
+
 function readbackClient(run, { wrongTitle = false, irrelevantExcerpt = false } = {}) {
   return {
     async callTool(tool) {
@@ -589,7 +607,7 @@ function readbackClient(run, { wrongTitle = false, irrelevantExcerpt = false } =
           structuredContent: {
             result: [{
               urn: run.request.targetUrn,
-              editableProperties: { description: `Certified by ${run.passport.passportId}` },
+              editableProperties: { description: `\n\n---\nContextSeal passport **${run.passport.passportId}**: certified migration` },
               structuredProperties: {
                 properties: Object.entries({
                   "urn:li:structuredProperty:io.contextseal.status": "CERTIFIED",

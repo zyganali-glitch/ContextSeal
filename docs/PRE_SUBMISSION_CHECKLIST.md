@@ -7,11 +7,12 @@ This checklist is authoritative for final-head release readiness. Do not claim t
 ## Exact final-head procedure
 
 1. Pick one freeze-candidate commit SHA and stop landing follow-up changes on top of it.
-2. Run `npm run prevideo:check` on that exact checkout.
-3. Run `npm run submission:check` on the same checkout and keep the tree clean.
-4. Push only that exact SHA to the submission branch or final `main` head.
-5. Record the matching GitHub Actions CI run and GitHub Pages deploy for that same SHA before changing any submission surface.
-6. Only then upload the public video URL, remove pending submission text, and freeze Devpost.
+2. Run `npm run prevideo:check` and `npm run submission:check` on that exact checkout; keep the tree clean.
+3. Push only that exact SHA to the submission branch or final `main` head.
+4. Record the matching GitHub Actions CI run and GitHub Pages deploy for that same SHA before changing any submission surface.
+5. Create the immutable annotated tag `datahub-hackathon-submission-v1` at that exact SHA, then push the tag without moving it.
+6. Create the GitHub release from that exact annotated tag and link the same-SHA CI, Pages, evidence manifest, and demo video.
+7. Only then upload or confirm the public video URL, remove pending submission text, and freeze Devpost.
 
 ## Final SHA and tree
 
@@ -57,6 +58,8 @@ This checklist is authoritative for final-head release readiness. Do not claim t
 - [ ] Record the GitHub Pages workflow run URL or ID for that same SHA.
 - [ ] Record the live GitHub Pages URL served from that same SHA.
 - [ ] Run local Docker build and smoke checks when the daemon is available.
+- [ ] Create and inspect the immutable annotated tag `datahub-hackathon-submission-v1` at the verified SHA.
+- [ ] Create a GitHub release from that exact tag; do not release from an untagged or later commit.
 
 ## AI and review handoff proof
 
@@ -72,7 +75,7 @@ This checklist is authoritative for final-head release readiness. Do not claim t
 - [ ] Freeze and submit the Devpost entry against the exact final SHA; remove every placeholder URL.
 - [x] Confirm the Apache-2.0 license is detected and visible in the public repository's GitHub About surface (`Apache-2.0`, verified 2026-07-22).
 - [ ] Freeze README, judging docs, evidence docs, and Turkish helper surfaces against the same final truth.
-- [ ] Confirm upstream PR #35 is described only as `OPEN / NOT_MERGED / NO MAINTAINER REVIEW RECORDED YET` unless GitHub records a new state.
+- [ ] Confirm upstream PR #35 is described only as `OPEN / NOT MERGED / AWAITING MAINTAINER REVIEW` while the verified public PR remains open with no reviews.
 
 ## Intentional non-goals
 

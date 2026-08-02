@@ -135,6 +135,20 @@
       </div>
     </section>
 
+    <section id="recordedProof" class="recorded-proof hidden" aria-label="Recorded live-local DataHub proof">
+      <div class="recorded-proof-heading">
+        <div>
+          <p class="kicker">COMMITTED EVIDENCE RECEIPT</p>
+          <h2 id="recordedProofLabel">RECORDED LIVE-LOCAL PROOF</h2>
+        </div>
+        <span id="recordedProofState" class="status-pill" data-state="NOT_RUN">NOT_RUN</span>
+      </div>
+      <p id="recordedProofNote" class="muted"></p>
+      <div id="recordedProofStats" class="recorded-proof-stats"></div>
+      <div id="recordedProofReceipts" class="recorded-proof-receipts"></div>
+      <div id="recordedProofLinks" class="artifact-links"></div>
+    </section>
+
     <section id="workspace" class="workspace hidden" aria-live="polite">
       <article class="panel request-panel">
         <div class="panel-heading">
@@ -185,6 +199,17 @@
         <div id="impactGraph" class="impact-graph"></div>
       </article>
 
+      <article class="panel wide-panel trace-panel">
+        <div class="panel-heading">
+          <div>
+            <p class="kicker">AGENT RUN TRACE</p>
+            <h2>Evidence moves before action</h2>
+          </div>
+          <span class="datahub-chip">12 deterministic checkpoints</span>
+        </div>
+        <ol id="agentTrace" class="agent-trace"></ol>
+      </article>
+
       <article class="panel wide-panel ai-panel">
         <div class="panel-heading">
           <div>
@@ -217,7 +242,18 @@
               <h2>Mergeable evidence</h2>
             </div>
           </div>
-          <div id="artifacts" class="artifact-list"></div>
+          <div id="artifacts" class="artifact-tabs" role="tablist" aria-label="Generated delivery artifacts"></div>
+          <section id="artifactViewer" class="artifact-viewer" aria-live="polite">
+            <div class="artifact-viewer-heading">
+              <div>
+                <p id="artifactKind" class="kicker">SELECT AN ARTIFACT</p>
+                <h3 id="artifactPath">Generated delivery</h3>
+              </div>
+            </div>
+            <pre id="artifactContent">Select a generated model, schema, parity test, rollback, or owner brief.</pre>
+            <div id="artifactLinks" class="artifact-links"></div>
+            <div id="renameDiff" class="rename-diff" hidden></div>
+          </section>
         </article>
       </div>
 

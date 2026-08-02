@@ -63,6 +63,7 @@ function validBundle() {
     urn: targetUrn,
     type: "DATASET",
     name: "gold_customers",
+    platform: { name: "snowflake" },
     properties: {
       customProperties: [
         { key: "contextseal_fixture", value: "true" },
@@ -131,6 +132,7 @@ function validBundle() {
   const mutationReceipts = ["add_structured_properties", "update_description", "save_document"].map((tool) => ({
     tool,
     status: "PASS",
+    action: "APPLIED",
     result: { isError: false, structuredContent: { success: true, ...(tool === "save_document" ? { urn: savedDocumentUrn } : {}) } }
   }));
   const readbackEvidence = [
@@ -160,6 +162,21 @@ function validBundle() {
       at: "2026-07-14T12:03:00.000Z",
       mutationsCompletedAt: "2026-07-14T12:03:00.000Z",
       completedAt: "2026-07-14T12:04:15.000Z",
+      idempotency: {
+        strategy: "VERIFY_THEN_SKIP",
+        state: "PASS",
+        targetUrn,
+        preflight: {
+          structuredProperties: "MISMATCH",
+          descriptionBlockCount: 0,
+          document: { state: "ABSENT" }
+        },
+        operations: {
+          add_structured_properties: { action: "APPLIED", reason: "VALUES_MISSING_OR_DIFFERENT" },
+          update_description: { action: "APPLIED", reason: "PASSPORT_MARKER_ABSENT" },
+          save_document: { action: "APPLIED", reason: "PASSPORT_DOCUMENT_ABSENT" }
+        }
+      },
       mutationReceipts,
       readback: {
         state: "PASS",
@@ -167,7 +184,7 @@ function validBundle() {
         targetUrn,
         verified: {
           structuredProperties: { state: "PASS", properties: [] },
-          description: { state: "PASS", passportIdPresent: true },
+          description: { state: "PASS", passportIdPresent: true, passportBlockCount: 1 },
           relatedDocument: {
             state: "PASS",
             urn: savedDocumentUrn,
@@ -195,25 +212,43 @@ function validBundle() {
     evidence: finalCalls,
     rawEvidenceHash: finalHash
   });
+  const exportedAt = "2026-07-14T12:05:00.000Z";
+  const readEvidence = {
+    status: "PASS",
+    contextsealMutationGateEnabled: false,
+    observedAt: finalObservedAt,
+    targetUrn,
+    rawEvidenceHash: finalHash,
+    mcp,
+    tools: finalNormalized.toolTypes,
+    summary: finalNormalized.summary,
+    evidenceBoundary: "Post-write capture of the synthetic local target; no production data.",
+    evidence: finalCalls
+  };
   return {
     policy,
     writebackEvidence: {
       evidenceBoundary: "Disposable local DataHub with synthetic metadata; no production or customer data.",
-      exportedAt: "2026-07-14T12:05:00.000Z",
+      exportedAt,
+      proofProvenance: {
+        capturedAt: exportedAt,
+        commitSha: "f".repeat(40),
+        targetUrn,
+        rawEvidenceHash,
+        finalReadRawEvidenceHash: finalHash,
+        mcp,
+        tools: normalized.toolTypes,
+        finalReadMcp: mcp,
+        finalReadTools: finalNormalized.toolTypes,
+        idempotency: {
+          strategy: run.writeback.idempotency.strategy,
+          state: run.writeback.idempotency.state,
+          operationActions: Object.fromEntries(mutationReceipts.map((receipt) => [receipt.tool, receipt.action]))
+        }
+      },
       run
     },
-    readEvidence: {
-      status: "PASS",
-      contextsealMutationGateEnabled: false,
-      observedAt: finalObservedAt,
-      targetUrn,
-      rawEvidenceHash: finalHash,
-      mcp,
-      tools: finalNormalized.toolTypes,
-      summary: finalNormalized.summary,
-      evidenceBoundary: "Post-write capture of the synthetic local target; no production data.",
-      evidence: finalCalls
-    }
+    readEvidence
   };
 }
 
@@ -231,6 +266,16 @@ test("structural evidence validator requires sanitized pinned launcher provenanc
     () => validateEvidenceBundle(bundle),
     (error) => error instanceof EvidenceValidationError
       && error.details.some((item) => item.includes("mcp-server-datahub@0.6.0"))
+  );
+});
+
+test("structural evidence validator rejects provenance detached from the durable receipts", () => {
+  const bundle = validBundle();
+  bundle.writebackEvidence.proofProvenance.idempotency.operationActions.save_document = "SKIPPED";
+  assert.throws(
+    () => validateEvidenceBundle(bundle),
+    (error) => error instanceof EvidenceValidationError
+      && error.details.some((item) => item.includes("proofProvenance idempotency outcome"))
   );
 });
 

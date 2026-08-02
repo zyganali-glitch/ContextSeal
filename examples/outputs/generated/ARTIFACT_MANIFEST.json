@@ -1,13 +1,23 @@
 {
   "manifestVersion": "1.0",
-  "generatedFromRunId": "csr_4ab7ef5169bd2e0dcbfd64669646933a",
+  "generatedFromRunId": "csr_e46cd53f1c61e8701ee8d32cda2e5126",
   "passportContext": {
-    "passportId": "csp_6612513f5f952e97ba94",
-    "manifestHash": "6612513f5f952e97ba94dcdd6619a2b9a8ee35b4ee67b3a240dd89ebeaa6d474",
+    "passportId": "csp_3d44057766e10716a567",
+    "manifestHash": "3d44057766e10716a5677dd6194fd58506ae56e884ff7a500389113bf911a2ef",
     "validUntil": "2026-07-23T06:39:36.469Z",
     "status": "CERTIFIED",
     "artifactGroundingContractVersion": "1.0",
     "artifactGroundingRuleId": "RENAME_COLUMN_REQUIRES_COMPATIBILITY_FIELD"
+  },
+  "deliveryMetadata": {
+    "contextsealRunId": "csr_e46cd53f1c61e8701ee8d32cda2e5126",
+    "passportId": "csp_3d44057766e10716a567",
+    "policyVersion": "2026-07-14",
+    "policyHash": "eadf377cceb74742db8523466ec4fd700574e55e4786bbc993c7985053d31a82",
+    "migrationStrategy": "EXPAND_MIGRATE_CONTRACT",
+    "targetPlatform": "snowflake",
+    "dialect": "snowflake",
+    "intendedDeprecationWindow": "Retain the source field until every known downstream consumer migrates and a later scoped approval authorizes removal."
   },
   "grounding": {
     "contractVersion": "1.0",
@@ -15,7 +25,8 @@
       "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)",
       "entityName": "gold_customers",
       "type": "DATASET",
-      "platform": "snowflake"
+      "platform": "snowflake",
+      "dialect": "snowflake"
     },
     "schemaInputs": {
       "sourceField": "customer_email",
@@ -25,9 +36,30 @@
       "sourceFieldSchema": {
         "fieldPath": "customer_email",
         "nativeDataType": "varchar",
-        "nullable": false
+        "nullable": false,
+        "unique": false
       },
-      "capturedFieldCount": 1,
+      "capturedSchemaFields": [
+        {
+          "fieldPath": "customer_id",
+          "nativeDataType": "varchar",
+          "nullable": false,
+          "unique": true
+        },
+        {
+          "fieldPath": "customer_email",
+          "nativeDataType": "varchar",
+          "nullable": false,
+          "unique": false
+        },
+        {
+          "fieldPath": "updated_at",
+          "nativeDataType": "timestamp",
+          "nullable": false,
+          "unique": false
+        }
+      ],
+      "capturedFieldCount": 3,
       "generatedTests": [
         "not_null"
       ],
@@ -109,7 +141,7 @@
     {
       "path": "generated/models/gold_customers_contextseal.sql",
       "kind": "DBT_MODEL",
-      "sha256": "58ebc7618645c7fcbcf98ecf975c40364b93c2f20a7c340f98b5f9dceabb8f81",
+      "sha256": "d8fd23e6e7d6dc946879eac2a70f2303119a8b85c8fa6a46d2c78ba98d1dfcd9",
       "groundingRefs": [
         "target",
         "schemaInputs",
@@ -120,7 +152,17 @@
     {
       "path": "generated/models/gold_customers_contextseal.yml",
       "kind": "DBT_TESTS",
-      "sha256": "e8efd6111df11548bd6890f2225ea3ebc5dc217f34c35b4a204a41db48d17a65",
+      "sha256": "5dfe400fb56730a0580815353e7c053991c869aafe2c7ce508f18a5905452012",
+      "groundingRefs": [
+        "target",
+        "schemaInputs",
+        "migrationRule"
+      ]
+    },
+    {
+      "path": "generated/tests/gold_customers_contextseal_rename_parity.sql",
+      "kind": "DBT_DATA_TEST",
+      "sha256": "0be4abe1ada50a6c7f7ce2836e29f9b4b267e378a8f4bd655bfe0d71413ee41e",
       "groundingRefs": [
         "target",
         "schemaInputs",
@@ -130,7 +172,7 @@
     {
       "path": "generated/rollback/gold_customers.sql",
       "kind": "ROLLBACK",
-      "sha256": "e7ab0ad5cb311080f08d1b210c9564d5a17bdf3af4ec2d4e41e7f31bfd771485",
+      "sha256": "768ccad327f17a7b2a4ab2841fd1067d6922b0beab0a8fe80c60d61eaf69742c",
       "groundingRefs": [
         "target",
         "schemaInputs",
@@ -140,7 +182,7 @@
     {
       "path": "generated/IMPACTED_OWNERS.md",
       "kind": "OWNER_BRIEF",
-      "sha256": "bd44e015d978bb77264bcc3cacf7de479f7854cb937c5d6ae492178425555ea1",
+      "sha256": "d1a227e8455927615e5cf3a78c1e5005681f106afefe854744d4889af681710f",
       "groundingRefs": [
         "lineageInputs",
         "policyInputs",

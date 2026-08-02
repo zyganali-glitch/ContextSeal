@@ -2,11 +2,11 @@
 
 ## Publication status
 
-- Date verified: `2026-08-01`
+- Date verified: `2026-08-02`
 - Intended surface: [datahub-project/datahub-skills#35](https://github.com/datahub-project/datahub-skills/pull/35)
 - Target verification: `PASS`
 - Publication status: `PASS`
-- Verified state: `OPEN / NOT_MERGED / NO MAINTAINER REVIEW RECORDED YET`; the PR is not a draft and had no maintainer review recorded when checked.
+- Verified state: `OPEN / NOT MERGED / AWAITING MAINTAINER REVIEW`; the public PR page shows an open non-draft PR with `No reviews`.
 - Verification command: `gh pr view 35 --repo datahub-project/datahub-skills --json url,state,isDraft,reviewDecision,title,headRefName,baseRefName,author`
 - Published comment: [issuecomment-5150779939](https://github.com/datahub-project/datahub-skills/pull/35#issuecomment-5150779939)
 - Published at: `2026-08-01T09:12:56Z` by `zyganali-glitch`
@@ -26,7 +26,7 @@ The reusable skill and reproducible artifacts are in https://github.com/zyganali
 
 ## Publication checklist
 
-1. Completed: verified the upstream repository, exact PR URL, author, branch, and `OPEN / NOT_MERGED / NO MAINTAINER REVIEW RECORDED YET` state.
+1. Completed: verified the upstream repository, exact PR URL, author, branch, and `OPEN / NOT MERGED / AWAITING MAINTAINER REVIEW` state.
 2. Completed: confirmed the PR has no existing comments and explicitly records ContextSeal provenance.
 3. Completed: posted the update once through `zyganali-glitch`.
 4. Completed: recorded the visible public URL and timestamp above.
