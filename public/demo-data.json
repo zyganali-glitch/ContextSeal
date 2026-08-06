@@ -2337,7 +2337,7 @@
   },
   "recordedLiveProof": {
     "status": "PASS",
-    "label": "RECORDED LIVE-LOCAL PROOF",
+    "label": "Recorded live-local proof",
     "note": "Recorded disposable-local synthetic DataHub evidence. This page is not connected to a live catalog.",
     "observedAt": "2026-08-02T20:45:59.024Z",
     "targetUrn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,retail.gold.customers,PROD)",

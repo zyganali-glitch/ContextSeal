@@ -46,14 +46,19 @@ This checklist is authoritative for final-head release readiness. Do not claim t
 - [ ] Run `npm run pr:bundle` once and commit only if the deterministic PR artifacts legitimately changed.
 - [ ] Run `npm run validate` as the read-only validation suite.
 
-## Live proof and evidence freshness
+## Recorded live proof and evidence integrity
 
 - [x] Historical disposable-local live DataHub read evidence remains recorded from source commit `baa61387324868b39427030c447b94c2b9599c03`.
 - [x] Historical disposable-local live DataHub write-back and durable read-back evidence remain recorded from that same source commit, including the idempotent retry.
 - [x] Historical `npm run evidence:check` passed with 10 MCP reads, 6 downstream assets, and 3 verified mutations.
-- [ ] Recapture disposable-local live DataHub read evidence from the new frozen release SHA.
-- [ ] Recapture disposable-local live DataHub write-back and durable read-back evidence from that same frozen release SHA, including the idempotent retry.
-- [ ] Run `npm run evidence:check` after the frozen-SHA recapture and keep the proof visibly synthetic-local and separate from fixture impact, production evidence, and final-head hosted proof.
+- [ ] Confirm the final release SHA contains the committed proof bundle and that `npm run evidence:check` passes on that release checkout.
+- [ ] Keep the proof visibly synthetic-local and separate from fixture impact, production evidence, and final-head hosted proof.
+
+## Optional final-stage DataHub recapture
+
+- [ ] If a final-stage disposable-local recapture is performed, record its implementation source SHA, capture SHA or time, and evidence-bundle commit SHA separately.
+- [ ] If a final-stage disposable-local recapture is performed, attach it as a separate release artifact or documented provenance bundle rather than silently replacing the recorded historical proof.
+- [ ] Do not claim the implementation source SHA, evidence capture SHA, and final release SHA are automatically identical.
 
 ## Generated bundle execution
 

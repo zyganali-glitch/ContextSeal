@@ -10,7 +10,7 @@ import { loadEnvFile } from "../src/env.js";
 const FIXTURE_OBSERVED_AT = "2026-07-22T06:39:36.459Z";
 const FIXTURE_ANALYZE_AT = "2026-07-22T06:39:36.461Z";
 const FIXTURE_DECIDE_AT = "2026-07-22T06:39:36.469Z";
-const RECORDED_LIVE_LOCAL_PROOF_LABEL = "RECORDED LIVE-LOCAL PROOF";
+const RECORDED_LIVE_LOCAL_PROOF_LABEL = "Recorded live-local proof";
 const RECORDED_LIVE_LOCAL_PROOF_NOTE = "Recorded disposable-local synthetic DataHub evidence. This page is not connected to a live catalog.";
 const STALE_RECORDED_LIVE_LOCAL_PROOF_NOTE = "Historical disposable-local synthetic DataHub evidence. It predates the current provenance and idempotency contract, so this page marks it STALE and is not connected to a live catalog.";
 

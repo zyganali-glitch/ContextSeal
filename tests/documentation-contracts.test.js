@@ -103,6 +103,27 @@ test("judge-facing docs distinguish the recorded write-back proof from fixture i
   assert.doesNotMatch(plan, /Final 115-125 second/);
 });
 
+test("recorded DataHub proof contract separates capture provenance from the final release SHA", async () => {
+  const [manifest, checklist, judgePath, plan] = await Promise.all([
+    readFile("docs/EVIDENCE_MANIFEST.md", "utf8"),
+    readFile("docs/PRE_SUBMISSION_CHECKLIST.md", "utf8"),
+    readFile("docs/JUDGE_TEST_PATH.md", "utf8"),
+    readFile("plans/PLAN_20260721_contextseal_hackathon_win.md", "utf8")
+  ]);
+
+  assert.match(manifest, /final release SHA must include this proof bundle and pass `npm run evidence:check`/);
+  assert.match(manifest, /capture source SHA does not need to equal the release SHA/);
+  assert.doesNotMatch(manifest, /must be re-captured from the frozen submission SHA before final freeze/);
+
+  assert.match(checklist, /Confirm the final release SHA contains the committed proof bundle and that `npm run evidence:check` passes on that release checkout/);
+  assert.match(checklist, /Optional final-stage DataHub recapture/);
+  assert.doesNotMatch(checklist, /Recapture disposable-local live DataHub read evidence from the new frozen release SHA/);
+
+  assert.match(judgePath, /final release SHA must include this committed proof bundle and pass the same integrity check/);
+  assert.match(plan, /committed proof bundle and pass `npm run evidence:check`/);
+  assert.doesNotMatch(plan, /requires recapture before final freeze/);
+});
+
 test("submission docs lock the canonical skill and immutable same-SHA release order", async () => {
   const [checklist, manifest, readme, contribution] = await Promise.all([
     readFile("docs/PRE_SUBMISSION_CHECKLIST.md", "utf8"),
@@ -133,11 +154,11 @@ test("final video docs require the longer badge-visible recorded-proof path", as
   assert.match(script, /2 minutes 20 seconds/);
   assert.match(script, /2:15 to 2:30/);
   assert.match(script, /fixture badge visible/);
-  assert.match(script, /RECORDED LIVE-LOCAL PROOF/);
+  assert.match(script, /Recorded live-local proof/);
   assert.match(script, /12-step Agent Run Trace/);
   assert.doesNotMatch(script, /1:40 Target|100-second judge demo/);
   assert.match(turkishGuide, /2 dakika 15 saniye ile 2 dakika 30 saniye/);
-  assert.match(turkishGuide, /RECORDED LIVE-LOCAL PROOF/);
+  assert.match(turkishGuide, /Recorded live-local proof/);
   assert.doesNotMatch(turkishGuide, /90-110 saniye|100 saniyelik/);
   for (const content of [devpost, turkishDevpost]) {
     assert.match(content, /30-second judge summary/);

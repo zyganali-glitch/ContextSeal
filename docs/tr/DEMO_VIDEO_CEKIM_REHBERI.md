@@ -11,7 +11,7 @@ Bu rehberle İngilizce konuşmadan, ücretsiz araçlarla, üç dakikadan kısa �
 - Müzik: kullanılmayacak.
 - Kişisel bilgi: görünmeyecek.
 - Varsayılan akış fixture tabanlıdır; canlı MCP kanıtı gösterilecekse bunun sentetik verili yerel DataHub olduğunu açıkça söyleyeceğiz.
-- Her ürün karesinde fixture rozeti görünür kalmalı; kayıtlı kanıt bölümü gösterilirse `RECORDED LIVE-LOCAL PROOF` etiketi de kadrajda kalmalı.
+- Her ürün karesinde fixture rozeti görünür kalmalı; kayıtlı kanıt bölümü gösterilirse `Recorded live-local proof` etiketi de kadrajda kalmalı.
 
 ## Kullanılacak ücretsiz araçlar
 
@@ -61,7 +61,7 @@ Bu bölüm varsayılan 2 dakika 20 saniyelik kaydın zorunlu parçası değildir
 
 1. ContextSeal’i yeniden başlat.
 2. Ana sayfayı yenile.
-3. Henüz **Analyze the demo change** düğmesine basma.
+3. Henüz **Analyze change** düğmesine basma.
 4. Reviewer alanında `demo-reviewer` yazdığını doğrula.
 5. Decision note alanında güvenli plan onayının yazdığını doğrula.
 
@@ -121,14 +121,14 @@ OBS’nin alt bölümünde **Sources** adlı kutuyu bul.
 
 1. OBS’de **Start Recording** düğmesine bas.
 2. ContextSeal başlık ekranını ve `customer_email → contact_email` isteğini göster.
-3. **Analyze the demo change** düğmesine bir kez bas.
+3. **Analyze change** düğmesine bir kez bas.
 4. Risk puanını, fixture rozetiyle birlikte beş aşağı yönlü varlığı ve bulguları göster.
 5. Local AI Copilot panelini göster; AI'nın sadece açıklama yaptığı ve `NOT_ENABLED` durumunun dürüstçe göründüğü anı kaydet.
 6. Agent Run Trace'i, üretilen beş dosyayı, rename diff'i, sandbox kanıtını ve PR inceleme paketini göster.
-7. İnsan onayı bölümüne kaydır ve **Approve safe plan** düğmesine bir kez bas.
+7. İnsan onayı bölümüne kaydır ve **Approve safe scope** düğmesine bir kez bas.
 8. Pasaport numarası ve manifest hash oluşunca birkaç saniye bekle.
-9. **Prepare DataHub write-back** düğmesine bas. Fixture gösteriminde hiçbir kataloğun değiştirilmediği yazmalıdır.
-10. `RECORDED LIVE-LOCAL PROOF` receipt'ini yalnız sentetik metadata etiketiyle kısa göster veya fixture kapanışıyla devam et; bunu aktif canlı katalog bağlantısı diye anlatma.
+9. **Prepare write-back** düğmesine bas. Fixture gösteriminde hiçbir kataloğun değiştirilmediği yazmalıdır.
+10. `Recorded live-local proof` receipt'ini yalnız sentetik metadata etiketiyle kısa göster veya fixture kapanışıyla devam et; bunu aktif canlı katalog bağlantısı diye anlatma.
 11. OBS’ye dön ve **Stop Recording** düğmesine bas.
 
 ### Kayıt sırasında dikkat et

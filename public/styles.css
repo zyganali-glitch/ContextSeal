@@ -596,6 +596,7 @@ button:disabled {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 12px;
+  align-items: start;
 }
 
 .proof-group {
@@ -603,6 +604,7 @@ button:disabled {
   border-radius: var(--radius-md);
   background: rgba(7, 14, 24, 0.82);
   padding: 16px;
+  align-self: start;
 }
 
 .proof-group h3,
@@ -637,11 +639,22 @@ button:disabled {
   align-items: start;
 }
 
+.proof-definition-row dd {
+  min-width: 0;
+}
+
 dt {
   color: var(--text-subtle);
   font-size: var(--type-label);
   text-transform: uppercase;
   letter-spacing: 0.08em;
+}
+
+.proof-definition-row dd {
+  margin: 0;
+  color: var(--text);
+  font: 600 13.75px/1.58 var(--font-mono);
+  overflow-wrap: anywhere;
 }
 
 dd {
@@ -652,10 +665,54 @@ dd {
   overflow-wrap: anywhere;
 }
 
+.proof-value {
+  display: flex;
+  align-items: start;
+  gap: 10px;
+  min-width: 0;
+}
+
+.proof-value-text {
+  min-width: 0;
+  color: var(--text);
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.proof-value-multiline .proof-value-text {
+  white-space: pre-wrap;
+}
+
+.proof-copy-button {
+  flex: 0 0 auto;
+  min-width: 72px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border-strong);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text-strong);
+  font: 700 11px/1 var(--font-mono);
+}
+
+.proof-copy-button:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.proof-copy-button[data-copy-state="success"] {
+  color: var(--success);
+  border-color: rgba(98, 214, 187, 0.28);
+}
+
+.proof-copy-button[data-copy-state="error"] {
+  color: var(--warning);
+  border-color: rgba(217, 178, 100, 0.28);
+}
+
 .recorded-proof-receipts {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
+  align-items: start;
 }
 
 .proof-receipt-group {
@@ -663,11 +720,19 @@ dd {
   border-radius: var(--radius-md);
   background: rgba(7, 14, 24, 0.82);
   padding: 14px 16px;
+  align-self: start;
+}
+
+.proof-receipt-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
 }
 
 .proof-receipt-title {
   display: block;
-  margin-bottom: 10px;
   color: var(--text-strong);
   font-size: 14px;
 }
@@ -690,8 +755,42 @@ dd {
 
 .proof-receipt-row code {
   color: var(--text);
-  font-size: 12px;
+  font-size: 13.5px;
+  line-height: 1.5;
   overflow-wrap: anywhere;
+}
+
+.receipt-action {
+  flex: 0 0 auto;
+  border-radius: 999px;
+  border: 1px solid var(--border-strong);
+  padding: 6px 10px;
+  font: 700 11px/1 var(--font-mono);
+  color: var(--text-strong);
+}
+
+.receipt-action[data-action="APPLIED"] {
+  color: var(--success);
+  border-color: rgba(98, 214, 187, 0.28);
+  background: rgba(98, 214, 187, 0.08);
+}
+
+.receipt-action[data-action="SKIPPED"] {
+  color: var(--recorded);
+  border-color: rgba(127, 181, 255, 0.28);
+  background: rgba(127, 181, 255, 0.08);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 .workspace {

@@ -15,6 +15,21 @@ function stateFromAi(ai) {
   return ai?.status === "PASS" ? "PASS" : "NOT_RUN";
 }
 
+function truncateTechnicalValue(value) {
+  if (typeof value !== "string") return String(value ?? "not recorded");
+  if (value.length <= 34 || value.includes("\n")) return value;
+  if (/^[a-f0-9]{40,64}$/i.test(value)) return `${value.slice(0, 12)}...${value.slice(-10)}`;
+  if (value.startsWith("urn:")) return `${value.slice(0, 18)}...${value.slice(-16)}`;
+  return `${value.slice(0, 18)}...${value.slice(-14)}`;
+}
+
+function groupReceiptState(actions) {
+  if (!actions.length) return "NOT_RUN";
+  return actions.every((receipt) => receipt.state === "PASS")
+    ? "PASS"
+    : actions.find((receipt) => receipt.state && receipt.state !== "PASS")?.state || "NOT_RUN";
+}
+
 function formatRecordedTime(value) {
   const parsed = Date.parse(value || "");
   return Number.isFinite(parsed) ? new Date(parsed).toLocaleString() : "not recorded";
@@ -22,6 +37,55 @@ function formatRecordedTime(value) {
 
 export function createProofDashboard({ select, text, evidenceState, formatChangeType, formatStrategy }) {
   let activeArtifactTabId = null;
+
+  function announceCopyStatus(message) {
+    const status = select("#recordedProofCopyStatus");
+    if (status) status.textContent = message;
+  }
+
+  async function copyValue(button, fullValue, label) {
+    const defaultText = button.dataset.defaultText || "Copy";
+    try {
+      if (!navigator.clipboard?.writeText) throw new Error("Clipboard unavailable");
+      await navigator.clipboard.writeText(fullValue);
+      button.textContent = "Copied";
+      button.dataset.copyState = "success";
+      announceCopyStatus(`${label} copied.`);
+    } catch {
+      button.textContent = "Copy failed";
+      button.dataset.copyState = "error";
+      announceCopyStatus(`${label} could not be copied. Full value remains available in the field title.`);
+    }
+    if (button._resetTimer) clearTimeout(button._resetTimer);
+    button._resetTimer = window.setTimeout(() => {
+      button.textContent = defaultText;
+      button.dataset.copyState = "idle";
+    }, 1600);
+  }
+
+  function renderProofValue(entry) {
+    const value = entry?.value == null ? "not recorded" : String(entry.value);
+    const displayValue = entry?.displayValue == null
+      ? entry?.technical ? truncateTechnicalValue(value) : value
+      : String(entry.displayValue);
+    const wrapper = createNode("div", `proof-value${entry?.technical ? " proof-value-technical" : ""}${displayValue.includes("\n") ? " proof-value-multiline" : ""}`);
+    const valueText = createNode("span", "proof-value-text", displayValue);
+    valueText.title = value;
+    valueText.setAttribute("aria-label", `${entry.label}: ${value}`);
+    wrapper.append(valueText);
+
+    if (entry?.copyable && value !== "not recorded") {
+      const button = createNode("button", "proof-copy-button", "Copy");
+      button.type = "button";
+      button.dataset.defaultText = "Copy";
+      button.dataset.copyState = "idle";
+      button.setAttribute("aria-label", `Copy full ${entry.label}`);
+      button.addEventListener("click", () => copyValue(button, value, entry.label));
+      wrapper.append(button);
+    }
+
+    return wrapper;
+  }
 
   function appendSourceLink(container, label, relativePath) {
     const link = document.createElement("a");
@@ -145,9 +209,13 @@ export function createProofDashboard({ select, text, evidenceState, formatChange
     const group = createNode("section", "proof-group");
     group.append(createNode("h3", null, titleText));
     const definitionList = createNode("dl", "proof-definition-list");
-    for (const [label, value] of entries) {
+    for (const entry of entries) {
+      const normalized = Array.isArray(entry) ? { label: entry[0], value: entry[1] } : entry;
       const row = createNode("div", "proof-definition-row");
-      row.append(createNode("dt", null, label), createNode("dd", null, String(value)));
+      const term = createNode("dt", null, normalized.label);
+      const description = document.createElement("dd");
+      description.append(renderProofValue(normalized));
+      row.append(term, description);
       definitionList.append(row);
     }
     group.append(definitionList);
@@ -161,10 +229,11 @@ export function createProofDashboard({ select, text, evidenceState, formatChange
       return;
     }
     section.classList.remove("hidden");
-    text("#recordedProofLabel", proof.label || "RECORDED LIVE-LOCAL PROOF");
+    text("#recordedProofLabel", proof.label || "Recorded live-local proof");
     text("#recordedProofState", proof.status || "NOT_RUN");
     select("#recordedProofState").dataset.state = proof.status || "NOT_RUN";
     text("#recordedProofNote", proof.note || "Recorded evidence is unavailable.");
+    announceCopyStatus("");
 
     const stats = select("#recordedProofStats");
     stats.replaceChildren();
@@ -173,25 +242,31 @@ export function createProofDashboard({ select, text, evidenceState, formatChange
       .join(" · ");
     const queryCount = proof.read?.queryCount;
     appendProofGroup(stats, "Capture", [
-      ["Proof state", proof.status || "NOT_RUN"],
-      ["Captured", formatRecordedTime(proof.observedAt)],
-      ["Source commit", proof.sourceProvenance?.commitSha || "not recorded"],
-      ["Target URN", proof.targetUrn || "not recorded"]
+      { label: "Proof state", value: proof.status || "NOT_RUN" },
+      { label: "Captured", value: formatRecordedTime(proof.observedAt) },
+      { label: "Source commit", value: proof.sourceProvenance?.commitSha || "not recorded", technical: true, copyable: true },
+      { label: "Target URN", value: proof.targetUrn || "not recorded", technical: true, copyable: true }
     ]);
     appendProofGroup(stats, "Read context", [
-      ["MCP server", [proof.mcp?.serverName, proof.mcp?.serverVersion].filter(Boolean).join(" ") || "not recorded"],
-      ["MCP tools", proof.read?.toolNames?.join(", ") || "not recorded"],
-      ["Queries", queryCount === 0 ? "0 (PASS with zero results)" : queryCount ?? "not recorded"],
-      ["Entity types", entityTypes || "not recorded"],
-      ["Max hops", proof.read?.maxHops ?? "not recorded"],
-      ["Initial read hash", proof.sourceProvenance?.initialRawEvidenceHash || proof.rawEvidenceHash || "not recorded"],
-      ["Final read hash", proof.sourceProvenance?.finalRawEvidenceHash || "not recorded"]
+      { label: "MCP server", value: [proof.mcp?.serverName, proof.mcp?.serverVersion].filter(Boolean).join(" ") || "not recorded" },
+      {
+        label: "MCP tools",
+        value: proof.read?.toolNames?.join("\n") || "not recorded",
+        displayValue: proof.read?.toolNames?.join("\n") || "not recorded",
+        technical: true,
+        copyable: true
+      },
+      { label: "Queries", value: queryCount === 0 ? "0 (PASS with zero results)" : queryCount ?? "not recorded" },
+      { label: "Entity types", value: entityTypes || "not recorded" },
+      { label: "Max hops", value: proof.read?.maxHops ?? "not recorded" },
+      { label: "Initial read hash", value: proof.sourceProvenance?.initialRawEvidenceHash || proof.rawEvidenceHash || "not recorded", technical: true, copyable: true },
+      { label: "Final read hash", value: proof.sourceProvenance?.finalRawEvidenceHash || "not recorded", technical: true, copyable: true }
     ]);
     appendProofGroup(stats, "Write-back and read-back", [
-      ["Durable read-back", proof.writeback?.durableReadbackState || "not recorded"],
-      ["Idempotency", proof.writeback?.idempotencyStrategy || "not recorded"],
-      ["One description", proof.writeback?.exactOneDescription?.count == null ? proof.writeback?.exactOneDescription?.state || "not recorded" : `${proof.writeback.exactOneDescription.count} (${proof.writeback.exactOneDescription.state})`],
-      ["One document", proof.writeback?.exactOneDocument?.state || "not recorded"]
+      { label: "Durable read-back", value: proof.writeback?.durableReadbackState || "not recorded" },
+      { label: "Idempotency", value: proof.writeback?.idempotencyStrategy || "not recorded", technical: true },
+      { label: "One description", value: proof.writeback?.exactOneDescription?.count == null ? proof.writeback?.exactOneDescription?.state || "not recorded" : `${proof.writeback.exactOneDescription.count} (${proof.writeback.exactOneDescription.state})` },
+      { label: "One document", value: proof.writeback?.exactOneDocument?.state || "not recorded" }
     ]);
 
     const receipts = select("#recordedProofReceipts");
@@ -199,14 +274,23 @@ export function createProofDashboard({ select, text, evidenceState, formatChange
     for (const [runLabel, actions] of [["first", proof.writeback?.firstRunActions || []], ["second", proof.writeback?.secondRunActions || []]]) {
       if (!actions.length) continue;
       const group = createNode("section", "proof-receipt-group");
-      group.append(createNode("strong", "proof-receipt-title", `${runLabel === "first" ? "First run" : "Second run"} receipts`));
+      const header = createNode("div", "proof-receipt-header");
+      header.append(createNode("strong", "proof-receipt-title", `${runLabel === "first" ? "First run" : "Second run"} receipts`));
+      const groupState = createNode("span", "evidence-state", groupReceiptState(actions));
+      groupState.dataset.state = groupReceiptState(actions);
+      groupState.setAttribute("aria-label", `${runLabel === "first" ? "First run" : "Second run"} group state ${groupState.textContent}`);
+      header.append(groupState);
+      group.append(header);
       const rows = createNode("div", "proof-receipt-list");
       for (const receipt of actions) {
         const row = createNode("div", "proof-receipt-row");
-        const tool = createNode("code", null, `${receipt.tool}: ${receipt.action}`);
-        const state = createNode("span", "evidence-state", receipt.state);
-        state.dataset.state = receipt.state;
-        row.append(tool, state);
+        row.dataset.state = receipt.state;
+        const tool = createNode("code", null, receipt.tool);
+        tool.title = `${receipt.tool}: ${receipt.action} (${receipt.state})`;
+        const action = createNode("span", "receipt-action", receipt.action);
+        action.dataset.action = receipt.action;
+        action.setAttribute("aria-label", `${receipt.action}. Receipt state ${receipt.state}.`);
+        row.append(tool, action, createNode("span", "sr-only", `Receipt state ${receipt.state}`));
         rows.append(row);
       }
       group.append(rows);
