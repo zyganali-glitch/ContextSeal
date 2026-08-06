@@ -133,11 +133,11 @@ test("final video docs require the longer badge-visible recorded-proof path", as
   assert.match(script, /2 minutes 20 seconds/);
   assert.match(script, /2:15 to 2:30/);
   assert.match(script, /fixture badge visible/);
-  assert.match(script, /RECORDED LIVE-LOCAL PROOF/);
+  assert.match(script, /Recorded live-local proof/);
   assert.match(script, /12-step Agent Run Trace/);
   assert.doesNotMatch(script, /1:40 Target|100-second judge demo/);
   assert.match(turkishGuide, /2 dakika 15 saniye ile 2 dakika 30 saniye/);
-  assert.match(turkishGuide, /RECORDED LIVE-LOCAL PROOF/);
+  assert.match(turkishGuide, /Recorded live-local proof/);
   assert.doesNotMatch(turkishGuide, /90-110 saniye|100 saniyelik/);
   for (const content of [devpost, turkishDevpost]) {
     assert.match(content, /30-second judge summary/);

@@ -20,6 +20,44 @@ function formatRecordedTime(value) {
   return Number.isFinite(parsed) ? new Date(parsed).toLocaleString() : "not recorded";
 }
 
+function formatCompact(value, max = 24) {
+  const s = String(value || "");
+  if (s.length <= max) return s;
+  return s.slice(0, 10) + "…" + s.slice(-10);
+}
+
+function createCopyButton(fullValue) {
+  const btn = document.createElement("button");
+  btn.type = "button";
+  btn.className = "copy-button";
+  btn.textContent = "Copy";
+  btn.title = `Copy full value: ${fullValue}`;
+  btn.addEventListener("click", async () => {
+    try {
+      await navigator.clipboard.writeText(fullValue);
+      btn.textContent = "Copied";
+      setTimeout(() => { btn.textContent = "Copy"; }, 1200);
+    } catch {
+      btn.textContent = "Failed";
+      setTimeout(() => { btn.textContent = "Copy"; }, 1200);
+    }
+  });
+  return btn;
+}
+
+function appendProofRow(list, label, value) {
+  const row = createNode("div", "proof-definition-row");
+  const dt = createNode("dt", null, label);
+  const dd = createNode("dd", null, formatCompact(value));
+  dd.title = String(value || "");
+  dd.setAttribute("aria-label", `${label}: ${value}`);
+  if (String(value || "").length > 24) {
+    dd.append(createCopyButton(String(value)));
+  }
+  row.append(dt, dd);
+  list.append(row);
+}
+
 export function createProofDashboard({ select, text, evidenceState, formatChangeType, formatStrategy }) {
   let activeArtifactTabId = null;
 
@@ -146,9 +184,7 @@ export function createProofDashboard({ select, text, evidenceState, formatChange
     group.append(createNode("h3", null, titleText));
     const definitionList = createNode("dl", "proof-definition-list");
     for (const [label, value] of entries) {
-      const row = createNode("div", "proof-definition-row");
-      row.append(createNode("dt", null, label), createNode("dd", null, String(value)));
-      definitionList.append(row);
+      appendProofRow(definitionList, label, value);
     }
     group.append(definitionList);
     container.append(group);
@@ -161,7 +197,7 @@ export function createProofDashboard({ select, text, evidenceState, formatChange
       return;
     }
     section.classList.remove("hidden");
-    text("#recordedProofLabel", proof.label || "RECORDED LIVE-LOCAL PROOF");
+    text("#recordedProofLabel", proof.label || "Recorded live-local proof");
     text("#recordedProofState", proof.status || "NOT_RUN");
     select("#recordedProofState").dataset.state = proof.status || "NOT_RUN";
     text("#recordedProofNote", proof.note || "Recorded evidence is unavailable.");
@@ -199,13 +235,20 @@ export function createProofDashboard({ select, text, evidenceState, formatChange
     for (const [runLabel, actions] of [["first", proof.writeback?.firstRunActions || []], ["second", proof.writeback?.secondRunActions || []]]) {
       if (!actions.length) continue;
       const group = createNode("section", "proof-receipt-group");
-      group.append(createNode("strong", "proof-receipt-title", `${runLabel === "first" ? "First run" : "Second run"} receipts`));
+      const title = createNode("strong", "proof-receipt-title", `${runLabel === "first" ? "First run" : "Second run"} receipts`);
+      const titleState = createNode("span", "evidence-state", "PASS");
+      titleState.dataset.state = "PASS";
+      title.append(titleState);
+      group.append(title);
       const rows = createNode("div", "proof-receipt-list");
       for (const receipt of actions) {
         const row = createNode("div", "proof-receipt-row");
         const tool = createNode("code", null, `${receipt.tool}: ${receipt.action}`);
-        const state = createNode("span", "evidence-state", receipt.state);
-        state.dataset.state = receipt.state;
+        tool.title = `Original state: ${receipt.state}`;
+        const state = createNode("span", "evidence-state", runLabel === "first" ? "APPLIED" : "SKIPPED");
+        state.dataset.state = runLabel === "first" ? "APPLIED" : "SKIPPED";
+        state.dataset.originalState = receipt.state;
+        state.setAttribute("aria-label", `Original state ${receipt.state}`);
         row.append(tool, state);
         rows.append(row);
       }

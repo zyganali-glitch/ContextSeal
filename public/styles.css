@@ -337,6 +337,26 @@ button:disabled {
   transform: none;
 }
 
+.copy-button {
+  margin-left: 8px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: 1px solid var(--border-strong);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-muted);
+  font: 700 11px/1 var(--font-mono);
+  cursor: pointer;
+}
+.copy-button:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-strong);
+}
+.copy-button { margin-left: 8px; padding: 4px 8px; border-radius: 6px; border: 1px solid var(--border-strong); background: rgba(255, 255, 255, 0.05); color: var(--text-muted); font: 700 11px/1 var(--font-mono); cursor: pointer; } .copy-button:hover { background: rgba(255, 255, 255, 0.08); color: var(--text-strong); }
+  cursor: not-allowed;
+  opacity: 0.48;
+  transform: none;
+}
+
 .hero-note,
 .microcopy {
   margin: 0;
@@ -592,13 +612,13 @@ button:disabled {
   margin: 0;
 }
 
-.recorded-proof-stats {
+.recorded-proof-stats { align-items: start;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 12px;
 }
 
-.proof-group {
+.proof-group { align-self: start;
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
   background: rgba(7, 14, 24, 0.82);
@@ -644,10 +664,9 @@ dt {
   letter-spacing: 0.08em;
 }
 
-dd {
+dd { font-size: 13.5px;
   margin: 0;
   color: var(--text);
-  font-size: 13px;
   font-family: var(--font-mono);
   overflow-wrap: anywhere;
 }
@@ -1126,7 +1145,7 @@ dd {
   gap: 10px;
 }
 
-.decision-scope dd {
+.decision-scope dd { font-size: 13.5px;
   font-family: var(--font-sans);
 }
 

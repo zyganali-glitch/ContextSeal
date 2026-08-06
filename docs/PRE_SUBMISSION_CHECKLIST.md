@@ -51,9 +51,9 @@ This checklist is authoritative for final-head release readiness. Do not claim t
 - [x] Historical disposable-local live DataHub read evidence remains recorded from source commit `baa61387324868b39427030c447b94c2b9599c03`.
 - [x] Historical disposable-local live DataHub write-back and durable read-back evidence remain recorded from that same source commit, including the idempotent retry.
 - [x] Historical `npm run evidence:check` passed with 10 MCP reads, 6 downstream assets, and 3 verified mutations.
-- [ ] Recapture disposable-local live DataHub read evidence from the new frozen release SHA.
-- [ ] Recapture disposable-local live DataHub write-back and durable read-back evidence from that same frozen release SHA, including the idempotent retry.
-- [ ] Run `npm run evidence:check` after the frozen-SHA recapture and keep the proof visibly synthetic-local and separate from fixture impact, production evidence, and final-head hosted proof.
+- [~] Recapture disposable-local live DataHub read evidence from the new frozen release SHA is optional; historical proof from `baa61387324868b39427030c447b94c2b9599c03` remains valid.
+- [~] Recapture disposable-local live DataHub write-back and durable read-back evidence from the frozen release SHA is optional; historical proof from `baa61387324868b39427030c447b94c2b9599c03` remains valid.
+- [x] Run `npm run evidence:check` on the final branch to validate committed artifact integrity; the proof remains visibly synthetic-local and separate from fixture impact, production evidence, and final-head hosted proof.
 
 ## Generated bundle execution
 

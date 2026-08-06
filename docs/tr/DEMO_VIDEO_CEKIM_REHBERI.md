@@ -11,7 +11,7 @@ Bu rehberle İngilizce konuşmadan, ücretsiz araçlarla, üç dakikadan kısa �
 - Müzik: kullanılmayacak.
 - Kişisel bilgi: görünmeyecek.
 - Varsayılan akış fixture tabanlıdır; canlı MCP kanıtı gösterilecekse bunun sentetik verili yerel DataHub olduğunu açıkça söyleyeceğiz.
-- Her ürün karesinde fixture rozeti görünür kalmalı; kayıtlı kanıt bölümü gösterilirse `RECORDED LIVE-LOCAL PROOF` etiketi de kadrajda kalmalı.
+- Her ürün karesinde fixture rozeti görünür kalmalı; kayıtlı kanıt bölümü gösterilirse `Recorded live-local proof` etiketi de kadrajda kalmalı.
 
 ## Kullanılacak ücretsiz araçlar
 
@@ -128,7 +128,7 @@ OBS’nin alt bölümünde **Sources** adlı kutuyu bul.
 7. İnsan onayı bölümüne kaydır ve **Approve safe plan** düğmesine bir kez bas.
 8. Pasaport numarası ve manifest hash oluşunca birkaç saniye bekle.
 9. **Prepare DataHub write-back** düğmesine bas. Fixture gösteriminde hiçbir kataloğun değiştirilmediği yazmalıdır.
-10. `RECORDED LIVE-LOCAL PROOF` receipt'ini yalnız sentetik metadata etiketiyle kısa göster veya fixture kapanışıyla devam et; bunu aktif canlı katalog bağlantısı diye anlatma.
+10. `Recorded live-local proof` receipt'ini yalnız sentetik metadata etiketiyle kısa göster veya fixture kapanışıyla devam et; bunu aktif canlı katalog bağlantısı diye anlatma.
 11. OBS’ye dön ve **Stop Recording** düğmesine bas.
 
 ### Kayıt sırasında dikkat et
@@ -216,7 +216,7 @@ A human approves only this safe scope. ContextSeal binds the request, context, a
 #### Ses 8 — Dürüst kapanış
 
 ```text
-In this public fixture, write-back remains not run and no catalog is modified. The separately labeled RECORDED LIVE-LOCAL PROOF shows three bounded write-backs, a skipped idempotent retry, and durable read-back on synthetic metadata; it is not a current live catalog connection.
+In this public fixture, write-back remains not run and no catalog is modified. The separately labeled Recorded live-local proof shows three bounded write-backs, a skipped idempotent retry, and durable read-back on synthetic metadata; it is not a current live catalog connection.
 ```
 
 ### 5. Ses ayarı
