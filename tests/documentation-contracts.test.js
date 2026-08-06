@@ -60,8 +60,9 @@ test("evidence manifest exposes the final truth-lock columns and required pendin
   for (const row of [
     "Real dbt bundle execution works for rename, type-change, drop, and collision handling",
     "Recorded local Ollama proof exists separately from deterministic demo artifacts",
-    "Exact final-head CI result is recorded from the frozen submission SHA",
-    "Exact final-head Pages result is recorded from the frozen submission SHA",
+    "Candidate CI proof is recorded for the pre-freeze submission candidate",
+    "Exact frozen final-head CI is recorded from the release SHA",
+    "Exact frozen final-head Pages is recorded from the release SHA",
     "Public final demo video URL is recorded",
     "Devpost submission is frozen against the exact final SHA",
     "Production warehouse SQL executed",
@@ -69,6 +70,14 @@ test("evidence manifest exposes the final truth-lock columns and required pendin
   ]) {
     assert.match(manifest, new RegExp(row.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
   }
+});
+
+test("pages workflow deploys only after submission check and tracked-tree verification", async () => {
+  const workflow = await readFile(".github/workflows/pages.yml", "utf8");
+
+  assert.match(workflow, /npm run submission:check/);
+  assert.match(workflow, /git diff --exit-code/);
+  assert.doesNotMatch(workflow, /^\s*-\s*run:\s*npm run validate\s*$/m);
 });
 
 test("judge-facing docs distinguish the recorded write-back proof from fixture impact", async () => {

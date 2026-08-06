@@ -7,14 +7,25 @@ const staticMode = location.hostname.endsWith("github.io") || location.protocol 
 
 function text(selector, value) { $(selector).textContent = String(value ?? "—"); }
 
+function createNode(tagName, className, textValue) {
+  const element = document.createElement(tagName);
+  if (className) element.className = className;
+  if (textValue != null) element.textContent = textValue;
+  return element;
+}
+
 function formatChangeType(changeType) {
   return String(changeType || "change")
     .replaceAll("_", " ")
     .replace(/\b\w/g, (letter) => letter.toUpperCase());
 }
 
+function formatMachineLabel(value) {
+  return String(value || "").replaceAll("_", " ");
+}
+
 function formatStrategy(strategy) {
-  return String(strategy || "SAFE_PACKAGE").replaceAll("_", " ");
+  return formatMachineLabel(strategy || "SAFE_PACKAGE");
 }
 
 function formatWorkflowState(state) {
@@ -24,12 +35,45 @@ function formatWorkflowState(state) {
     APPROVED_FOR_WRITEBACK: "APPROVED FOR WRITE-BACK",
     ANALYSIS_PENDING: "ANALYSIS PENDING"
   };
-  return labels[normalized] || normalized.replaceAll("_", " ");
+  return labels[normalized] || formatMachineLabel(normalized);
 }
 
 function evidenceState(run, claim) {
   return run?.evidence?.find((item) => item.claim === claim)?.state || "NOT_RUN";
 }
+
+const EVIDENCE_GROUPS = [
+  {
+    key: "fixture-read",
+    title: "Fixture and read evidence",
+    claims: new Set(["DataHub context retrieved", "Target field validated in schema"])
+  },
+  {
+    key: "deterministic",
+    title: "Deterministic computation",
+    claims: new Set(["Downstream impact paths traced"])
+  },
+  {
+    key: "artifacts",
+    title: "Generated artifacts",
+    claims: new Set(["Migration artifacts generated"])
+  },
+  {
+    key: "approval",
+    title: "Human approval",
+    claims: new Set(["Human scope approval recorded"])
+  },
+  {
+    key: "warehouse",
+    title: "Warehouse execution",
+    claims: new Set(["Generated SQL executed in warehouse"])
+  },
+  {
+    key: "writeback",
+    title: "Write-back and read-back",
+    claims: new Set(["DataHub write-back completed", "Durable DataHub read-back verified"])
+  }
+];
 
 const { renderArtifacts, renderAgentTrace, renderRecordedProof } = createProofDashboard({
   select: $,
@@ -53,20 +97,59 @@ async function api(url, options = {}) {
 function renderGraph(run) {
   const graph = $("#impactGraph");
   graph.replaceChildren();
-  const assets = [run.impact.target, ...run.impact.impacted];
-  for (const [index, asset] of assets.entries()) {
-    const node = document.createElement("div");
-    node.className = `asset-node${index === 0 ? " target" : ""}`;
-    const type = document.createElement("span");
-    type.className = "node-type";
-    type.textContent = index === 0 ? "CHANGE TARGET" : asset.type;
-    const name = document.createElement("strong");
-    name.textContent = asset.name;
-    const detail = document.createElement("small");
-    detail.textContent = index === 0 ? "PII · Tier 1" : `${asset.hops} hop${asset.hops === 1 ? "" : "s"} · ${asset.criticality}`;
-    node.append(type, name, detail);
-    graph.append(node);
+
+  const targetCard = createNode("section", "impact-target");
+  const targetHeader = createNode("div", "impact-target-header");
+  targetHeader.append(
+    createNode("span", "kicker", "TARGET ASSET"),
+    createNode("strong", "impact-target-name", run.impact.target.name),
+    createNode(
+      "p",
+      "impact-target-copy",
+      `${formatMachineLabel(run.impact.target.type)} · ${run.impact.target.platform || "platform not recorded"} · ${run.impact.target.criticality}`
+    )
+  );
+
+  const targetMeta = createNode("dl", "impact-meta-list");
+  for (const [label, value] of [
+    ["Field", run.request.sourceField],
+    ["Tags", run.impact.target.tags?.join(", ") || "No tags recorded"],
+    ["Terms", run.impact.target.terms?.join(", ") || "No glossary terms recorded"]
+  ]) {
+    const row = createNode("div", "impact-meta-row");
+    row.append(createNode("dt", null, label), createNode("dd", null, value));
+    targetMeta.append(row);
   }
+  targetCard.append(targetHeader, targetMeta);
+
+  const lane = createNode("ol", "impact-list");
+  for (const [index, asset] of run.impact.impacted.entries()) {
+    const row = createNode("li", "impact-row");
+    const step = createNode("span", "impact-step", String(index + 1).padStart(2, "0"));
+    const copy = createNode("div", "impact-row-copy");
+    copy.append(
+      createNode("strong", null, asset.name),
+      createNode(
+        "p",
+        "impact-row-meta",
+        `${formatMachineLabel(asset.type)} · ${asset.hops} hop${asset.hops === 1 ? "" : "s"} · ${asset.criticality}`
+      )
+    );
+    const state = createNode("span", "impact-row-status", asset.criticality);
+    state.dataset.tone = asset.criticality === "HIGH" ? "critical" : "standard";
+    row.append(step, copy, state);
+    lane.append(row);
+  }
+
+  graph.append(
+    targetCard,
+    lane,
+    createNode(
+      "p",
+      "impact-footnote muted",
+      `${run.impact.counts.total} downstream assets remain fixture-rendered in the public judge path.`
+    )
+  );
 }
 
 function renderHeroSnapshot(run) {
@@ -111,7 +194,7 @@ function renderInheritanceLoop(run) {
   text("#loopReadState", readState);
   $("#loopReadState").dataset.state = readState;
   text("#loopReadCopy", readState === "FIXTURE"
-    ? "Fixture mode shows the public judge graph from DataHub-shaped context and query evidence."
+    ? "Fixture replay shows the public judge graph from DataHub-shaped context and query evidence."
     : run.liveEvidence?.captureStage === "PRE_ANALYSIS"
       ? "Raw live MCP reads were captured before the deterministic safe package was proposed; displayed impact paths remain fixture-derived."
       : "Raw live MCP reads were captured after analysis; displayed impact paths remain fixture-derived.");
@@ -124,7 +207,7 @@ function renderInheritanceLoop(run) {
   $("#loopWritebackState").dataset.state = writebackState;
   text("#loopWritebackCopy", writebackState === "PASS"
     ? "Certified metadata was written back and read back successfully in the bounded live path."
-    : "Fixture mode keeps write-back NOT_RUN; separate live-local evidence proves the bounded mutation and read-back path.");
+    : "Fixture replay keeps write-back NOT_RUN; separate live-local evidence proves the bounded mutation and read-back path.");
 
   text("#loopInheritState", inheritState);
   $("#loopInheritState").dataset.state = inheritState;
@@ -137,19 +220,15 @@ function renderFindings(findings) {
   const list = $("#findings");
   list.replaceChildren();
   for (const item of findings) {
-    const row = document.createElement("div");
+    const row = createNode("div", "finding");
     row.className = "finding";
     row.dataset.severity = item.severity;
-    const dot = document.createElement("span");
-    dot.className = "finding-severity";
-    const copy = document.createElement("div");
-    const title = document.createElement("strong");
-    title.textContent = item.code.replaceAll("_", " ");
-    const message = document.createElement("p");
-    message.textContent = item.message;
+    const dot = createNode("span", "finding-severity");
+    const copy = createNode("div", "finding-copy");
+    const title = createNode("strong", null, item.code.replaceAll("_", " "));
+    const message = createNode("p", null, item.message);
     copy.append(title, message);
-    const score = document.createElement("code");
-    score.textContent = `+${item.weight}`;
+    const score = createNode("code", null, `+${item.weight}`);
     row.append(dot, copy, score);
     list.append(row);
   }
@@ -158,18 +237,51 @@ function renderFindings(findings) {
 function renderEvidence(evidence) {
   const list = $("#evidence");
   list.replaceChildren();
+
+  const grouped = new Map(EVIDENCE_GROUPS.map((group) => [group.key, []]));
   for (const item of evidence) {
-    const row = document.createElement("div");
-    row.className = "evidence-row";
-    const state = document.createElement("span");
-    state.className = "evidence-state";
-    state.dataset.state = item.state;
-    state.textContent = item.state;
-    const claim = document.createElement("span");
-    claim.textContent = item.claim;
-    row.append(state, claim);
-    list.append(row);
+    const matched = EVIDENCE_GROUPS.find((group) => group.claims.has(item.claim))?.key || "deterministic";
+    grouped.get(matched).push(item);
   }
+
+  for (const group of EVIDENCE_GROUPS) {
+    const items = grouped.get(group.key);
+    if (!items?.length) continue;
+
+    const section = createNode("section", "evidence-group");
+    section.append(createNode("h3", null, group.title));
+    const entries = createNode("div", "evidence-group-list");
+
+    for (const item of items) {
+      const row = createNode("div", "evidence-row");
+      const state = createNode("span", "evidence-state", item.state);
+      state.dataset.state = item.state;
+      const copy = createNode("div", "evidence-content");
+      copy.append(createNode("strong", null, item.claim));
+      if (item.artifact) copy.append(createNode("p", "evidence-note", item.artifact));
+      row.append(state, copy);
+      entries.append(row);
+    }
+
+    section.append(entries);
+    list.append(section);
+  }
+}
+
+function setPassportDetails(values) {
+  const nodes = $("#passportDetails").querySelectorAll("dd");
+  values.forEach((value, index) => {
+    if (nodes[index]) nodes[index].textContent = value;
+  });
+}
+
+function passportEvidenceSummary(run) {
+  return [
+    `Context ${evidenceState(run, "DataHub context retrieved")}`,
+    `Artifacts ${evidenceState(run, "Migration artifacts generated")}`,
+    `Approval ${evidenceState(run, "Human scope approval recorded")}`,
+    `Write-back ${evidenceState(run, "DataHub write-back completed")}`
+  ].join(" · ");
 }
 
 function renderAi(run) {
@@ -255,7 +367,7 @@ function renderRun(run) {
   text("#destinationField", run.request.destinationField || `${run.request.sourceField}_typed`);
   text("#requestRationale", run.request.rationale);
   text("#requestState", formatWorkflowState(run.state));
-  $("#requestState").dataset.state = run.risk?.verdict || run.state;
+  $("#requestState").dataset.state = run.state;
   text("#riskScore", run.risk.score);
   text("#riskVerdict", run.risk.verdict);
   text("#impactCount", run.impact.counts.total);
@@ -268,38 +380,54 @@ function renderRun(run) {
   renderAgentTrace(run);
   renderAi(run);
   renderEvidence(run.evidence);
-  if (run.passport) renderPassport(run.passport);
+  if (run.passport) renderPassport(run);
   else renderPendingPassport();
   $("#workspace").scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
 function renderPendingPassport() {
-  text("#passportTitle", "Waiting for approval");
+  const run = currentRun;
+  text("#passportTitle", "Awaiting scoped approval");
   text("#passportStatus", "PENDING");
   $("#passportStatus").className = "seal waiting";
   $("#passportStatus").dataset.state = "PENDING";
-  for (const value of $("#passportDetails").querySelectorAll("dd")) value.textContent = "—";
+  setPassportDetails([
+    "PENDING",
+    "—",
+    "—",
+    "Awaiting reviewer approval",
+    run ? formatStrategy(run.artifacts?.strategy) : "—",
+    "Generated safe scope only",
+    run ? passportEvidenceSummary(run) : "—"
+  ]);
   $("#writebackButton").disabled = true;
   $("#approveButton").disabled = false;
   text("#writebackMessage", "");
 }
 
-function renderPassport(passport) {
+function renderPassport(run) {
+  const passport = run.passport;
   text("#passportTitle", passport.status === "CERTIFIED" ? "Certified safe migration" : "Rejected change");
   text("#passportStatus", passport.status);
   $("#passportStatus").className = `seal ${passport.status === "CERTIFIED" ? "certified" : "waiting"}`;
   $("#passportStatus").dataset.state = passport.status;
-  const values = $("#passportDetails").querySelectorAll("dd");
-  values[0].textContent = passport.passportId;
-  values[1].textContent = passport.manifestHash.slice(0, 24) + "…";
-  values[2].textContent = new Date(passport.validUntil).toLocaleString();
+  setPassportDetails([
+    passport.status,
+    passport.passportId,
+    passport.manifestHash,
+    new Date(passport.validUntil).toLocaleString(),
+    formatStrategy(run.artifacts?.strategy),
+    run.approval?.scopeAccepted ? "Generated safe scope only" : "Awaiting reviewer scope",
+    passportEvidenceSummary(run)
+  ]);
   $("#writebackButton").disabled = passport.status !== "CERTIFIED";
   $("#approveButton").disabled = true;
+  text("#writebackMessage", "");
 }
 
 async function analyze() {
   $("#analyzeButton").disabled = true;
-  $("#analyzeButton").textContent = "Tracing DataHub context…";
+  $("#analyzeButton").textContent = "Analyzing context...";
   try {
     const run = staticMode
       ? (staticDemo ||= await api("./demo-data.json")).analyzed
@@ -309,7 +437,7 @@ async function analyze() {
     alert(error.message);
   } finally {
     $("#analyzeButton").disabled = false;
-    $("#analyzeButton").textContent = "Analyze again";
+    $("#analyzeButton").textContent = "Analyze change";
   }
 }
 
@@ -341,7 +469,7 @@ async function writeback() {
       ? { status: "FIXTURE_ONLY", operations: [{}, {}, {}] }
       : await api(`/api/runs/${encodeURIComponent(currentRun.runId)}/writeback`, { method: "POST", body: "{}" });
     if (result.status === "FIXTURE_ONLY") {
-      text("#writebackMessage", `Fixture safety: ${result.operations.length} operations prepared; DataHub was not modified.`);
+      text("#writebackMessage", `Fixture replay prepared ${result.operations.length} write-back operations. DataHub was not modified.`);
     } else {
       renderRun(result);
       text("#writebackMessage", "PASS: certified metadata was written back to DataHub.");
@@ -359,7 +487,7 @@ try {
 
 try {
   const health = staticMode ? { mode: "fixture" } : await api("/api/health");
-  text("#modeBadge", health.mode === "datahub" ? "LIVE DATAHUB MCP" : "FIXTURE · SAFE DEMO");
+  text("#modeBadge", health.mode === "datahub" ? "LIVE DATAHUB MCP" : "FIXTURE REPLAY");
   $("#modeBadge").className = `badge ${health.mode === "datahub" ? "badge-live" : "badge-fixture"}`;
 } catch {
   text("#modeBadge", "SERVER OFFLINE");

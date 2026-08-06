@@ -1,49 +1,61 @@
 # ContextSeal UI Review
 
-Updated: 2026-07-22 UTC
+Updated: 2026-08-06 UTC
 
 ## Scope
 
-This audit reviews the judge-facing UI after `W-16`, `W-16A`, `W-16B`, `W-16C`, and the sequential-approval correction `W-16E`.
+This audit reviews the judge-facing dashboard after the final product polish, responsive corrections, semantic proof-panel updates, and release-lock wording cleanup.
 
-- Local URL: `http://127.0.0.1:4173`
-- Modes reviewed: fixture landing state, analyzed state, approved state, and re-analysis reset
-- Widths reviewed:
-  - Desktop: `1440px`
-  - Mobile: `390px`
+- Primary local review URL: `http://127.0.0.1:4174`
+- Review mode: local fixture flow with `CONTEXTSEAL_AI_ENABLED=false` for fast deterministic interaction checks
+- Supporting reference: pre-change and static proof review against the public GitHub Pages surface
+- States reviewed: landing, analyzed, artifact viewer, recorded proof, agent trace, approved passport, and re-analysis reset behavior
+- Widths reviewed: `1440px`, `1366px`, `1024px`, `768px`, `390px`
 
 ## Audit checks
 
-1. No horizontal overflow in the audited states.
-2. The first viewport leads with blocked risk, safe package, and passport payoff.
-3. The read -> act -> write-back -> inherit loop is visible without implying unsupported live behavior.
-4. Risk, AI, delivery, decision, evidence, and passport surfaces remain visually separable.
-5. Workflow-state badges read like product UI, not raw machine identifiers.
-6. No approved fixture result or passport is rendered before the current run receives human approval.
+1. No horizontal overflow in landing, analyzed, or approved states.
+2. The first viewport explains the blocked rename, certified package, and safe-scope approval path without overstating live proof.
+3. The read -> deterministic decision -> human approval -> write-back loop is visible before the technical panels.
+4. Risk, AI, delivery, decision, evidence, recorded proof, and passport surfaces remain visually distinct.
+5. Workflow and request states read as product language rather than raw machine identifiers.
+6. No approved fixture result or passport appears before the current run receives approval.
+7. Artifact navigation and proof surfaces remain keyboard-addressable.
 
 ## Results
 
-- Desktop `1440px`: `PASS`
-  - No horizontal overflow observed.
-  - The hero, workflow strip, and inheritance strip remain readable before the technical workspace.
-  - The analyzed workspace now gives distinct visual weight to the risk, AI, delivery, decision, evidence, and passport sections.
-- Mobile `390px`: `PASS`
-  - No horizontal overflow observed.
-  - Metric cards, context trace, and lower evidence surfaces stack vertically without losing reading order.
-  - The workflow-state badge now renders in human-readable form instead of exposing raw underscore-delimited state names.
-- Sequential approval truth: `PASS`
-  - Initial state is `PENDING`; read, act, and write-back are `NOT_RUN`.
-  - Analyze produces `BLOCKED / AWAITING HUMAN`, keeps the passport and inheritance state pending, and enables approval.
-  - Approve alone produces `CERTIFIED` and reveals the current passport while write-back remains `NOT_RUN` until invoked.
-  - Starting a new analysis clears the prior passport identity and returns inheritance to `PENDING`.
+| Width | Result | Notes |
+| --- | --- | --- |
+| `1440px` | `PASS` | Visual review confirmed a calmer hero scale, clearer hierarchy, and balanced technical panels without equal-height stretching. |
+| `1366px` | `PASS` | Interactive browser audit confirmed no horizontal overflow in landing, analyzed, or approved states. |
+| `1024px` | `PASS` | Artifact workbench collapses cleanly to one column and preserves proof, evidence, and passport visibility. |
+| `768px` | `PASS` | Workflow, evidence, and proof surfaces stack without clipping; analyzed and approved states stay readable. |
+| `390px` | `PASS` | Mobile overflow was removed after wrapping the workflow strip, stacking long chips, disabling decorative ambient blobs, and allowing long artifact filenames to wrap. |
 
-## Findings
+- State truth: `PASS`
+  - Landing keeps read, act, and write-back at `NOT_RUN` / `PENDING` surfaces only.
+  - Analyze produces `BLOCKED` plus `AWAITING HUMAN`, keeps the passport pending, and reveals the technical workspace without implying write-back success.
+  - Approve alone produces `APPROVED FOR WRITE-BACK` and reveals the current passport while write-back remains a distinct next action.
+  - Re-analysis clears the current passport state instead of replaying a stale approved fixture.
+- Proof visibility: `PASS`
+  - Recorded proof, artifact viewer, agent trace, and evidence panels remained visible in the analyzed and approved states at every audited width.
+  - The local fast-review mode correctly labels AI availability as `NOT ENABLED` instead of fabricating model output.
 
-- Fixed during audit: request workflow states previously rendered as raw machine labels such as `AWAITING_HUMAN` and `APPROVED_FOR_WRITEBACK`. The audited build now renders human-readable labels while preserving the underlying deterministic state values.
-- Fixed during audit: the landing and Analyze paths previously consumed the static approved fixture, allowing `CERTIFIED` inheritance to appear before approval. The current build renders only the current run and fails closed to pending passport state.
-- No layout break or clipping issue was observed in the reviewed widths after the fix.
+## Before And After
 
-## Remaining boundary notes
+- Before polish, the hero scale and panel rhythm felt closer to a prototype than a release candidate, workflow badges exposed raw machine labels, and some panels stretched to equal height in a way that made the dashboard feel less intentional.
+- After polish, the hero copy is calmer, section hierarchy is denser and more product-like, button labels read as explicit operator actions, and the technical surfaces present as a deliberate workbench instead of a stack of similar cards.
+- Before the final responsive pass, narrow screens could widen because the workflow strip, heading chips, ambient background blobs, and long artifact filenames did not all collapse cleanly together.
+- After the responsive fixes, all requested widths pass the overflow check through landing, analyzed, and approved states.
 
-- The visible AI section is still honest about runtime availability on this machine.
-- This audit does not upgrade any fixture-backed surface into a live-proof claim.
+## Accessibility Notes
+
+- Visible focus rings are present across links, buttons, and inputs.
+- The artifact list now exposes a vertical `tablist` with a `tabpanel`, roving `tabindex`, and Arrow/Home/End keyboard navigation.
+- Reduced-motion handling remains enabled.
+- Button labels now distinguish approval from write-back preparation more clearly.
+
+## Boundary Notes
+
+- This audit does not convert fixture-backed presentation into a hosted or live-production proof claim.
+- Recorded local proof remains separate from deterministic fixture impact and from the still-pending exact final-head hosted proof.

@@ -52,6 +52,11 @@ if (packageJson.license !== "Apache-2.0") failures.push("package.json must decla
 if (packageJson.private !== true) failures.push("package.json must remain private to prevent accidental registry publication.");
 if (packageJson.engines?.node !== ">=20") failures.push("package.json must support the declared Node.js >=20 judge path.");
 
+const pagesWorkflow = await readFile(path.join(root, ".github/workflows/pages.yml"), "utf8");
+if (!/npm run submission:check/.test(pagesWorkflow)) failures.push("pages workflow must run submission:check before deploy.");
+if (/^\s*-\s*run:\s*npm run validate\s*$/m.test(pagesWorkflow)) failures.push("pages workflow must not rely on validate alone; use submission:check.");
+if (!/git diff --exit-code/.test(pagesWorkflow)) failures.push("pages workflow must keep the tracked-tree idempotence check.");
+
 for (const script of [
   "plan:check", "prevideo:check", "submission:check", "check", "evidence:check", "test", "demo", "demo:generate", "demo:check",
   "sandbox", "sandbox:generate", "sandbox:check", "dbt:proof", "dbt:proof:check", "pr:bundle", "pr:bundle:check",

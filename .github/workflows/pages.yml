@@ -27,7 +27,7 @@ jobs:
         with:
           python-version: "3.11"
       - run: npm ci --ignore-scripts
-      - run: npm run validate
+      - run: npm run submission:check
       - name: Prove validation is idempotent
         run: git diff --exit-code
       - uses: actions/configure-pages@v5
