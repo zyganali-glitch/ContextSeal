@@ -22,10 +22,16 @@ test("judge UI cannot render the approved fixture before the approval action", a
   assert.match(html, /id="loopInheritState"[^>]*data-state="PENDING"[^>]*>PENDING</);
   assert.match(html, /id="recordedProof"/);
   assert.match(html, /id="agentTrace"/);
+  assert.match(html, /id="artifacts"[^>]*role="tablist"[^>]*aria-orientation="vertical"/);
+  assert.match(html, /id="artifactViewer"[^>]*role="tabpanel"[^>]*tabindex="0"/);
   assert.match(html, /id="artifactViewer"/);
+  assert.match(html, /Approve safe scope/);
+  assert.match(html, /Prepare write-back/);
   assert.match(app, /createProofDashboard/);
   assert.match(proofDashboard, /function renderRecordedProof\(proof\)/);
   assert.match(proofDashboard, /function renderAgentTrace\(run\)/);
   assert.match(proofDashboard, /function renderArtifactViewer\(file, run\)/);
+  assert.match(proofDashboard, /aria-controls", "artifactViewer"/);
+  assert.match(proofDashboard, /ArrowDown/);
   assert.doesNotMatch(proofDashboard, /innerHTML/);
 });

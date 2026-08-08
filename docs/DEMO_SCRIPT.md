@@ -6,7 +6,7 @@ A developer requests a direct rename of `customer_email` to `contact_email`. Con
 
 ## Recording rule
 
-Target 2 minutes 20 seconds, with an allowed range of 2:15 to 2:30. Keep the fixture badge visible in every product shot. When the recorded proof receipt appears, keep its `RECORDED LIVE-LOCAL PROOF` label visible too; never describe either surface as a current live catalog connection. Never narrate a prepared operation as completed. The video must match the committed evidence manifest.
+Target 2 minutes 20 seconds, with an allowed range of 2:15 to 2:30. Keep the fixture badge visible in every product shot. When the recorded proof receipt appears, keep its `Recorded live-local proof` label visible too; never describe either surface as a current live catalog connection. Never narrate a prepared operation as completed. The video must match the committed evidence manifest.
 
 ## Shot plan
 
@@ -60,7 +60,7 @@ Target 2 minutes 20 seconds, with an allowed range of 2:15 to 2:30. Keep the fix
 
 ### 02:08-02:20 - Recorded live-local close
 
-- On screen: Show the `RECORDED LIVE-LOCAL PROOF` receipt, receipt states, and source links while the fixture badge stays visible.
+- On screen: Show the `Recorded live-local proof` receipt, receipt states, and source links while the fixture badge stays visible.
 - Spoken beat: `A separate recorded disposable-local proof completed three bounded write-backs, then verified an idempotent retry that skipped the same three operations on synthetic metadata. This page is not a live catalog connection.`
 - Subtitle: `Recorded local proof passed separately from the fixture demo; it is never a hosted live claim.`
 

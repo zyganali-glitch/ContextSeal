@@ -4,6 +4,13 @@ function repositorySourceUrl(relativePath) {
   return `${REPOSITORY_SOURCE_ROOT}${relativePath.split("/").map(encodeURIComponent).join("/")}`;
 }
 
+function createNode(tagName, className, textValue) {
+  const element = document.createElement(tagName);
+  if (className) element.className = className;
+  if (textValue != null) element.textContent = textValue;
+  return element;
+}
+
 function stateFromAi(ai) {
   return ai?.status === "PASS" ? "PASS" : "NOT_RUN";
 }
@@ -13,7 +20,47 @@ function formatRecordedTime(value) {
   return Number.isFinite(parsed) ? new Date(parsed).toLocaleString() : "not recorded";
 }
 
+function formatCompact(value, max = 24) {
+  const s = String(value || "");
+  if (s.length <= max) return s;
+  return s.slice(0, 10) + "…" + s.slice(-10);
+}
+
+function createCopyButton(fullValue) {
+  const btn = document.createElement("button");
+  btn.type = "button";
+  btn.className = "copy-button";
+  btn.textContent = "Copy";
+  btn.title = `Copy full value: ${fullValue}`;
+  btn.addEventListener("click", async () => {
+    try {
+      await navigator.clipboard.writeText(fullValue);
+      btn.textContent = "Copied";
+      setTimeout(() => { btn.textContent = "Copy"; }, 1200);
+    } catch {
+      btn.textContent = "Failed";
+      setTimeout(() => { btn.textContent = "Copy"; }, 1200);
+    }
+  });
+  return btn;
+}
+
+function appendProofRow(list, label, value) {
+  const row = createNode("div", "proof-definition-row");
+  const dt = createNode("dt", null, label);
+  const dd = createNode("dd", null, formatCompact(value));
+  dd.title = String(value || "");
+  dd.setAttribute("aria-label", `${label}: ${value}`);
+  if (String(value || "").length > 24) {
+    dd.append(createCopyButton(String(value)));
+  }
+  row.append(dt, dd);
+  list.append(row);
+}
+
 export function createProofDashboard({ select, text, evidenceState, formatChangeType, formatStrategy }) {
+  let activeArtifactTabId = null;
+
   function appendSourceLink(container, label, relativePath) {
     const link = document.createElement("a");
     link.href = repositorySourceUrl(relativePath);
@@ -29,21 +76,17 @@ export function createProofDashboard({ select, text, evidenceState, formatChange
     diff.hidden = run.request?.changeType !== "rename_column";
     if (diff.hidden) return;
 
-    const title = document.createElement("strong");
-    title.textContent = "Compatibility rename diff";
-    const removed = document.createElement("code");
-    removed.className = "diff-removed";
-    removed.textContent = `- ${run.request.sourceField}`;
-    const added = document.createElement("code");
-    added.className = "diff-added";
-    added.textContent = `+ ${run.request.destinationField}`;
+    const title = createNode("strong", null, "Compatibility rename diff");
+    const removed = createNode("code", "diff-removed", `- ${run.request.sourceField}`);
+    const added = createNode("code", "diff-added", `+ ${run.request.destinationField}`);
     diff.append(title, removed, added);
   }
 
   function renderArtifactViewer(file, run) {
     text("#artifactKind", file.kind.replaceAll("_", " "));
     text("#artifactPath", file.path);
-    select("#artifactContent").textContent = file.content;
+    select("#artifactContent").textContent = file.content || "No artifact content available.";
+    if (activeArtifactTabId) select("#artifactViewer").setAttribute("aria-labelledby", activeArtifactTabId);
     const links = select("#artifactLinks");
     links.replaceChildren();
     appendSourceLink(links, "Manifest grounding", "examples/outputs/generated/ARTIFACT_MANIFEST.json");
@@ -54,30 +97,50 @@ export function createProofDashboard({ select, text, evidenceState, formatChange
   function renderArtifacts(files, run) {
     const list = select("#artifacts");
     list.replaceChildren();
+
+    const activateTab = (index, focusTab = false) => {
+      const tabs = [...list.querySelectorAll("[role=tab]")];
+      for (const [tabIndex, tab] of tabs.entries()) {
+        const selected = tabIndex === index;
+        tab.setAttribute("aria-selected", selected ? "true" : "false");
+        tab.tabIndex = selected ? 0 : -1;
+      }
+      const activeTab = tabs[index];
+      if (focusTab) activeTab?.focus();
+      activeArtifactTabId = activeTab?.id || null;
+      if (files[index]) renderArtifactViewer(files[index], run);
+    };
+
     for (const [index, file] of files.entries()) {
       const row = document.createElement("button");
       row.type = "button";
       row.className = "artifact-tab";
+      row.id = `artifact-tab-${index + 1}`;
       row.setAttribute("role", "tab");
+      row.setAttribute("aria-controls", "artifactViewer");
       row.setAttribute("aria-selected", index === 0 ? "true" : "false");
-      const icon = document.createElement("span");
-      icon.className = "artifact-icon";
-      icon.textContent = String(index + 1).padStart(2, "0");
-      const copy = document.createElement("div");
-      const title = document.createElement("strong");
-      title.textContent = file.path;
-      const kind = document.createElement("p");
-      kind.textContent = file.kind;
+      row.tabIndex = index === 0 ? 0 : -1;
+      const icon = createNode("span", "artifact-icon", String(index + 1).padStart(2, "0"));
+      const copy = createNode("div", "artifact-copy");
+      const title = createNode("strong", null, file.path.split("/").at(-1));
+      const directory = file.path.includes("/") ? file.path.slice(0, file.path.lastIndexOf("/")) : "generated";
+      const kind = createNode("p", null, `${file.kind.replaceAll("_", " ")} · ${directory}`);
       copy.append(title, kind);
       row.append(icon, copy);
-      row.addEventListener("click", () => {
-        for (const tab of list.querySelectorAll("[role=tab]")) tab.setAttribute("aria-selected", "false");
-        row.setAttribute("aria-selected", "true");
-        renderArtifactViewer(file, run);
+      row.addEventListener("click", () => activateTab(index));
+      row.addEventListener("keydown", (event) => {
+        let nextIndex = null;
+        if (event.key === "ArrowDown" || event.key === "ArrowRight") nextIndex = (index + 1) % files.length;
+        if (event.key === "ArrowUp" || event.key === "ArrowLeft") nextIndex = (index - 1 + files.length) % files.length;
+        if (event.key === "Home") nextIndex = 0;
+        if (event.key === "End") nextIndex = files.length - 1;
+        if (nextIndex == null) return;
+        event.preventDefault();
+        activateTab(nextIndex, true);
       });
       list.append(row);
     }
-    if (files.length) renderArtifactViewer(files[0], run);
+    if (files.length) activateTab(0);
   }
 
   function renderAgentTrace(run) {
@@ -89,13 +152,13 @@ export function createProofDashboard({ select, text, evidenceState, formatChange
     const readbackState = evidenceState(run, "Durable DataHub read-back verified");
     const checkpoints = [
       ["Change contract", run.mode === "fixture" ? "FIXTURE" : "PASS", `${formatChangeType(run.request.changeType)} request is typed and target-bound.`],
-      ["Context capture", evidenceState(run, "DataHub context retrieved"), "Catalog context is preserved before deterministic evaluation."],
+      ["Context capture", evidenceState(run, "DataHub context retrieved"), "Catalog context is captured before deterministic evaluation."],
       ["Schema anchor", evidenceState(run, "Target field validated in schema"), `Source field ${run.request.sourceField} is checked against the captured schema.`],
-      ["Lineage boundary", evidenceState(run, "Downstream impact paths traced"), `${run.impact.counts.total} reachable downstream assets stay within the policy hop bound.`],
-      ["Risk verdict", run.risk.verdict === "BLOCKED" ? "PASS" : "WARN", `${run.risk.score}/100 deterministic risk verdict: ${run.risk.verdict}.`],
+      ["Lineage boundary", evidenceState(run, "Downstream impact paths traced"), `${run.impact.counts.total} downstream assets stay inside the hop bound.`],
+      ["Risk verdict", run.risk.verdict === "BLOCKED" ? "PASS" : "WARN", `${run.risk.score}/100 deterministic verdict: ${run.risk.verdict}.`],
       ["Safety rewrite", artifactState, `${formatStrategy(run.artifacts.strategy)} replaces the destructive request.`],
       ["Manifest grounding", artifactState, `${run.artifacts.files.length} generated files are hash-bound to the grounding contract.`],
-      ["AI explanation", stateFromAi(run.ai), run.ai?.status === "PASS" ? "Bounded explanation is available after the deterministic verdict." : "AI explanation is not authoritative and is not available for this run."],
+      ["AI explanation", stateFromAi(run.ai), run.ai?.status === "PASS" ? "Bounded explanation is available after the deterministic verdict." : "AI remains optional and non-authoritative for this run."],
       ["Human scope", approvalState, approvalState === "PASS" ? "A reviewer approved the generated safe scope." : "No scope approval is recorded yet."],
       ["Passport issuance", run.passport?.status === "CERTIFIED" ? "PASS" : "NOT_RUN", run.passport ? `Passport ${run.passport.passportId} binds the approved decision.` : "A passport cannot exist before scoped approval."],
       ["Write-back gate", writebackState, writebackState === "PASS" ? "Bounded catalog mutation completed and is receipt-backed." : "Write-back stays closed for this fixture run."],
@@ -104,22 +167,27 @@ export function createProofDashboard({ select, text, evidenceState, formatChange
 
     for (const [index, [titleText, state, detailText]] of checkpoints.entries()) {
       const item = document.createElement("li");
-      const sequence = document.createElement("span");
-      sequence.className = "trace-sequence";
-      sequence.textContent = String(index + 1).padStart(2, "0");
-      const copy = document.createElement("div");
-      const title = document.createElement("strong");
-      title.textContent = titleText;
-      const detail = document.createElement("p");
-      detail.textContent = detailText;
+      const sequence = createNode("span", "trace-sequence", String(index + 1).padStart(2, "0"));
+      const copy = createNode("div", "trace-copy");
+      const title = createNode("strong", null, titleText);
+      const detail = createNode("p", null, detailText);
       copy.append(title, detail);
-      const badge = document.createElement("span");
-      badge.className = "evidence-state";
+      const badge = createNode("span", "evidence-state", state);
       badge.dataset.state = state;
-      badge.textContent = state;
       item.append(sequence, copy, badge);
       trace.append(item);
     }
+  }
+
+  function appendProofGroup(container, titleText, entries) {
+    const group = createNode("section", "proof-group");
+    group.append(createNode("h3", null, titleText));
+    const definitionList = createNode("dl", "proof-definition-list");
+    for (const [label, value] of entries) {
+      appendProofRow(definitionList, label, value);
+    }
+    group.append(definitionList);
+    container.append(group);
   }
 
   function renderRecordedProof(proof) {
@@ -129,7 +197,7 @@ export function createProofDashboard({ select, text, evidenceState, formatChange
       return;
     }
     section.classList.remove("hidden");
-    text("#recordedProofLabel", proof.label || "RECORDED LIVE-LOCAL PROOF");
+    text("#recordedProofLabel", proof.label || "Recorded live-local proof");
     text("#recordedProofState", proof.status || "NOT_RUN");
     select("#recordedProofState").dataset.state = proof.status || "NOT_RUN";
     text("#recordedProofNote", proof.note || "Recorded evidence is unavailable.");
@@ -140,52 +208,58 @@ export function createProofDashboard({ select, text, evidenceState, formatChange
       .map(([type, count]) => `${type} ${count ?? "not recorded"}`)
       .join(" · ");
     const queryCount = proof.read?.queryCount;
-    const values = [
-      ["Observed", formatRecordedTime(proof.observedAt)],
-      ["Target", proof.targetUrn || "not recorded"],
-      ["MCP", [proof.mcp?.serverName, proof.mcp?.serverVersion].filter(Boolean).join(" ") || "not recorded"],
+    appendProofGroup(stats, "Capture", [
+      ["Proof state", proof.status || "NOT_RUN"],
+      ["Captured", formatRecordedTime(proof.observedAt)],
       ["Source commit", proof.sourceProvenance?.commitSha || "not recorded"],
-      ["Read tools", proof.read?.toolNames?.join(", ") || "not recorded"],
+      ["Target URN", proof.targetUrn || "not recorded"]
+    ]);
+    appendProofGroup(stats, "Read context", [
+      ["MCP server", [proof.mcp?.serverName, proof.mcp?.serverVersion].filter(Boolean).join(" ") || "not recorded"],
+      ["MCP tools", proof.read?.toolNames?.join(", ") || "not recorded"],
       ["Queries", queryCount === 0 ? "0 (PASS with zero results)" : queryCount ?? "not recorded"],
       ["Entity types", entityTypes || "not recorded"],
       ["Max hops", proof.read?.maxHops ?? "not recorded"],
-      ["Read hash", proof.sourceProvenance?.initialRawEvidenceHash || proof.rawEvidenceHash || "not recorded"],
-      ["Final read hash", proof.sourceProvenance?.finalRawEvidenceHash || "not recorded"],
+      ["Initial read hash", proof.sourceProvenance?.initialRawEvidenceHash || proof.rawEvidenceHash || "not recorded"],
+      ["Final read hash", proof.sourceProvenance?.finalRawEvidenceHash || "not recorded"]
+    ]);
+    appendProofGroup(stats, "Write-back and read-back", [
       ["Durable read-back", proof.writeback?.durableReadbackState || "not recorded"],
       ["Idempotency", proof.writeback?.idempotencyStrategy || "not recorded"],
       ["One description", proof.writeback?.exactOneDescription?.count == null ? proof.writeback?.exactOneDescription?.state || "not recorded" : `${proof.writeback.exactOneDescription.count} (${proof.writeback.exactOneDescription.state})`],
       ["One document", proof.writeback?.exactOneDocument?.state || "not recorded"]
-    ];
-    for (const [label, value] of values) {
-      const item = document.createElement("div");
-      const key = document.createElement("span");
-      key.textContent = label;
-      const content = document.createElement("strong");
-      content.textContent = String(value);
-      item.append(key, content);
-      stats.append(item);
-    }
+    ]);
 
     const receipts = select("#recordedProofReceipts");
     receipts.replaceChildren();
     for (const [runLabel, actions] of [["first", proof.writeback?.firstRunActions || []], ["second", proof.writeback?.secondRunActions || []]]) {
+      if (!actions.length) continue;
+      const group = createNode("section", "proof-receipt-group");
+      const title = createNode("strong", "proof-receipt-title", `${runLabel === "first" ? "First run" : "Second run"} receipts`);
+      const titleState = createNode("span", "evidence-state", "PASS");
+      titleState.dataset.state = "PASS";
+      title.append(titleState);
+      group.append(title);
+      const rows = createNode("div", "proof-receipt-list");
       for (const receipt of actions) {
-      const row = document.createElement("div");
-      const tool = document.createElement("code");
-      tool.textContent = `${runLabel} ${receipt.tool}: ${receipt.action}`;
-      const state = document.createElement("span");
-      state.className = "evidence-state";
-      state.dataset.state = receipt.state;
-      state.textContent = receipt.state;
-      row.append(tool, state);
-      receipts.append(row);
+        const row = createNode("div", "proof-receipt-row");
+        const tool = createNode("code", null, `${receipt.tool}: ${receipt.action}`);
+        tool.title = `Original state: ${receipt.state}`;
+        const state = createNode("span", "evidence-state", runLabel === "first" ? "APPLIED" : "SKIPPED");
+        state.dataset.state = runLabel === "first" ? "APPLIED" : "SKIPPED";
+        state.dataset.originalState = receipt.state;
+        state.setAttribute("aria-label", `Original state ${receipt.state}`);
+        row.append(tool, state);
+        rows.append(row);
       }
+      group.append(rows);
+      receipts.append(group);
     }
 
     const links = select("#recordedProofLinks");
     links.replaceChildren();
     for (const evidencePath of proof.evidencePaths || []) {
-      appendSourceLink(links, evidencePath.includes("writeback") ? "Write-back record" : "Read record", evidencePath);
+      appendSourceLink(links, evidencePath.includes("writeback") ? "Write-back evidence" : "Read evidence", evidencePath);
     }
   }
 
