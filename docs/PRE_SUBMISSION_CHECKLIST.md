@@ -1,20 +1,22 @@
 # Pre-Submission Checklist
 
-Updated: 2026-08-06 UTC
+Updated: 2026-08-08 UTC
 
 This checklist is authoritative for final-head release readiness. Do not claim the hackathon submission is frozen until every required item below is either `PASS` with named evidence or explicitly marked `WARN` or `NOT_RUN` with a direct reason.
 
 ## Current truth before the final freeze
 
 - [x] Record that PR #4 merged into `main` as merge commit `0dc924db9d82037d2e813548bdee27af5f180889`.
+- [x] Record that PR #5 (`agent/contextseal-final-product-polish`) merged into `main` as merge commit `7f24388059e8a12872f48c214ebd2cac82811a7d`.
+- [x] Record that `7f24388059e8a12872f48c214ebd2cac82811a7d` is the verified PRE-VIDEO MAIN CANDIDATE: ContextSeal CI run `31246557467` PASS (validate Node 20 PASS, validate Node 24 PASS, dbt-proof PASS, container-smoke PASS, submission PASS) and Deploy Judge Demo run `31246557473` PASS (build PASS, deploy PASS, Pages `submission:check` PASS).
 - [x] Record that the earlier pre-freeze candidate SHA `c984eeba449d54d49fb4228b22835933fb7db98e` has hosted CI proof only.
-- [x] Record that the temporary PR #4 working branch was deleted after merge.
-- [ ] Select the new frozen release SHA after the final product-polish branch merges into `main`.
+- [x] Record that the temporary PR #4 and PR #5 working branches were deleted or retired after merge.
+- [ ] Select the new frozen release SHA after the final docs truth-sync merges into `main`. The immutable GitHub Release after that merge is the authoritative record for the exact final release SHA, CI run, Pages run, video URL, and Devpost freeze.
 
 ## Exact final-head procedure
 
-1. Finish code, UI polish, and submission copy on the active product-polish branch.
-2. Merge that branch to `main`, then stop landing follow-up changes on top of the chosen release candidate SHA.
+1. Finish code, UI polish, and submission copy (product-polish landed as PR #5; final docs truth-sync lands as the last docs-only PR).
+2. Merge the final docs truth-sync branch to `main`, then stop landing follow-up changes on top of the chosen release candidate SHA.
 3. Run `npm run prevideo:check` and `npm run submission:check` on that exact checkout; keep the tree clean.
 4. Push only that exact SHA to the release branch or final `main` head.
 5. Record the matching GitHub Actions CI run and GitHub Pages deploy for that same SHA before changing any submission surface.
@@ -66,7 +68,9 @@ This checklist is authoritative for final-head release readiness. Do not claim t
 ## Hosted and container proof
 
 - [x] Historical candidate SHA `c984eeba449d54d49fb4228b22835933fb7db98e` already has GitHub Actions run `30766641380`: `https://github.com/zyganali-glitch/ContextSeal/actions/runs/30766641380`.
-- [ ] Record the GitHub Actions run URL or ID for the new frozen release SHA.
+- [x] Pre-video main candidate `7f24388059e8a12872f48c214ebd2cac82811a7d` has ContextSeal CI run `31246557467` PASS: validate Node 20 PASS, validate Node 24 PASS, dbt-proof PASS, container-smoke PASS, submission PASS — `https://github.com/zyganali-glitch/ContextSeal/actions/runs/31246557467`.
+- [x] Pre-video main candidate `7f24388059e8a12872f48c214ebd2cac82811a7d` has Deploy Judge Demo run `31246557473` PASS: build PASS, deploy PASS, Pages `submission:check` PASS — `https://github.com/zyganali-glitch/ContextSeal/actions/runs/31246557473`.
+- [ ] Record the GitHub Actions run URL or ID for the new frozen release SHA (post-docs-merge) in the immutable GitHub Release.
 - [ ] Record the Node 20 validation result on the new frozen release SHA.
 - [ ] Record the Node 24 validation result on the new frozen release SHA.
 - [ ] Record the Python setup and fail-closed DataHub safety-test result on the new frozen release SHA.

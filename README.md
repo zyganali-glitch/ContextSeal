@@ -24,13 +24,13 @@ Built as a clean-room entry for **Build with DataHub: The Agent Hackathon**. No 
 - ContextSeal generates a safe migration package and a reviewer-ready PR bundle instead of a destructive change.
 - Human approval produces a durable passport that the next human or agent can inherit.
 
-## What ships in the first minute
+## What the 2:20 demo shows
 
 1. The blocked request and downstream blast radius.
 2. The deterministic `80 / BLOCKED` verdict and named findings.
-3. The explanation-only AI boundary.
-4. The generated safe package and review handoff.
-5. The passport and inherited decision loop.
+3. The explanation-only AI boundary and the recorded/local AI separation.
+4. The five-file generated safe package and review handoff.
+5. Human approval of the safe scope, then the passport payoff and fixture write-back preparation near the end.
 
 ## The problem
 
@@ -45,7 +45,7 @@ DataHub already holds that missing context: schemas, lineage, ownership, governa
 3. Traces every reachable downstream asset and preserves the path that explains the impact.
 4. Calculates deterministic findings such as `BREAKING_LINEAGE`, `SENSITIVE_DATA`, `LIVE_QUERY_USAGE`, and `STALE_CONTEXT`.
 5. Replaces a destructive operation with an expand–migrate–contract strategy.
-6. Generates a dbt model, schema tests, rollback file, and impacted-owner briefing.
+6. Generates a dbt model, schema tests, a rename parity data test, rollback SQL, and an impacted-owner briefing.
 7. Requires a scoped human decision.
 8. Creates a SHA-256 change passport covering the request, context, risk, artifacts, evidence, approval, and validity window.
 9. Writes certification properties, a description, and a decision document back to DataHub only when every mutation gate is open.
@@ -95,11 +95,11 @@ npm start
 
 Open <http://127.0.0.1:4173>, then:
 
-1. Select **Analyze the demo change**.
+1. Select **Analyze change**.
 2. Inspect the fixture-backed five-hop downstream impact trace and risk findings.
-3. Select **Approve safe plan**.
+3. Select **Approve safe scope**.
 4. Inspect the passport ID and evidence states.
-5. Select **Prepare DataHub write-back**. In fixture mode, the application proves that operations were prepared while keeping write-back `NOT_RUN`.
+5. Select **Prepare write-back**. In fixture mode, the application proves that operations were prepared while keeping write-back `NOT_RUN`.
 
 Or use Docker:
 

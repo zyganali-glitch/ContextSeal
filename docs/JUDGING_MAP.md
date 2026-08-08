@@ -55,4 +55,4 @@ The target user is a data platform or analytics engineering team reviewing schem
 
 ## Open-source bonus
 
-The repository includes a reusable DataHub change-certification skill. The intended bonus contribution is an upstream pull request to the DataHub Skills registry after live MCP verification.
+The repository includes a reusable DataHub change-certification skill. The DataHub Skills contribution is no longer merely intended: upstream pull request #35 to the DataHub Skills registry exists and is `OPEN / NOT MERGED / AWAITING MAINTAINER REVIEW`. No maintainer approval is claimed or implied.

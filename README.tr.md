@@ -14,13 +14,13 @@ ContextSeal; riskli bir kolon değişikliğini DataHub bağlamıyla inceleyen, e
 - ContextSeal yıkıcı değişikliği değil, güvenli geçiş paketi ve incelemeye hazır PR paketi üretir.
 - İnsan onayı sonucunda oluşan pasaport, sonraki insan veya ajan tarafından miras alınabilir.
 
-## İlk dakikada ne görülüyor?
+## 2:20 demoda ne görülüyor?
 
 1. Bloke edilen istek ve aşağı yöndeki etki alanı.
 2. Deterministik `80 / BLOCKED` kararı ve isimli bulgular.
-3. Açıklama amaçlı AI sınırı.
-4. Üretilen güvenli geçiş paketi ve inceleme handoff'u.
-5. Pasaport ve miras alınan karar döngüsü.
+3. Açıklama amaçlı AI sınırı ve kayıtlı/yerel AI ayrımı.
+4. Üretilen beş dosyalık güvenli geçiş paketi ve inceleme handoff'u.
+5. Sona doğru insan onayı, pasaport ve fixture write-back hazırlığı.
 
 ## Ne problemi çözüyor?
 
@@ -57,12 +57,12 @@ http://127.0.0.1:4173
 
 Ardından sırasıyla:
 
-1. **Analyze the demo change** düğmesine bas.
+1. **Analyze change** düğmesine bas.
 2. Risk puanını, etkilenen varlıkları, fixture etki yollarını ve Local AI Copilot panelindeki `NOT_ENABLED` durumunu incele.
 3. Üretilen güvenli geçiş dosyalarını incele.
-4. **Approve safe plan** düğmesine bas.
+4. **Approve safe scope** düğmesine bas.
 5. Oluşan pasaport numarasını gör.
-6. **Prepare DataHub write-back** düğmesine bas.
+6. **Prepare write-back** düğmesine bas.
 
 Bu güvenli deneme modunda gerçek DataHub değiştirilmez. Varsayılan ekran DataHub biçimine uyarlanmış sentetik bağlam kullanır; canlı MCP kanıtı ayrı rehberde gösterilir. Ekranda bunun açıkça yazması bilinçli bir güvenlik özelliğidir.
 
