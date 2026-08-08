@@ -16,7 +16,7 @@ Secondary fit: Agents That Do Real Work.
 
 ## 30-second judge summary
 
-ContextSeal stops a breaking schema change before merge by turning DataHub context into a deterministic decision and an inspectable safe migration package. It shows the blocked request, exact fixture-backed downstream paths, generated dbt/model-test/rollback/owner artifacts, and a SHA-256 passport after scoped human approval. A bounded local AI layer explains the fixed verdict without changing it, while a separate recorded disposable-local DataHub proof demonstrates gated write-back and durable read-back on synthetic metadata.
+ContextSeal stops a breaking schema change before merge by turning DataHub context into a deterministic decision and an inspectable safe migration package. It shows the blocked request, exact fixture-backed downstream paths, five generated review files (dbt model, schema tests, rename parity data test, rollback SQL, and impacted-owner brief), and a SHA-256 passport after scoped human approval. A bounded local AI layer explains the fixed verdict without changing it, while a separate recorded disposable-local DataHub proof demonstrates gated write-back and durable read-back on synthetic metadata.
 
 ## Inspiration
 
@@ -26,7 +26,7 @@ AI coding agents can generate valid SQL and dbt code while missing the organizat
 
 In the 2:20 judge demo, ContextSeal blocks a risky rename, shows its deterministic blast radius and 12-step agent trace, inspects a bounded AI explanation and generated artifact viewer, records scoped approval, and ends on the passport plus a separately labeled recorded live-local proof.
 
-ContextSeal accepts a proposed column rename, drop, or type change. Its deterministic core uses captured DataHub-shaped target, lineage, ownership, governance, quality, incident, and query context to reconstruct downstream paths and explain every risk finding. Instead of producing a destructive operation, it generates an expand-migrate-contract dbt model, schema tests, rollback, and owner briefing. The committed manifest links each generated file to the request, deterministic findings, downstream-owner context, migration rule, and passport context. A local deterministic sandbox then checks that bundle against its hashes and grounding contract; it is a conformance proof, not warehouse SQL execution.
+ContextSeal accepts a proposed column rename, drop, or type change. Its deterministic core uses captured DataHub-shaped target, lineage, ownership, governance, quality, incident, and query context to reconstruct downstream paths and explain every risk finding. Instead of producing a destructive operation, it generates five review files: an expand-migrate-contract dbt model, schema tests, a rename parity data test, rollback SQL, and an impacted-owner briefing. The committed manifest links each generated file to the request, deterministic findings, downstream-owner context, migration rule, and passport context. A local deterministic sandbox then checks that bundle against its hashes and grounding contract; it is a conformance proof, not warehouse SQL execution.
 
 After the deterministic verdict is fixed, an optional local Ollama layer can turn the grounded run into a non-authoritative owner alert, migration rationale, reviewer-note draft, and next-step guidance. The AI receives structured grounded input, cannot alter risk or evidence states, and records `NOT_ENABLED` or `UNAVAILABLE` when the local runtime is absent instead of fabricating confidence.
 

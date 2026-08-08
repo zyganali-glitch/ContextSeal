@@ -1,6 +1,6 @@
 # ContextSeal UI Review
 
-Updated: 2026-08-06 UTC
+Updated: 2026-08-08 UTC
 
 ## Scope
 
@@ -58,4 +58,4 @@ This audit reviews the judge-facing dashboard after the final product polish, re
 ## Boundary Notes
 
 - This audit does not convert fixture-backed presentation into a hosted or live-production proof claim.
-- Recorded local proof remains separate from deterministic fixture impact and from the still-pending exact final-head hosted proof.
+- Recorded local proof remains separate from deterministic fixture impact. Exact-head hosted proof is no longer pending for the current pre-video main candidate: `7f24388059e8a12872f48c214ebd2cac82811a7d` passed ContextSeal CI run `31246557467` and Deploy Judge Demo run `31246557473` (build PASS, deploy PASS). The post-docs-merge release SHA will be recorded in the immutable GitHub Release.

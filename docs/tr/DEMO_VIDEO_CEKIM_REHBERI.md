@@ -11,7 +11,7 @@ Bu rehberle İngilizce konuşmadan, ücretsiz araçlarla, üç dakikadan kısa �
 - Müzik: kullanılmayacak.
 - Kişisel bilgi: görünmeyecek.
 - Varsayılan akış fixture tabanlıdır; canlı MCP kanıtı gösterilecekse bunun sentetik verili yerel DataHub olduğunu açıkça söyleyeceğiz.
-- Her ürün karesinde fixture rozeti görünür kalmalı; kayıtlı kanıt bölümü gösterilirse `Recorded live-local proof` etiketi de kadrajda kalmalı.
+- Her ürün karesinde fixture rozeti görünür kalmalı; sayfa başlığı kaydırma sırasında görünümden çıkarsa, rozetin her kaydırma derinliğinde fiziksel olarak kadrajda kalması gerektiğini iddia etmek yerine kalıcı bir editör overlay'i `PUBLIC DEMO · FIXTURE REPLAY` kullanılabilir. Kayıtlı kanıt bölümü gösterilirse `Recorded live-local proof` etiketi de kadrajda kalmalı.
 
 ## Kullanılacak ücretsiz araçlar
 
@@ -61,7 +61,7 @@ Bu bölüm varsayılan 2 dakika 20 saniyelik kaydın zorunlu parçası değildir
 
 1. ContextSeal’i yeniden başlat.
 2. Ana sayfayı yenile.
-3. Henüz **Analyze the demo change** düğmesine basma.
+3. Henüz **Analyze change** düğmesine basma.
 4. Reviewer alanında `demo-reviewer` yazdığını doğrula.
 5. Decision note alanında güvenli plan onayının yazdığını doğrula.
 
@@ -117,19 +117,17 @@ OBS’nin alt bölümünde **Sources** adlı kutuyu bul.
 
 Önce bir prova yap. İlk kaydın kusursuz olması gerekmiyor.
 
-### Çekim sırası
+### Çekim sırası — 9 klipli son zaman çizelgesi
 
-1. OBS’de **Start Recording** düğmesine bas.
-2. ContextSeal başlık ekranını ve `customer_email → contact_email` isteğini göster.
-3. **Analyze the demo change** düğmesine bir kez bas.
-4. Risk puanını, fixture rozetiyle birlikte beş aşağı yönlü varlığı ve bulguları göster.
-5. Local AI Copilot panelini göster; AI'nın sadece açıklama yaptığı ve `NOT_ENABLED` durumunun dürüstçe göründüğü anı kaydet.
-6. Agent Run Trace'i, üretilen beş dosyayı, rename diff'i, sandbox kanıtını ve PR inceleme paketini göster.
-7. İnsan onayı bölümüne kaydır ve **Approve safe plan** düğmesine bir kez bas.
-8. Pasaport numarası ve manifest hash oluşunca birkaç saniye bekle.
-9. **Prepare DataHub write-back** düğmesine bas. Fixture gösteriminde hiçbir kataloğun değiştirilmediği yazmalıdır.
-10. `Recorded live-local proof` receipt'ini yalnız sentetik metadata etiketiyle kısa göster veya fixture kapanışıyla devam et; bunu aktif canlı katalog bağlantısı diye anlatma.
-11. OBS’ye dön ve **Stop Recording** düğmesine bas.
+1. **00:00-00:12 — Problem:** OBS'de **Start Recording** düğmesine bas. ContextSeal başlık ekranını ve ilk hero cümlesini göster.
+2. **00:12-00:28 — İstek + Analyze change:** `customer_email → contact_email` isteğini ve bloke risk hero'sunu göster, ardından **Analyze change** düğmesine bir kez bas.
+3. **00:28-00:45 — Fixture etki alanı:** Risk puanını, fixture rozetiyle birlikte beş aşağı yönlü varlığı ve bulguları göster.
+4. **00:45-01:00 — Deterministik blok:** Risk skoruna ve politika bulgularına yakınlaş.
+5. **01:00-01:15 — Agent trace + kayıtlı/yerel AI sınırı:** 12 adımlı Agent Run Trace'i göster; Local AI Copilot panelinde AI'nın sadece açıklama yaptığını ve `NOT_ENABLED` durumunun dürüstçe göründüğünü kaydet.
+6. **01:15-01:35 — Beş dosyalık artefakt paketi:** Üretilen beş inceleme dosyasını (dbt model, schema testleri, rename parity data testi, rollback SQL, impacted-owner brief) artefakt görüntüleyicide göster; rename diff'ini ve manifest dayanak bağlantısını göster.
+7. **01:35-01:50 — Approve safe scope:** İnsan onayı bölümüne kaydır ve **Approve safe scope** düğmesine bir kez bas.
+8. **01:50-02:08 — Pasaport + fixture Prepare write-back:** Pasaport numarası, manifest hash, geçerlilik ve kanıt durumları oluşunca birkaç saniye bekle; ardından **Prepare write-back** düğmesine bas. Fixture gösteriminde hiçbir kataloğun değiştirilmediği yazmalıdır.
+9. **02:08-02:20 — Kayıtlı disposable-local DataHub kanıtı:** `Recorded live-local proof` receipt'ini yalnız sentetik metadata etiketiyle kısa göster; bunu aktif canlı katalog bağlantısı diye anlatma. Ardından OBS'ye dön ve **Stop Recording** düğmesine bas.
 
 ### Kayıt sırasında dikkat et
 
@@ -137,7 +135,7 @@ OBS’nin alt bölümünde **Sources** adlı kutuyu bul.
 - Metin okurken ekranda en az 3 saniye kal.
 - Yanlış düğmeye basarsan kaydı durdurup yeniden başla.
 - Hata mesajını gizleyip devam etme.
-- Fixture modundaysan üstteki fixture rozetini görüntüden çıkarma; recorded proof görünürse onun etiketini de görüntüden çıkarma.
+- Fixture modundaysan üstteki fixture rozetini görüntüden çıkarma; başlık kaydırma ile görünümden çıkarsa `PUBLIC DEMO · FIXTURE REPLAY` overlay'ini kullan. Recorded proof görünürse onun etiketini de görüntüden çıkarma.
 
 ## Bölüm D — Clipchamp ile videoyu düzenle
 
@@ -167,9 +165,9 @@ OBS’nin alt bölümünde **Sources** adlı kutuyu bul.
 
 Clipchamp’te **Record & create** veya **Text to speech** bölümünü bul. Türkçe arayüzde “Kaydet ve oluştur” ya da “Metinden konuşmaya” yazabilir.
 
-Her metni tek parça yerine aşağıdaki sekiz bölüm halinde ekle. Böylece görüntüyle eşleştirmek kolay olur.
+Her metni tek parça yerine aşağıdaki dokuz bölüm halinde ekle. Böylece 9 klipli zaman çizelgesiyle eşleştirmek kolay olur.
 
-#### Ses 1 — Açılış
+#### Ses 1 — Açılış (00:00-00:12)
 
 ```text
 A repository can see code. DataHub can see what that code will break. ContextSeal turns that context into a change decision backed by proof.
@@ -177,46 +175,52 @@ A repository can see code. DataHub can see what that code will break. ContextSea
 
 Türkçe anlamı: Repo kodu görür; DataHub kodun neyi kıracağını görür. ContextSeal bu bağlamı kanıtlı karara dönüştürür.
 
-#### Ses 2 — İstek
+#### Ses 2 — İstek ve Analyze change (00:12-00:28)
 
 ```text
 Here, a developer requests a direct customer email rename. ContextSeal blocks the risky request before it reaches GitHub.
 ```
 
-#### Ses 3 — DataHub bağlamı
+#### Ses 3 — Fixture etki alanı (00:28-00:45)
 
 ```text
 The public fixture shows five downstream assets and the path that explains the blast radius. Separate local evidence records raw DataHub MCP reads on synthetic metadata.
 ```
 
-#### Ses 4 — Risk kararı
+#### Ses 4 — Deterministik blok (00:45-01:00)
 
 ```text
 The deterministic policy blocks the direct change with a risk score of eighty and named lineage, sensitivity, and fixture query-evidence findings.
 ```
 
-#### Ses 5 — AI sınırı
+#### Ses 5 — Agent trace ve AI sınırı (01:00-01:15)
 
 ```text
 The 12-step agent trace shows evidence moving before action. After the deterministic verdict, the local AI layer creates bounded operator guidance. It can explain the evidence, but it can never change the verdict or evidence state.
 ```
 
-#### Ses 6 — Güvenli çözüm
+#### Ses 6 — Beş dosyalık güvenli paket (01:15-01:35)
 
 ```text
-Instead of a destructive rename, ContextSeal exposes an inspectable expand, migrate, and contract package: dbt model, parity test, rollback, owner brief, sandbox evidence, and a reviewer-ready PR packet.
+Instead of a destructive rename, ContextSeal exposes an inspectable expand, migrate, and contract package of five generated review files: dbt model, schema tests, rename parity data test, rollback SQL, and impacted-owner brief.
 ```
 
-#### Ses 7 — Onay ve pasaport
+#### Ses 7 — Approve safe scope (01:35-01:50)
 
 ```text
-A human approves only this safe scope. ContextSeal binds the request, context, artifacts, evidence, and approval into a SHA two fifty six change passport.
+A human approves only this safe scope, never the original destructive request.
 ```
 
-#### Ses 8 — Dürüst kapanış
+#### Ses 8 — Pasaport ve fixture Prepare write-back (01:50-02:08)
 
 ```text
-In this public fixture, write-back remains not run and no catalog is modified. The separately labeled Recorded live-local proof shows three bounded write-backs, a skipped idempotent retry, and durable read-back on synthetic metadata; it is not a current live catalog connection.
+ContextSeal binds the request, context, artifacts, evidence, and approval into a SHA two fifty six change passport. In this public fixture, write-back remains not run and no catalog is modified.
+```
+
+#### Ses 9 — Kayıtlı disposable-local DataHub kanıtı (02:08-02:20)
+
+```text
+The separately labeled Recorded live-local proof shows three bounded write-backs, a skipped idempotent retry, and durable read-back on synthetic metadata; it is not a current live catalog connection.
 ```
 
 ### 5. Ses ayarı
