@@ -1,4 +1,6 @@
-# Devpost Submission Draft
+# Devpost Submission
+
+Status: **submitted** at <https://devpost.com/software/contextseal>. The sections below record the final submitted content.
 
 ## Project name
 
@@ -24,7 +26,7 @@ AI coding agents can generate valid SQL and dbt code while missing the organizat
 
 ## What it does
 
-In the 2:20 judge demo, ContextSeal blocks a risky rename, shows its deterministic blast radius and 12-step agent trace, inspects a bounded AI explanation and generated artifact viewer, records scoped approval, and ends on the passport plus a separately labeled recorded live-local proof.
+In the final judge demo video (approximately 2:05), ContextSeal blocks a risky rename, shows its deterministic blast radius and 12-step agent trace, inspects a bounded AI explanation and generated artifact viewer, records scoped approval, and ends on the passport plus a separately labeled recorded live-local proof.
 
 ContextSeal accepts a proposed column rename, drop, or type change. Its deterministic core uses captured DataHub-shaped target, lineage, ownership, governance, quality, incident, and query context to reconstruct downstream paths and explain every risk finding. Instead of producing a destructive operation, it generates five review files: an expand-migrate-contract dbt model, schema tests, a rename parity data test, rollback SQL, and an impacted-owner briefing. The committed manifest links each generated file to the request, deterministic findings, downstream-owner context, migration rule, and passport context. A local deterministic sandbox then checks that bundle against its hashes and grounding contract; it is a conformance proof, not warehouse SQL execution.
 
@@ -86,9 +88,31 @@ Context is most valuable when it changes an action, not when it only improves an
 
 - Repository: https://github.com/zyganali-glitch/ContextSeal
 - Live demo: https://zyganali-glitch.github.io/ContextSeal/
-- Demo video: not recorded yet; add the public final URL only after the exact final-head CI and Pages proofs are recorded from the same frozen SHA.
-- DataHub skill contribution: [datahub-project/datahub-skills#35](https://github.com/datahub-project/datahub-skills/pull/35) — `OPEN / NOT MERGED / AWAITING MAINTAINER REVIEW`, verified from the public PR page on 2026-08-02.
+- Demo video: https://www.youtube.com/watch?v=ckhx5X1QQwo
+  - Actual final edited runtime: approximately 2:05.
+- Devpost submission: https://devpost.com/software/contextseal — submitted.
+- DataHub skill contribution: [datahub-project/datahub-skills#35](https://github.com/datahub-project/datahub-skills/pull/35) — `OPEN / NOT MERGED / AWAITING MAINTAINER REVIEW`, verified from the public GitHub API on 2026-08-09.
+
+## Submission gallery
+
+The four final gallery images are committed under `docs/assets/devpost/`:
+
+1. **Breaking Change Blocked Before Merge** — `docs/assets/devpost/01-breaking-change-blocked-before-merge.png`
+
+   ContextSeal blocks a risky rename with a deterministic score of 80 after exposing five downstream assets from fixture-backed DataHub context.
+
+2. **Five Evidence-Grounded Review Artifacts** — `docs/assets/devpost/02-five-evidence-grounded-review-artifacts.png`
+
+   ContextSeal generates five reviewable migration files: a dbt model, schema tests, a rename parity test, rollback SQL, and an impacted-owner brief, all tied to grounding evidence.
+
+3. **Human-Approved SHA-256 Change Passport** — `docs/assets/devpost/03-human-approved-sha256-change-passport.png`
+
+   Scoped human approval issues a SHA-256 passport binding the request, deterministic evidence, generated artifacts, approval scope, and validity window.
+
+4. **Recorded DataHub Write-Back and Read-Back** — `docs/assets/devpost/04-recorded-datahub-writeback-readback.png`
+
+   Recorded disposable-local DataHub proof shows three bounded writes applied once, the same three skipped on retry, and durable read-back on synthetic metadata.
 
 ## Honest limitations
 
-ContextSeal is a hackathon prototype. It does not auto-merge, execute production warehouse SQL, guarantee security, or claim customer impact. The default judge path uses fixture-backed path reconstruction, while the separate recorded live-local write-back bundle is limited to synthetic metadata and remains distinct from final-head hosted proof. The conformance sandbox proves generated-bundle integrity, and the separate real dbt proof artifact covers isolated local execution rather than production warehouses. GitHub Pages replays a recorded local Ollama `PASS` artifact; it does not perform hosted live inference. Only operations with current named artifacts are marked `PASS`.
+ContextSeal is a hackathon prototype. It does not auto-merge, execute production warehouse SQL, guarantee security, or claim customer impact; production warehouse execution and customer impact measurement both remain `NOT_RUN`. The default judge path uses fixture-backed path reconstruction, while the separate recorded live-local write-back bundle is limited to synthetic metadata and remains distinct from final-head hosted proof. The conformance sandbox proves generated-bundle integrity, and the separate real dbt proof artifact covers isolated local execution rather than production warehouses. GitHub Pages replays a recorded local Ollama `PASS` artifact; it does not perform hosted live inference. Only operations with current named artifacts are marked `PASS`.

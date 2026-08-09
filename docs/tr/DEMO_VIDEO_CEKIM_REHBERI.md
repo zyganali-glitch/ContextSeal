@@ -2,6 +2,8 @@
 
 Bu rehberle İngilizce konuşmadan, ücretsiz araçlarla, üç dakikadan kısa İngilizce anlatımlı bir video hazırlayacaksın. Ekranı sen kaydedeceksin; İngilizce sesi bilgisayar üretecek.
 
+> **Durum notu (2026-08-09):** Bu rehber planlanan çekim akışını anlatır. Gerçek final video yaklaşık 2:05 sürüyor ve şu adreste yayında: `https://www.youtube.com/watch?v=ckhx5X1QQwo`. Aşağıdaki 2:20 hedefi geçmiş çekim planı olarak korunuyor; final videonun süresi hakkında bir iddia değildir.
+
 ## Son videonun hedefi
 
 - Süre: yaklaşık 2 dakika 20 saniye; hedef aralık 2 dakika 15 saniye ile 2 dakika 30 saniye.

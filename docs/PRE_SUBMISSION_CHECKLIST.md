@@ -1,6 +1,6 @@
 # Pre-Submission Checklist
 
-Updated: 2026-08-08 UTC
+Updated: 2026-08-09 UTC
 
 This checklist is authoritative for final-head release readiness. Do not claim the hackathon submission is frozen until every required item below is either `PASS` with named evidence or explicitly marked `WARN` or `NOT_RUN` with a direct reason.
 
@@ -93,11 +93,12 @@ This checklist is authoritative for final-head release readiness. Do not claim t
 
 ## Submission assets
 
-- [ ] Record a playable public YouTube, Vimeo, or Youku demo URL showing the functioning app in under three minutes.
-- [ ] Freeze and submit the Devpost entry against the exact final SHA; remove every placeholder URL.
+- [x] Record a playable public YouTube demo URL showing the functioning app in under three minutes: `https://www.youtube.com/watch?v=ckhx5X1QQwo`, actual edited runtime approximately 2:05 (verified public on 2026-08-09).
+- [x] Submit the Devpost entry: `https://devpost.com/software/contextseal` is publicly submitted. Per the actual chronology, the Devpost entry and the public video were completed before this final repository release closure; the immutable GitHub Release records the exact final release SHA that closes the repository identity.
+- [x] Commit the four final submission screenshots under `docs/assets/devpost/` with stable lowercase repository-safe filenames.
 - [x] Confirm the Apache-2.0 license is detected and visible in the public repository's GitHub About surface (`Apache-2.0`, verified 2026-07-22).
-- [ ] Freeze README, judging docs, evidence docs, and Turkish helper surfaces against the same final truth.
-- [ ] Confirm upstream PR #35 is described only as `OPEN / NOT MERGED / AWAITING MAINTAINER REVIEW` while the verified public PR remains open with no reviews.
+- [x] Freeze README, judging docs, evidence docs, and Turkish helper surfaces against the same final truth (this final docs truth-sync commit).
+- [x] Confirm upstream PR #35 is described only as `OPEN / NOT MERGED / AWAITING MAINTAINER REVIEW`; public GitHub API verification on 2026-08-09 shows state `open`, `merged: false`.
 
 ## Intentional non-goals
 

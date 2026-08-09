@@ -6,13 +6,20 @@ ContextSeal is a DataHub-native certification agent for risky schema changes. It
 
 In the judge path, the first thing you see is the blocked request, the downstream blast radius, the safe review bundle, and the passport payoff. The rest of the product explains why that verdict is grounded.
 
-The demo story is paced for about 2 minutes 20 seconds: block the rename, inspect the grounded artifact package and evidence trace, approve the safe scope, and end with the passport plus clearly labeled recorded live-local proof.
+The final edited public demo video runs approximately 2 minutes 5 seconds: block the rename, inspect the grounded artifact package and evidence trace, approve the safe scope, and end with the passport plus clearly labeled recorded live-local proof.
 
 [![CI](https://github.com/zyganali-glitch/ContextSeal/actions/workflows/ci.yml/badge.svg)](https://github.com/zyganali-glitch/ContextSeal/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-Apache--2.0-green.svg)](LICENSE)
 [![DataHub](https://img.shields.io/badge/context-DataHub-5A67D8)](https://datahub.com/)
 
 **[Open the judge-ready fixture demo](https://zyganali-glitch.github.io/ContextSeal/)** · [Türkçe README](README.tr.md)
+
+**Final submission**
+
+- Public demo: <https://zyganali-glitch.github.io/ContextSeal/>
+- Final demo video: <https://www.youtube.com/watch?v=ckhx5X1QQwo> (actual edited runtime: approximately 2:05)
+- Devpost submission: <https://devpost.com/software/contextseal>
+- Repository: <https://github.com/zyganali-glitch/ContextSeal>
 
 Built as a clean-room entry for **Build with DataHub: The Agent Hackathon**. No pre-existing personal-project code is included.
 
@@ -24,13 +31,39 @@ Built as a clean-room entry for **Build with DataHub: The Agent Hackathon**. No 
 - ContextSeal generates a safe migration package and a reviewer-ready PR bundle instead of a destructive change.
 - Human approval produces a durable passport that the next human or agent can inherit.
 
-## What the 2:20 demo shows
+## What the demo shows
 
 1. The blocked request and downstream blast radius.
 2. The deterministic `80 / BLOCKED` verdict and named findings.
 3. The explanation-only AI boundary and the recorded/local AI separation.
 4. The five-file generated safe package and review handoff.
 5. Human approval of the safe scope, then the passport payoff and fixture write-back preparation near the end.
+
+## Submission gallery
+
+### Breaking Change Blocked Before Merge
+
+ContextSeal blocks a risky rename with a deterministic score of 80 after exposing five downstream assets from fixture-backed DataHub context.
+
+![Breaking Change Blocked Before Merge](docs/assets/devpost/01-breaking-change-blocked-before-merge.png)
+
+### Five Evidence-Grounded Review Artifacts
+
+ContextSeal generates five reviewable migration files: a dbt model, schema tests, a rename parity test, rollback SQL, and an impacted-owner brief, all tied to grounding evidence.
+
+![Five Evidence-Grounded Review Artifacts](docs/assets/devpost/02-five-evidence-grounded-review-artifacts.png)
+
+### Human-Approved SHA-256 Change Passport
+
+Scoped human approval issues a SHA-256 passport binding the request, deterministic evidence, generated artifacts, approval scope, and validity window.
+
+![Human-Approved SHA-256 Change Passport](docs/assets/devpost/03-human-approved-sha256-change-passport.png)
+
+### Recorded DataHub Write-Back and Read-Back
+
+Recorded disposable-local DataHub proof shows three bounded writes applied once, the same three skipped on retry, and durable read-back on synthetic metadata.
+
+![Recorded DataHub Write-Back and Read-Back](docs/assets/devpost/04-recorded-datahub-writeback-readback.png)
 
 ## The problem
 
