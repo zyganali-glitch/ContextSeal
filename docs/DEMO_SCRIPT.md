@@ -1,5 +1,7 @@
 # Demo Script - 2:20 Target
 
+> **Status note (2026-08-09):** This document is the planned recording timeline and shot plan. The actual final edited public video is approximately 2:05 and lives at `https://www.youtube.com/watch?v=ckhx5X1QQwo`. The 2:20 target below is kept as the historical storyboard, not as a claim about the final video runtime.
+
 ## Story
 
 A developer requests a direct rename of `customer_email` to `contact_email`. ContextSeal discovers privacy and downstream impact, blocks the destructive request, exposes the deterministic evidence trace and generated package, records human approval, and prepares a DataHub passport write-back.

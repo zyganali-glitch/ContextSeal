@@ -4,6 +4,17 @@ Bu rehber İngilizce bilmeyen ve daha önce Devpost başvurusu yapmamış bir ku
 
 **Önemli:** Bu rehberde “gönder” denilen son bölüme ulaşana kadar başvuruyu yarışmaya gönderme. Önce taslak olarak kaydet.
 
+## Final başvuru kaydı — başvuru tamamlandı
+
+Aşağıdaki bölümler başvuru sırasında izlenen operatör talimatlarıdır; bu kayıt ise tamamlanmış gerçek başvurunun durumunu gösterir.
+
+- YouTube final videosu: <https://www.youtube.com/watch?v=ckhx5X1QQwo>
+- Gerçek düzenlenmiş video süresi: yaklaşık 2:05
+- Devpost başvurusu (gönderildi): <https://devpost.com/software/contextseal>
+- Repository: <https://github.com/zyganali-glitch/ContextSeal>
+- Canlı demo: <https://zyganali-glitch.github.io/ContextSeal/>
+- Final ekran görüntüleri klasörü: `docs/assets/devpost/`
+
 ## Başlamadan önce hazır olması gerekenler
 
 Aşağıdakilerin tamamı hazır değilse başvuru formunu doldurabilirsin ama gönderme:
@@ -113,7 +124,7 @@ AI coding agents can generate valid SQL and dbt code while missing the organizat
 ### What it does
 
 ```text
-In the 2:20 judge demo, ContextSeal blocks a risky rename, shows its deterministic blast radius and 12-step agent trace, inspects a bounded AI explanation and generated artifact viewer, records scoped approval, and ends on the passport plus a separately labeled recorded live-local proof.
+In the final judge demo video (approximately 2:05), ContextSeal blocks a risky rename, shows its deterministic blast radius and 12-step agent trace, inspects a bounded AI explanation and generated artifact viewer, records scoped approval, and ends on the passport plus a separately labeled recorded live-local proof.
 
 ContextSeal accepts a proposed column rename, drop, or type change. Its deterministic core uses captured DataHub-shaped target, lineage, ownership, governance, quality, incident, and query context to reconstruct downstream paths and explain every risk finding. Instead of producing a destructive operation, it generates five review files: an expand-migrate-contract dbt model, schema tests, a rename parity data test, rollback SQL, and an impacted-owner briefing. The committed manifest links each generated file to the request, deterministic findings, downstream-owner context, migration rule, and passport context. A local deterministic sandbox checks that bundle against its hashes and grounding contract; it is a conformance proof, not warehouse SQL execution.
 

@@ -6,6 +6,13 @@ ContextSeal; riskli bir kolon değişikliğini DataHub bağlamıyla inceleyen, e
 
 **[Kurulum gerektirmeyen güvenli gösterimi aç](https://zyganali-glitch.github.io/ContextSeal/)** · [English README](README.md)
 
+**Final başvuru kaydı**
+
+- Canlı demo: <https://zyganali-glitch.github.io/ContextSeal/>
+- Final demo videosu: <https://www.youtube.com/watch?v=ckhx5X1QQwo> (gerçek düzenlenmiş süre: yaklaşık 2:05)
+- Devpost başvurusu: <https://devpost.com/software/contextseal>
+- Repository: <https://github.com/zyganali-glitch/ContextSeal>
+
 ## Neden güçlü görünüyor?
 
 - Küçük görünen riskli bir yeniden adlandırma merge olmadan önce durduruluyor.
@@ -14,7 +21,9 @@ ContextSeal; riskli bir kolon değişikliğini DataHub bağlamıyla inceleyen, e
 - ContextSeal yıkıcı değişikliği değil, güvenli geçiş paketi ve incelemeye hazır PR paketi üretir.
 - İnsan onayı sonucunda oluşan pasaport, sonraki insan veya ajan tarafından miras alınabilir.
 
-## 2:20 demoda ne görülüyor?
+## Final demo videosunda ne görülüyor?
+
+Gerçek düzenlenmiş final video yaklaşık 2:05 sürüyor ve şunları gösteriyor:
 
 1. Bloke edilen istek ve aşağı yöndeki etki alanı.
 2. Deterministik `80 / BLOCKED` kararı ve isimli bulgular.

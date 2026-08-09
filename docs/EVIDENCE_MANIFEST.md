@@ -1,6 +1,6 @@
 # Evidence Manifest
 
-Updated: 2026-08-08 UTC
+Updated: 2026-08-09 UTC
 
 States must remain exactly `PASS`, `WARN`, `FAIL`, `NOT_RUN`, `STALE`, or `FIXTURE`.
 
@@ -18,20 +18,22 @@ States must remain exactly `PASS`, `WARN`, `FAIL`, `NOT_RUN`, `STALE`, or `FIXTU
 | Candidate Pages proof is recorded for the verified pre-video main candidate | PASS | Hosted Pages build and deploy completed for candidate `7f24388059e8a12872f48c214ebd2cac82811a7d`; verified PRE-VIDEO MAIN CANDIDATE, not the future immutable release SHA | `.github/workflows/pages.yml` exact-head static deploy; Pages `submission:check` PASS | Deploy Judge Demo run `31246557473`: build PASS, deploy PASS — `https://github.com/zyganali-glitch/ContextSeal/actions/runs/31246557473` | Pre-video main-candidate hosted proof only. The immutable GitHub Release after the final docs merge records the exact final Pages run and deployed URL. |
 | Exact frozen final-head CI is recorded from the release SHA | NOT_RUN | Final release SHA will exist only after the final docs merge; no commit can truthfully contain its own SHA | `.github/workflows/ci.yml` on the eventual release SHA | To be recorded in the immutable GitHub Release created after the final docs merge | Final freeze pending; the GitHub Release is the authoritative record for the exact final release SHA and exact final CI run. |
 | Exact frozen final-head Pages is recorded from the release SHA | NOT_RUN | Final release SHA will exist only after the final docs merge; no commit can truthfully contain its own SHA | `.github/workflows/pages.yml` and the exact-head static deploy on the eventual release SHA | To be recorded in the immutable GitHub Release created after the final docs merge | The GitHub Release is the authoritative record for the exact final Pages run, video URL, and Devpost freeze. |
-| Public final demo video URL is recorded | NOT_RUN | Not recorded yet | `docs/DEMO_SCRIPT.md`, `docs/tr/DEMO_VIDEO_CEKIM_REHBERI.md`, and the final frozen submission SHA | Pending public video URL | Submission artifact pending |
-| Devpost submission is frozen against the exact final SHA | NOT_RUN | Not frozen yet | `docs/DEVPOST_SUBMISSION.md` and `docs/PRE_SUBMISSION_CHECKLIST.md` | Pending final Devpost freeze record | Submission artifact pending |
+| Public final demo video URL is recorded | PASS | Recorded and public; verified 2026-08-09 | Final edited demo video published on YouTube | `https://www.youtube.com/watch?v=ckhx5X1QQwo` | Public final demo video, approximately 2:05 |
+| Public Devpost submission is recorded | PASS | Submitted and public; verified 2026-08-09 | `docs/DEVPOST_SUBMISSION.md` and the public Devpost entry | `https://devpost.com/software/contextseal` | Public submitted Devpost entry; submitted before this final repository release closure per the actual chronology |
 | Production warehouse SQL executed | NOT_RUN | Intentionally absent | No production warehouse executor is wired into the repo | No artifact by design | Explicit non-goal |
 | Customer impact measured | NOT_RUN | Intentionally absent | No production deployment or customer telemetry is claimed | No artifact by design | Explicit non-goal |
 
 Update this table only when a named reproducible artifact or hosted run record exists.
 
-## Freeze order
+## Freeze order and actual chronology
 
-The submission freeze remains `NOT_RUN` until this exact order completes: finish the product and docs, merge the final docs to main, let CI and GitHub Pages run on that same SHA (the merge commit), create immutable annotated tag `datahub-hackathon-submission-v1` at that exact SHA, create a GitHub release from that tag, then freeze the public video and Devpost entry against the same release identity.
+The originally planned freeze order was: finish the product and docs, merge the final docs to main, let CI and GitHub Pages run on that same SHA (the merge commit), create immutable annotated tag `datahub-hackathon-submission-v1` at that exact SHA, create a GitHub release from that tag, then freeze the public video and Devpost entry against the same release identity.
+
+The actual chronology differed and is recorded honestly here: the public final demo video (`https://www.youtube.com/watch?v=ckhx5X1QQwo`, approximately 2:05) and the public Devpost submission (`https://devpost.com/software/contextseal`) were completed and published before this final repository release closure. This final docs truth-sync, the immutable annotated tag `datahub-hackathon-submission-v1`, and the GitHub release therefore close the repository identity after the video and Devpost entry already existed; the release notes record that same final release SHA, its exact-head CI run, and its exact-head Pages run.
 
 To avoid an impossible self-referential "this commit contains its own SHA" contract, this manifest does not try to name the final release SHA inside a commit that precedes it. Instead:
 
 - The verified PRE-VIDEO MAIN CANDIDATE `7f24388059e8a12872f48c214ebd2cac82811a7d` is recorded above with its passing CI run `31246557467` and Deploy Judge Demo run `31246557473`.
-- The immutable GitHub Release created after the final docs merge is the authoritative record for the exact final release SHA, the exact final CI run, the exact final Pages run, the video URL, and the Devpost freeze.
+- The immutable GitHub Release created after this final docs merge is the authoritative record for the exact final release SHA, the exact final CI run, and the exact final Pages run on that same SHA.
 
-The final public video and the Devpost freeze stay `NOT_RUN` above until they actually exist.
+The exact frozen final-head CI and Pages rows above stay `NOT_RUN` in this committed manifest until the GitHub Release records them; the public video and Devpost submission rows now record `PASS` because those artifacts actually exist.

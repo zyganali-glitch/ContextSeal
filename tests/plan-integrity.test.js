@@ -64,7 +64,8 @@ test("plan integrity rejects final DONE when the Devpost draft still lacks a pub
   const invalidPlan = withDoneActiveStatus(activePlan);
   const allCheckedContext = {
     ...activeContext,
-    checklist: checklist.replace(/^- \[ \] /gm, "- [x] ")
+    checklist: checklist.replace(/^- \[ \] /gm, "- [x] "),
+    devpost: devpost.replace(/^- Demo video: .+$/m, "- Demo video: not recorded yet")
   };
 
   assert.match(validatePlan(invalidPlan, allCheckedContext).join("\n"), /public demo video URL/);

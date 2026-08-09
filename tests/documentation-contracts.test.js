@@ -64,7 +64,7 @@ test("evidence manifest exposes the final truth-lock columns and required pendin
     "Exact frozen final-head CI is recorded from the release SHA",
     "Exact frozen final-head Pages is recorded from the release SHA",
     "Public final demo video URL is recorded",
-    "Devpost submission is frozen against the exact final SHA",
+    "Public Devpost submission is recorded",
     "Production warehouse SQL executed",
     "Customer impact measured"
   ]) {
@@ -99,7 +99,7 @@ test("judge-facing docs distinguish the recorded write-back proof from fixture i
   assert.match(devpost, /three `APPLIED` operations, and three `SKIPPED` idempotent retry operations/);
   assert.match(judgePath, /recorded `PASS` export/);
   assert.match(plan, /Current Write-Back Export Gate[\s\S]*?\| `PASS` \|/);
-  assert.match(plan, /Final Video Duration Gate[\s\S]*?\| `NOT_RUN` \|/);
+  assert.match(plan, /Final Video Duration Gate[\s\S]*?\| `PASS` \|/);
   assert.doesNotMatch(plan, /Final 115-125 second/);
 });
 
@@ -141,7 +141,7 @@ test("final video docs require the longer badge-visible recorded-proof path", as
   assert.doesNotMatch(turkishGuide, /90-110 saniye|100 saniyelik/);
   for (const content of [devpost, turkishDevpost]) {
     assert.match(content, /30-second judge summary/);
-    assert.match(content, /In the 2:20 judge demo/);
+    assert.match(content, /In the final judge demo video \(approximately 2:05\)/);
   }
 });
 
