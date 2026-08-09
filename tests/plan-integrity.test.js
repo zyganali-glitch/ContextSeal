@@ -18,7 +18,11 @@ const activeContext = {
 };
 
 function withDoneActiveStatus(plan) {
-  return plan.replace("- Active status: `IN_PROGRESS`", "- Active status: `DONE`");
+  return plan.replace(/- Active status: `(?:IN_PROGRESS|DONE)`/, "- Active status: `DONE`");
+}
+
+function withUncheckedChecklistItem(value) {
+  return value.replace(/^- \[x\] /m, "- [ ] ");
 }
 
 test("active plan satisfies dependency, gate, evidence-state, and handoff integrity", () => {
@@ -46,7 +50,10 @@ test("plan integrity rejects a missing mandatory handoff field", () => {
 test("plan integrity rejects final DONE while checklist remains incomplete", () => {
   const invalidPlan = withDoneActiveStatus(activePlan);
 
-  assert.match(validatePlan(invalidPlan, activeContext).join("\n"), /pre-submission checklist item/);
+  assert.match(
+    validatePlan(invalidPlan, { ...activeContext, checklist: withUncheckedChecklistItem(checklist) }).join("\n"),
+    /pre-submission checklist item/
+  );
 });
 
 test("plan integrity rejects final DONE while the Devpost video URL is still a placeholder", () => {
@@ -86,5 +93,8 @@ test("plan integrity rejects PASS proof gates when the corresponding committed a
 test("plan integrity rejects a handoff that says there is no next step while submission is incomplete", () => {
   const invalidPlan = activePlan.replace(/- Next Micro-Step: .+/, "- Next Micro-Step: None required");
 
-  assert.match(validatePlan(invalidPlan, activeContext).join("\n"), /no next step/);
+  assert.match(
+    validatePlan(invalidPlan, { ...activeContext, checklist: withUncheckedChecklistItem(checklist) }).join("\n"),
+    /no next step/
+  );
 });

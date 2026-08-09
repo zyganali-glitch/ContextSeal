@@ -1,6 +1,6 @@
 # Devpost Submission
 
-Status: **submitted** at <https://devpost.com/software/contextseal>. The sections below record the final submitted content.
+Status: **submitted** at <https://devpost.com/software/contextseal>. This document is the repository-side canonical submission reference. The public Devpost page is authoritative for the exact rendered submitted entry.
 
 ## Project name
 
