@@ -53,7 +53,7 @@ test("submission truth surfaces no longer use the old PR review wording or the p
   assert.doesNotMatch(files[0], /ADD_PUBLIC_YOUTUBE_URL/);
 });
 
-test("evidence manifest exposes the final truth-lock columns and required pending rows", async () => {
+test("evidence manifest exposes the completed immutable-release truth-lock rows", async () => {
   const manifest = await readFile("docs/EVIDENCE_MANIFEST.md", "utf8");
 
   assert.match(manifest, /\| Claim \| State \| Freshness \| Exact source \/ implementation identity \| Evidence artifact or run \| Boundary \|/);
@@ -61,8 +61,9 @@ test("evidence manifest exposes the final truth-lock columns and required pendin
     "Real dbt bundle execution works for rename, type-change, drop, and collision handling",
     "Recorded local Ollama proof exists separately from deterministic demo artifacts",
     "Candidate CI proof is recorded for the pre-freeze submission candidate",
-    "Exact frozen final-head CI is recorded from the release SHA",
-    "Exact frozen final-head Pages is recorded from the release SHA",
+    "Exact final-release CI is recorded from the immutable release SHA",
+    "Exact final-release Pages is recorded from the immutable release SHA",
+    "Official immutable submission tag and GitHub Release exist",
     "Public final demo video URL is recorded",
     "Public Devpost submission is recorded",
     "Production warehouse SQL executed",
@@ -103,7 +104,7 @@ test("judge-facing docs distinguish the recorded write-back proof from fixture i
   assert.doesNotMatch(plan, /Final 115-125 second/);
 });
 
-test("submission docs lock the canonical skill and immutable same-SHA release order", async () => {
+test("submission docs lock the canonical skill and completed immutable release identity", async () => {
   const [checklist, manifest, readme, contribution] = await Promise.all([
     readFile("docs/PRE_SUBMISSION_CHECKLIST.md", "utf8"),
     readFile("docs/EVIDENCE_MANIFEST.md", "utf8"),
@@ -114,7 +115,9 @@ test("submission docs lock the canonical skill and immutable same-SHA release or
   for (const content of [checklist, manifest]) {
     assert.match(content, /datahub-hackathon-submission-v1/);
     assert.match(content, /GitHub release/i);
-    assert.match(content, /same SHA|that exact SHA/i);
+    assert.match(content, /a25e741c623dfb59aa830e0f9cb49c96768c748b/);
+    assert.match(content, /31312985748/);
+    assert.match(content, /31312985736/);
   }
   assert.match(readme, /datahub-schema-change-certification/);
   assert.match(readme, /legacy compatibility alias/i);

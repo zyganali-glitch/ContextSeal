@@ -295,11 +295,12 @@ Implemented:
 Explicitly not claimed:
 
 - Automatic production merge or deployment
+- A hosted live DataHub tenant connection from GitHub Pages
+- Production or customer DataHub evidence
 - Production warehouse SQL execution
 - Comprehensive SQL parsing
 - Security certification
 - Customer adoption or incident-reduction metrics
-- Live DataHub proof until the operator completes and records the documented live run
 
 ## License
 

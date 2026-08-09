@@ -2,106 +2,53 @@
 
 Updated: 2026-08-09 UTC
 
-This checklist is authoritative for final-head release readiness. Do not claim the hackathon submission is frozen until every required item below is either `PASS` with named evidence or explicitly marked `WARN` or `NOT_RUN` with a direct reason.
+## Closure status
 
-## Current truth before the final freeze
+This is the authoritative post-release closure record for the official immutable ContextSeal hackathon submission. All release-closure items are complete.
 
-- [x] Record that PR #4 merged into `main` as merge commit `0dc924db9d82037d2e813548bdee27af5f180889`.
-- [x] Record that PR #5 (`agent/contextseal-final-product-polish`) merged into `main` as merge commit `7f24388059e8a12872f48c214ebd2cac82811a7d`.
-- [x] Record that `7f24388059e8a12872f48c214ebd2cac82811a7d` is the verified PRE-VIDEO MAIN CANDIDATE: ContextSeal CI run `31246557467` PASS (validate Node 20 PASS, validate Node 24 PASS, dbt-proof PASS, container-smoke PASS, submission PASS) and Deploy Judge Demo run `31246557473` PASS (build PASS, deploy PASS, Pages `submission:check` PASS).
-- [x] Record that the earlier pre-freeze candidate SHA `c984eeba449d54d49fb4228b22835933fb7db98e` has hosted CI proof only.
-- [x] Record that the temporary PR #4 and PR #5 working branches were deleted or retired after merge.
-- [ ] Select the new frozen release SHA after the final docs truth-sync merges into `main`. The immutable GitHub Release after that merge is the authoritative record for the exact final release SHA, CI run, Pages run, video URL, and Devpost freeze.
+- Official immutable submission release SHA: `a25e741c623dfb59aa830e0f9cb49c96768c748b`
+- Immutable tag: `datahub-hackathon-submission-v1`
+- GitHub Release: <https://github.com/zyganali-glitch/ContextSeal/releases/tag/datahub-hackathon-submission-v1>
+- Exact-release ContextSeal CI: run `31312985748` — `PASS`
+- Exact-release Pages deployment: run `31312985736` — `PASS`
 
-## Exact final-head procedure
+Any later commit that updates this checklist is documentation-only post-release bookkeeping. It is not a new submission release and does not move, recreate, delete, overwrite, or retag the immutable release identity above.
 
-1. Finish code, UI polish, and submission copy (product-polish landed as PR #5; final docs truth-sync lands as the last docs-only PR).
-2. Merge the final docs truth-sync branch to `main`, then stop landing follow-up changes on top of the chosen release candidate SHA.
-3. Run `npm run prevideo:check` and `npm run submission:check` on that exact checkout; keep the tree clean.
-4. Push only that exact SHA to the release branch or final `main` head.
-5. Record the matching GitHub Actions CI run and GitHub Pages deploy for that same SHA before changing any submission surface.
-6. Create the immutable annotated tag `datahub-hackathon-submission-v1` at that exact SHA, then push the tag without moving it.
-7. Create the GitHub release from that exact annotated tag and link the same-SHA CI, Pages, evidence manifest, and demo video.
-8. Only then upload or confirm the public video URL, remove pending submission text, and freeze Devpost.
+## HISTORICAL — originally intended procedure
 
-## Historical candidate record
+The following was the originally intended freeze procedure. It is retained for provenance, not as an unfinished active procedure:
 
-- [x] Historical candidate SHA `c984eeba449d54d49fb4228b22835933fb7db98e` passed `npm run prevideo:check`.
-- [x] Historical candidate SHA `c984eeba449d54d49fb4228b22835933fb7db98e` passed `npm run submission:check`.
-- [x] Historical candidate GitHub Actions run `30766641380` passed Node 20, Node 24, Python safety, dbt-proof, container-smoke, and submission.
-- [x] Historical candidate verification kept a clean tree after the read-only suite.
+1. Finish product and submission surfaces, freeze one SHA, and validate it locally.
+2. Record exact-head CI and Pages proof for that SHA.
+3. Create immutable tag `datahub-hackathon-submission-v1` at that SHA and publish the GitHub Release.
+4. Confirm public video and Devpost against the release identity.
 
-## Final SHA and tree
+## Actual chronology
 
-- [ ] Confirm `git status --short` is empty at frozen final-head verification.
-- [ ] Confirm `git diff --exit-code` passes after the frozen head read-only validation suite.
-- [ ] Confirm the selected release SHA is the same SHA used by CI, Pages, tag, release, video, and Devpost.
+1. The public final YouTube video and public Devpost entry were completed before repository release closure.
+2. The official immutable submission release was finalized at `a25e741c623dfb59aa830e0f9cb49c96768c748b`.
+3. Exact-head CI and Pages completed successfully on that SHA.
+4. The immutable tag and GitHub Release were created from that SHA.
+5. This later docs-only closure records those completed facts without replacing the official submission identity.
 
-## Local validation contract for the new frozen final head
+## Verified repository closure record
 
-- [ ] Run `npm ci --ignore-scripts` on the exact frozen final-head checkout.
-- [ ] Run `npm run prevideo:check`.
-- [ ] Run `npm run submission:check`.
-- [ ] Confirm `git diff --exit-code` still passes immediately after `npm run submission:check`.
-- [ ] Run `npm run demo:generate` once and commit only if the deterministic fixture artifacts legitimately changed.
-- [ ] Run `npm run sandbox:generate` once and commit only if the deterministic sandbox artifact legitimately changed.
-- [ ] Run `npm run pr:bundle` once and commit only if the deterministic PR artifacts legitimately changed.
-- [ ] Run `npm run validate` as the read-only validation suite.
+- [x] Confirm the official immutable submission release SHA is `a25e741c623dfb59aa830e0f9cb49c96768c748b`.
+- [x] Confirm ContextSeal CI run `31312985748` passed: validate Node 20, validate Node 24, dbt-proof, container-smoke, and submission.
+- [x] Confirm Deploy Judge Demo run `31312985736` passed: build and deploy.
+- [x] Confirm immutable tag `datahub-hackathon-submission-v1` was created at the official release SHA and must not be moved.
+- [x] Confirm the GitHub Release exists at <https://github.com/zyganali-glitch/ContextSeal/releases/tag/datahub-hackathon-submission-v1>.
+- [x] Confirm public final demo video <https://www.youtube.com/watch?v=ckhx5X1QQwo> exists; actual edited runtime is approximately 2:05.
+- [x] Confirm public Devpost submission <https://devpost.com/software/contextseal> exists.
+- [x] Confirm the four final screenshots remain committed under `docs/assets/devpost/`.
+- [x] Confirm final repository release closure is complete.
 
-## Live proof and evidence freshness
+## Recorded proof boundaries
 
-- [x] Historical disposable-local live DataHub read evidence remains recorded from source commit `baa61387324868b39427030c447b94c2b9599c03`.
-- [x] Historical disposable-local live DataHub write-back and durable read-back evidence remain recorded from that same source commit, including the idempotent retry.
-- [x] Historical `npm run evidence:check` passed with 10 MCP reads, 6 downstream assets, and 3 verified mutations.
-- [~] Recapture disposable-local live DataHub read evidence from the new frozen release SHA is optional; historical proof from `baa61387324868b39427030c447b94c2b9599c03` remains valid.
-- [~] Recapture disposable-local live DataHub write-back and durable read-back evidence from the frozen release SHA is optional; historical proof from `baa61387324868b39427030c447b94c2b9599c03` remains valid.
-- [x] Run `npm run evidence:check` on the final branch to validate committed artifact integrity; the proof remains visibly synthetic-local and separate from fixture impact, production evidence, and final-head hosted proof.
-
-## Generated bundle execution
-
-- [ ] Generate isolated rename, type-change, and drop dbt projects from the exact final SHA.
-- [ ] Run `dbt parse`, `dbt compile`, `dbt run`, and `dbt test` with `dbt-core` and `dbt-duckdb` for all three paths.
-- [ ] Confirm the generator consumes and records the complete captured schema snapshot, resolves output-name collisions, and derives tests only from explicit field constraints.
-- [ ] Commit the machine-readable real-dbt evidence artifact and confirm it names the exact generator input and final SHA.
-- [ ] Reproduce the same real-dbt proof in CI; conformance-only sandbox evidence cannot close this gate.
-
-## Hosted and container proof
-
-- [x] Historical candidate SHA `c984eeba449d54d49fb4228b22835933fb7db98e` already has GitHub Actions run `30766641380`: `https://github.com/zyganali-glitch/ContextSeal/actions/runs/30766641380`.
-- [x] Pre-video main candidate `7f24388059e8a12872f48c214ebd2cac82811a7d` has ContextSeal CI run `31246557467` PASS: validate Node 20 PASS, validate Node 24 PASS, dbt-proof PASS, container-smoke PASS, submission PASS — `https://github.com/zyganali-glitch/ContextSeal/actions/runs/31246557467`.
-- [x] Pre-video main candidate `7f24388059e8a12872f48c214ebd2cac82811a7d` has Deploy Judge Demo run `31246557473` PASS: build PASS, deploy PASS, Pages `submission:check` PASS — `https://github.com/zyganali-glitch/ContextSeal/actions/runs/31246557473`.
-- [ ] Record the GitHub Actions run URL or ID for the new frozen release SHA (post-docs-merge) in the immutable GitHub Release.
-- [ ] Record the Node 20 validation result on the new frozen release SHA.
-- [ ] Record the Node 24 validation result on the new frozen release SHA.
-- [ ] Record the Python setup and fail-closed DataHub safety-test result on the new frozen release SHA.
-- [ ] Record the container-smoke result on the new frozen release SHA.
-- [ ] Record the GitHub Pages workflow run URL or ID for that same frozen release SHA.
-- [ ] Record the live GitHub Pages URL served from that same frozen release SHA.
-- [ ] Manually open the deployed Pages URL at desktop and mobile widths before recording the final video.
-- [x] Run local Docker build and smoke checks when the daemon is available.
-- [ ] Create and inspect the immutable annotated tag `datahub-hackathon-submission-v1` at the new frozen release SHA.
-- [ ] Create a GitHub release from that exact tag; do not release from an untagged or later commit.
-
-## AI and review handoff proof
-
-- [x] Historical local Ollama proof remains committed at `examples/outputs/proofs/ollama-ai-proof.json`.
-- [ ] Capture one real local Ollama-backed AI artifact on the final SHA, or leave the AI model-backed gate `WARN` with the environment reason.
-- [ ] Confirm `examples/outputs/proofs/ollama-ai-proof.json` either comes from that final SHA or is explicitly refreshed from it.
-- [ ] Confirm the committed AI input/output artifacts still match the deterministic demo run.
-- [ ] Confirm the committed PR body, checklist, and payload still match the deterministic PR bundle generator.
-- [ ] Confirm the optional draft PR path was either dry-run validated or executed live with a human-approved token.
-
-## Submission assets
-
-- [x] Record a playable public YouTube demo URL showing the functioning app in under three minutes: `https://www.youtube.com/watch?v=ckhx5X1QQwo`, actual edited runtime approximately 2:05 (verified public on 2026-08-09).
-- [x] Submit the Devpost entry: `https://devpost.com/software/contextseal` is publicly submitted. Per the actual chronology, the Devpost entry and the public video were completed before this final repository release closure; the immutable GitHub Release records the exact final release SHA that closes the repository identity.
-- [x] Commit the four final submission screenshots under `docs/assets/devpost/` with stable lowercase repository-safe filenames.
-- [x] Confirm the Apache-2.0 license is detected and visible in the public repository's GitHub About surface (`Apache-2.0`, verified 2026-07-22).
-- [x] Freeze README, judging docs, evidence docs, and Turkish helper surfaces against the same final truth (this final docs truth-sync commit).
-- [x] Confirm upstream PR #35 is described only as `OPEN / NOT MERGED / AWAITING MAINTAINER REVIEW`; public GitHub API verification on 2026-08-09 shows state `open`, `merged: false`.
-
-## Intentional non-goals
-
-- [ ] Leave production warehouse execution `NOT_RUN` unless named evidence exists.
-- [ ] Leave customer impact `NOT_RUN` unless named evidence exists.
-- [ ] Do not freeze the submission while the mandatory real dbt bundle execution proof is `NOT_RUN` or `FAIL`.
+- [x] Preserve historical disposable-local DataHub read/write-back/read-back provenance at source commit `baa61387324868b39427030c447b94c2b9599c03`: 10 MCP reads, 6 recorded downstream assets, 3 `APPLIED` operations, 3 `SKIPPED` retries, and durable read-back `PASS`.
+- [x] Treat historical disposable-local DataHub and local Ollama captures as recorded local proof; optional historical recaptures are not release-closure gates.
+- [x] Preserve the fixture-backed public judge path and its exactly five generated review files.
+- [x] Preserve the explanation-only, bounded Ollama layer; it may not overwrite deterministic evidence.
+- [x] Retain production warehouse execution as `NOT_RUN`.
+- [x] Retain customer impact as `NOT_RUN`.
+- [x] Retain upstream DataHub Skills PR #35 as `OPEN / NOT MERGED / AWAITING MAINTAINER REVIEW`.
